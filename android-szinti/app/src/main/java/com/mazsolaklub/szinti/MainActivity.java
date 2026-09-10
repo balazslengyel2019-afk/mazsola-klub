@@ -17,7 +17,7 @@ import android.widget.VideoView;
 public class MainActivity extends Activity {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private SampleEngine audio;
-    private SynthViewV22 synthView;
+    private SynthViewV23 synthView;
     private VideoView introVideo;
     private boolean synthShown = false;
 
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         hideSystemUi();
 
-        audio = new SampleEngine(this); // keep the proven v2.x sample engine unchanged
+        audio = new SampleEngine(this); // approved six v2.x sounds remain unchanged; v2.3 only adds Nyelvdob + click
         showIntro();
     }
 
@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
             }
         } catch (Throwable ignored) {}
         try {
-            synthView = new SynthViewV22(this, audio);
+            synthView = new SynthViewV23(this, audio);
             setContentView(synthView);
             hideSystemUi();
         } catch (Throwable fatal) {
