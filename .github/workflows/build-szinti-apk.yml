@@ -1,4 +1,4 @@
-name: Build Mazsola Klub Szinti APK
+name: Build Mazsola Klub Szinti APK + AAB
 
 on:
   push:
@@ -76,6 +76,10 @@ jobs:
         working-directory: android-szinti
         run: gradle :app:assembleDebug --no-daemon --stacktrace
 
+      - name: Build release Android App Bundle
+        working-directory: android-szinti
+        run: gradle :app:bundleRelease --no-daemon --stacktrace
+
       - name: Enable KVM
         run: |
           if [ -e /dev/kvm ]; then sudo chmod 666 /dev/kvm; fi
@@ -123,4 +127,12 @@ jobs:
         with:
           name: mazsola-klub-szinti-v2.5-apk
           path: android-szinti/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload unsigned AAB
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mazsola-klub-szinti-v2.5-aab-unsigned
+          path: android-szinti/app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
