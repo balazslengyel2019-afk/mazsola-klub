@@ -17,7 +17,7 @@ import android.widget.VideoView;
 public class MainActivity extends Activity {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private SampleEngine audio;
-    private SynthViewV2 synthView;
+    private SynthViewV22 synthView;
     private VideoView introVideo;
     private boolean synthShown = false;
 
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         hideSystemUi();
 
-        audio = new SampleEngine(this); // samples load while the 3 s intro is playing
+        audio = new SampleEngine(this); // keep the proven v2.x sample engine unchanged
         showIntro();
     }
 
@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
             }
         } catch (Throwable ignored) {}
         try {
-            synthView = new SynthViewV2(this, audio);
+            synthView = new SynthViewV22(this, audio);
             setContentView(synthView);
             hideSystemUi();
         } catch (Throwable fatal) {
@@ -105,6 +105,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         handler.removeCallbacksAndMessages(null);
+        try { if (synthView != null) synthView.release(); } catch (Throwable ignored) {}
         try { if (audio != null) audio.release(); } catch (Throwable ignored) {}
         super.onDestroy();
     }
