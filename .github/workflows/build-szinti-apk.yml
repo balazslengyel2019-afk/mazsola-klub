@@ -1,0 +1,55 @@
+name: Build Mazsola Klub Szinti APK
+
+on:
+  push:
+    branches: [ android-szinti ]
+    paths:
+      - 'android-szinti/**'
+      - '.github/workflows/build-szinti-apk.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle 9.5
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.5.0'
+
+      - name: Install Android SDK 36
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Build transparent animated logo asset
+        run: |
+          command -v ffmpeg >/dev/null || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+          mkdir -p android-szinti/app/src/main/res/drawable-nodpi
+          ffmpeg -y \
+            -i assets/logo-animation.mp4 \
+            -f lavfi -i color=c=white:s=320x320:d=8 \
+            -filter_complex "[0:v]fps=10,crop=872:872:524:114,scale=320:320,format=rgba[v];[1:v]format=gray,geq=lum='if(lte((X-W/2)*(X-W/2)+(Y-H/2)*(Y-H/2),(W/2-3)*(W/2-3)),255,0)'[m];[v][m]alphamerge[out]" \
+            -map "[out]" -t 8 -c:v libwebp_anim -q:v 58 -loop 0 -an \
+            android-szinti/app/src/main/res/drawable-nodpi/logo_anim.webp
+
+      - name: Build debug APK
+        working-directory: android-szinti
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mazsola-klub-szinti-apk
+          path: android-szinti/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
