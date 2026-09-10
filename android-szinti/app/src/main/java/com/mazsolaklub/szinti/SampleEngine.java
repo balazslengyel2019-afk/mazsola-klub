@@ -12,11 +12,13 @@ public final class SampleEngine {
     public static final int XYLOPHONE = 3;
     public static final int CIMBALOM = 4;
     public static final int SYNTH = 5;
+    public static final int TONGUEDRUM = 6;
 
     private final Context context;
     private final SoundPool pool;
-    private final int[][] sampleIds = new int[6][2];
+    private final int[][] sampleIds = new int[7][2];
     private final SparseIntArray streamToSound = new SparseIntArray();
+    private int metronomeClickId = 0;
 
     public SampleEngine(Context context) {
         this.context = context.getApplicationContext();
@@ -32,11 +34,13 @@ public final class SampleEngine {
     }
 
     private void preload() {
-        String[] names = {"piano", "bass", "violin", "xylophone", "cimbalom", "synth"};
+        // The first six names and samples are intentionally unchanged from the approved v2.2 build.
+        String[] names = {"piano", "bass", "violin", "xylophone", "cimbalom", "synth", "tonguedrum"};
         for (int inst = 0; inst < names.length; inst++) {
             sampleIds[inst][0] = loadRaw(names[inst] + "_c4");
             sampleIds[inst][1] = loadRaw(names[inst] + "_c5");
         }
+        metronomeClickId = loadRaw("metronome_click");
     }
 
     private int loadRaw(String name) {
@@ -45,6 +49,15 @@ public final class SampleEngine {
     }
 
     public int play(int instrument, int midi) {
+        return playInternal(instrument, midi, 1.0f);
+    }
+
+    // Used only by the optional Concert Hall effect. Normal playing uses play() above unchanged.
+    public int playEcho(int instrument, int midi, float volumeScale) {
+        return playInternal(instrument, midi, Math.max(0f, Math.min(1f, volumeScale)));
+    }
+
+    private int playInternal(int instrument, int midi, float volumeScale) {
         if (instrument < 0 || instrument >= sampleIds.length) return 0;
         int anchor = midi < 72 ? 60 : 72;
         int slot = midi < 72 ? 0 : 1;
@@ -53,9 +66,18 @@ public final class SampleEngine {
         float rate = (float)Math.pow(2.0, (midi - anchor) / 12.0);
         if (rate < 0.5f) rate = 0.5f;
         if (rate > 1.95f) rate = 1.95f;
-        float vol = instrument == XYLOPHONE || instrument == CIMBALOM ? 0.34f : 0.30f;
+        float baseVol = instrument == XYLOPHONE || instrument == CIMBALOM ? 0.34f : 0.30f;
+        if (instrument == TONGUEDRUM) baseVol = 0.33f;
+        float vol = baseVol * volumeScale;
         int stream = pool.play(soundId, vol, vol, 1, 0, rate);
         if (stream != 0) streamToSound.put(stream, soundId);
+        return stream;
+    }
+
+    public int playMetronomeClick() {
+        if (metronomeClickId == 0) return 0;
+        int stream = pool.play(metronomeClickId, 0.43f, 0.43f, 2, 0, 1.0f);
+        if (stream != 0) streamToSound.put(stream, metronomeClickId);
         return stream;
     }
 
