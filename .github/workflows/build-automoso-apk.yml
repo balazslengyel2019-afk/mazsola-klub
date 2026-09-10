@@ -37,6 +37,9 @@ jobs:
       - name: Prepare bundled web assets
         run: |
           mkdir -p automoso-android/app/src/main/assets/www
+          mkdir -p automoso-android/app/src/main/assets/www/assets/vehicles
+          mkdir -p automoso-android/app/src/main/assets/www/assets/ui
+          mkdir -p automoso-android/app/src/main/assets/www/assets/video
           mkdir -p automoso-android/app/src/main/res/drawable
           cp -a automoso-android/www/. automoso-android/app/src/main/assets/www/
 
