@@ -4,8 +4,8 @@
     <application
         android:allowBackup="false"
         android:label="Mazsola Klub Szinti"
-        android:icon="@drawable/logo_static"
-        android:roundIcon="@drawable/logo_static"
+        android:icon="@drawable/app_icon"
+        android:roundIcon="@drawable/app_icon"
         android:theme="@style/AppTheme"
         android:hardwareAccelerated="true"
         android:supportsRtl="true">
