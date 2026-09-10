@@ -56,6 +56,10 @@ jobs:
         working-directory: android-szinti
         run: gradle :app:assembleDebug --no-daemon --stacktrace
 
+      - name: Enable KVM
+        run: |
+          if [ -e /dev/kvm ]; then sudo chmod 666 /dev/kvm; fi
+
       - name: Smoke test app launch on emulator
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
@@ -64,18 +68,25 @@ jobs:
           profile: pixel_6
           disable-animations: true
           script: |
+            set +e
             adb install -r android-szinti/app/build/outputs/apk/debug/app-debug.apk
             adb logcat -c
             adb shell am start -W -n com.mazsolaklub.szinti/.MainActivity
-            sleep 5
+            START_RC=$?
+            sleep 6
             PID=$(adb shell pidof com.mazsolaklub.szinti | tr -d '\r')
-            test -n "$PID"
-            adb shell dumpsys activity activities | grep -q "com.mazsolaklub.szinti/.MainActivity"
-            if adb logcat -d -t 1000 | grep -E "FATAL EXCEPTION|Process: com.mazsolaklub.szinti.*has died"; then
-              exit 1
-            fi
+            adb logcat -d -t 2500 > /tmp/mazsola-logcat.txt
+            echo "===== MAZSOLA APP LOGCAT ====="
+            grep -E -A 80 -B 20 "AndroidRuntime|FATAL EXCEPTION|com.mazsolaklub.szinti|has died|ANR in" /tmp/mazsola-logcat.txt || tail -250 /tmp/mazsola-logcat.txt
+            echo "===== END LOGCAT ====="
+            echo "PID=$PID START_RC=$START_RC"
+            if [ "$START_RC" -ne 0 ] || [ -z "$PID" ]; then exit 1; fi
+            adb shell dumpsys activity activities | grep -q "com.mazsolaklub.szinti/.MainActivity" || exit 1
+            if grep -E "FATAL EXCEPTION|Process: com.mazsolaklub.szinti.*has died|ANR in com.mazsolaklub.szinti" /tmp/mazsola-logcat.txt; then exit 1; fi
+            exit 0
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: mazsola-klub-szinti-stable-apk
