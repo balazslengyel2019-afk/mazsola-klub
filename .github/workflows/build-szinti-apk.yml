@@ -80,16 +80,13 @@ jobs:
             adb logcat -c
             adb shell am start -W -n com.mazsolaklub.szinti/.MainActivity
             sleep 5
-            # tap an instrument card and two piano keys after the 3 s intro
             adb shell input tap 1200 430
             adb shell input tap 500 820
             adb shell input tap 740 820
             sleep 3
             adb shell pidof com.mazsolaklub.szinti >/dev/null
             adb shell dumpsys activity activities | grep -q "com.mazsolaklub.szinti/.MainActivity"
-            if adb logcat -d -t 6000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti"; then
-              exit 1
-            fi
+            ! adb logcat -d -t 6000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti"
             echo "Mazsola Klub Szinti 2.0 intro + synth smoke test passed."
 
       - name: Upload APK
