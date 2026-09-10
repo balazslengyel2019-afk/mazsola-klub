@@ -60,7 +60,7 @@ jobs:
         run: |
           if [ -e /dev/kvm ]; then sudo chmod 666 /dev/kvm; fi
 
-      - name: Smoke test app launch on emulator
+      - name: Diagnose app startup on emulator
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -73,16 +73,20 @@ jobs:
             adb logcat -c
             adb shell am start -W -n com.mazsolaklub.szinti/.MainActivity
             START_RC=$?
-            sleep 6
+            sleep 10
             PID=$(adb shell pidof com.mazsolaklub.szinti | tr -d '\r')
-            adb logcat -d -t 2500 > /tmp/mazsola-logcat.txt
-            echo "===== MAZSOLA APP LOGCAT ====="
-            grep -E -A 80 -B 20 "AndroidRuntime|FATAL EXCEPTION|com.mazsolaklub.szinti|has died|ANR in" /tmp/mazsola-logcat.txt || tail -250 /tmp/mazsola-logcat.txt
-            echo "===== END LOGCAT ====="
+            adb logcat -d -t 5000 > /tmp/mazsola-logcat.txt
+            echo "===== EXIT INFO ====="
+            adb shell dumpsys activity exit-info com.mazsolaklub.szinti || true
+            echo "===== CRASH / KILL SIGNALS ====="
+            grep -E "AndroidRuntime|FATAL EXCEPTION|Fatal signal|am_crash|am_anr|OutOfMemory|ANR in|Killing .*com\.mazsolaklub\.szinti|Force stopping com\.mazsolaklub\.szinti|com\.mazsolaklub\.szinti.*(died|kill)|Process: com\.mazsolaklub\.szinti" /tmp/mazsola-logcat.txt || true
+            echo "===== APP LINES ====="
+            grep -E "com\.mazsolaklub\.szinti|pid 20[0-9][0-9]" /tmp/mazsola-logcat.txt | tail -300 || true
+            echo "===== END DIAGNOSTICS ====="
             echo "PID=$PID START_RC=$START_RC"
             if [ "$START_RC" -ne 0 ] || [ -z "$PID" ]; then exit 1; fi
             adb shell dumpsys activity activities | grep -q "com.mazsolaklub.szinti/.MainActivity" || exit 1
-            if grep -E "FATAL EXCEPTION|Process: com.mazsolaklub.szinti.*has died|ANR in com.mazsolaklub.szinti" /tmp/mazsola-logcat.txt; then exit 1; fi
+            if grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti" /tmp/mazsola-logcat.txt; then exit 1; fi
             exit 0
 
       - name: Upload APK
