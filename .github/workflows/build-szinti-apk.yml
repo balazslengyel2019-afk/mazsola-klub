@@ -94,7 +94,7 @@ jobs:
           script: |
             adb install -r android-szinti/app/build/outputs/apk/debug/app-debug.apk
             adb logcat -c
-            adb shell am start -W -n com.mazsolaklubszinti.myapp/com.mazsolaklubszinti.myapp.MainActivity
+            adb shell am start -W -n com.mazsolaklubszinti.myapp/com.mazsolaklub.szinti.MainActivity
             sleep 5
             # Select Nyelvdob, then exercise metronome and concert-hall toggles.
             adb shell input tap 2110 485
@@ -117,7 +117,7 @@ jobs:
             adb shell input tap 1200 890
             sleep 2
             adb shell pidof com.mazsolaklubszinti.myapp >/dev/null
-            adb shell dumpsys activity activities | grep -q "com.mazsolaklubszinti.myapp/com.mazsolaklubszinti.myapp.MainActivity"
+            adb shell dumpsys activity activities | grep -q "com.mazsolaklubszinti.myapp/com.mazsolaklub.szinti.MainActivity"
             ! adb logcat -d -t 9000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti"
             echo "Mazsola Klub Szinti 2.5 smoke test passed."
 
