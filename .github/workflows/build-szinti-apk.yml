@@ -6,6 +6,7 @@ on:
     paths:
       - 'android-szinti/**'
       - '.github/workflows/build-szinti-apk.yml'
+      - 'assets/logo-animation.mp4'
   workflow_dispatch:
 
 jobs:
@@ -35,22 +36,29 @@ jobs:
         with:
           gradle-version: '8.13'
 
-      - name: Build logo assets
+      - name: Generate v2 art, intro and instrument samples
         run: |
           command -v ffmpeg >/dev/null || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+          python3 -m pip install --quiet pillow
           mkdir -p android-szinti/app/src/main/res/drawable-nodpi
-          ffmpeg -y \
-            -i assets/logo-animation.mp4 \
-            -f lavfi -i color=c=white:s=320x320:d=8 \
-            -filter_complex "[0:v]fps=10,crop=872:872:524:114,scale=320:320,format=rgba[v];[1:v]format=gray,geq=lum='if(lte((X-W/2)*(X-W/2)+(Y-H/2)*(Y-H/2),(W/2-3)*(W/2-3)),255,0)'[m];[v][m]alphamerge[out]" \
-            -map "[out]" -t 8 -c:v libwebp_anim -q:v 58 -loop 0 -an \
-            android-szinti/app/src/main/res/drawable-nodpi/logo_anim.webp
-          ffmpeg -y \
-            -ss 0.15 -i assets/logo-animation.mp4 \
-            -f lavfi -i color=c=white:s=320x320:d=1 \
-            -filter_complex "[0:v]crop=872:872:524:114,scale=320:320,format=rgba[v];[1:v]format=gray,geq=lum='if(lte((X-W/2)*(X-W/2)+(Y-H/2)*(Y-H/2),(W/2-3)*(W/2-3)),255,0)'[m];[v][m]alphamerge[out]" \
+          mkdir -p android-szinti/app/src/main/res/raw
+
+          # 3 second startup intro: the waving section of the supplied Mazsola Klub animation.
+          ffmpeg -y -ss 0.35 -i assets/logo-animation.mp4 -t 3.0 \
+            -vf "scale=1280:720:flags=lanczos" \
+            -an -c:v libx264 -profile:v baseline -level 3.1 -pix_fmt yuv420p -movflags +faststart \
+            android-szinti/app/src/main/res/raw/intro.mp4
+
+          # Clean circular logo without the surrounding white video canvas.
+          ffmpeg -y -ss 1.8 -i assets/logo-animation.mp4 \
+            -f lavfi -i color=c=white:s=512x512:d=1 \
+            -filter_complex "[0:v]crop=872:872:524:114,scale=512:512,format=rgba[v];[1:v]format=gray,geq=lum='if(lte((X-W/2)*(X-W/2)+(Y-H/2)*(Y-H/2),(W/2-18)*(W/2-18)),255,0)'[m];[v][m]alphamerge[out]" \
             -map "[out]" -frames:v 1 \
             android-szinti/app/src/main/res/drawable-nodpi/logo_static.png
+
+          cd android-szinti
+          python3 tools/generate_art.py
+          python3 tools/generate_samples.py
 
       - name: Build debug APK
         working-directory: android-szinti
@@ -60,7 +68,7 @@ jobs:
         run: |
           if [ -e /dev/kvm ]; then sudo chmod 666 /dev/kvm; fi
 
-      - name: Verify app startup on emulator
+      - name: Verify intro and synth startup on emulator
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -71,16 +79,23 @@ jobs:
             adb install -r android-szinti/app/build/outputs/apk/debug/app-debug.apk
             adb logcat -c
             adb shell am start -W -n com.mazsolaklub.szinti/.MainActivity
-            sleep 10
+            sleep 5
+            # tap an instrument card and two piano keys after the 3 s intro
+            adb shell input tap 1200 430
+            adb shell input tap 500 820
+            adb shell input tap 740 820
+            sleep 3
             adb shell pidof com.mazsolaklub.szinti >/dev/null
             adb shell dumpsys activity activities | grep -q "com.mazsolaklub.szinti/.MainActivity"
-            adb logcat -d -t 5000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti" || true
-            echo "Mazsola Klub Szinti launched and stayed running on the emulator."
+            if adb logcat -d -t 6000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti"; then
+              exit 1
+            fi
+            echo "Mazsola Klub Szinti 2.0 intro + synth smoke test passed."
 
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: mazsola-klub-szinti-stable-apk
+          name: mazsola-klub-szinti-v2-apk
           path: android-szinti/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
