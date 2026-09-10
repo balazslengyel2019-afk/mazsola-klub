@@ -10,7 +10,7 @@ android {
         applicationId 'com.mazsolaklubszinti.myapp'
         minSdk 28
         targetSdk 36
-        versionCode 8
+        versionCode 9
         versionName '2.5.0'
     }
 
