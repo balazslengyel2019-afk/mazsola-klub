@@ -36,20 +36,20 @@ jobs:
         with:
           gradle-version: '8.13'
 
-      - name: Generate v2.3 art, centered intro and audio assets
+      - name: Generate v2.4 art, centered intro and approved audio assets
         run: |
           command -v ffmpeg >/dev/null || (sudo apt-get update && sudo apt-get install -y ffmpeg)
           python3 -m pip install --quiet pillow
           mkdir -p android-szinti/app/src/main/res/drawable-nodpi
           mkdir -p android-szinti/app/src/main/res/raw
 
-          # Keep the centered 3-second intro from v2.2.
+          # Keep the approved centered 3-second intro unchanged.
           ffmpeg -y -ss 0.35 -i assets/logo-animation.mp4 -t 3.0 \
             -vf "crop=900:900:510:90,scale=700:700:flags=lanczos,pad=1600:720:(ow-iw)/2:(oh-ih)/2:color=white" \
             -an -c:v libx264 -profile:v baseline -level 3.1 -pix_fmt yuv420p -movflags +faststart \
             android-szinti/app/src/main/res/raw/intro.mp4
 
-          # Clean circular logo used inside the app.
+          # Keep the clean circular logo unchanged.
           ffmpeg -y -ss 1.8 -i assets/logo-animation.mp4 \
             -f lavfi -i color=c=white:s=512x512:d=1 \
             -filter_complex "[0:v]crop=872:872:524:114,scale=512:512,format=rgba[v];[1:v]format=gray,geq=lum='if(lte((X-W/2)*(X-W/2)+(Y-H/2)*(Y-H/2),(W/2-22)*(W/2-22)),255,0)'[m];[v][m]alphamerge[out]" \
@@ -68,9 +68,8 @@ jobs:
           python3 tools/generate_art.py
           python3 tools/patch_v21_art.py
           python3 tools/patch_v23_art.py
-          # IMPORTANT: regenerate the already-approved six instrument samples with the exact unchanged v2.x generator.
+          # Preserve all approved instrument samples exactly as in v2.3.
           python3 tools/generate_samples.py
-          # v2.3 adds only Nyelvdob and the mechanical metronome click in a separate generator.
           python3 tools/generate_v23_audio.py
 
       - name: Build debug APK
@@ -81,7 +80,7 @@ jobs:
         run: |
           if [ -e /dev/kvm ]; then sudo chmod 666 /dev/kvm; fi
 
-      - name: Verify v2.3 controls, Nyelvdob and Kotta mode on emulator
+      - name: Verify v2.4 lessons, REC playback and controls on emulator
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -93,28 +92,35 @@ jobs:
             adb logcat -c
             adb shell am start -W -n com.mazsolaklub.szinti/.MainActivity
             sleep 5
-            # Select the new seventh instrument.
+            # Select Nyelvdob, then exercise metronome and concert-hall toggles.
             adb shell input tap 2110 485
-            # Toggle metronome and concert-hall switches.
             adb shell input tap 140 690
             adb shell input tap 140 775
-            # Open Kotta mode and choose the first practice tune.
-            adb shell input tap 2260 700
+            # Open the five-song Kotta menu and select Boci, boci tarka.
+            adb shell input tap 2260 685
             sleep 1
-            adb shell input tap 1200 345
-            # Play the first two expected white keys.
+            adb shell input tap 1200 304
+            # Play the first expected notes and exercise REC / STOP / PLAY.
+            adb shell input tap 2260 776
             adb shell input tap 290 850
             adb shell input tap 570 850
+            adb shell input tap 2260 776
+            adb shell input tap 2260 855
             sleep 3
+            # Open and close the expanded About / help panel.
+            adb shell input tap 130 130
+            sleep 1
+            adb shell input tap 1200 890
+            sleep 2
             adb shell pidof com.mazsolaklub.szinti >/dev/null
             adb shell dumpsys activity activities | grep -q "com.mazsolaklub.szinti/.MainActivity"
-            ! adb logcat -d -t 8000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti"
-            echo "Mazsola Klub Szinti 2.3 smoke test passed."
+            ! adb logcat -d -t 9000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti"
+            echo "Mazsola Klub Szinti 2.4 smoke test passed."
 
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: mazsola-klub-szinti-v2.3-apk
+          name: mazsola-klub-szinti-v2.4-apk
           path: android-szinti/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
