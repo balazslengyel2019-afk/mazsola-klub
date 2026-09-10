@@ -46,10 +46,11 @@ jobs:
             -map "[out]" -t 8 -c:v libwebp_anim -q:v 58 -loop 0 -an \
             android-szinti/app/src/main/res/drawable-nodpi/logo_anim.webp
           ffmpeg -y \
-            -ss 0.15 -i assets/logo-animation.mp4 -frames:v 1 \
+            -ss 0.15 -i assets/logo-animation.mp4 \
             -f lavfi -i color=c=white:s=320x320:d=1 \
             -filter_complex "[0:v]crop=872:872:524:114,scale=320:320,format=rgba[v];[1:v]format=gray,geq=lum='if(lte((X-W/2)*(X-W/2)+(Y-H/2)*(Y-H/2),(W/2-3)*(W/2-3)),255,0)'[m];[v][m]alphamerge[out]" \
-            -map "[out]" android-szinti/app/src/main/res/drawable-nodpi/logo_static.png
+            -map "[out]" -frames:v 1 \
+            android-szinti/app/src/main/res/drawable-nodpi/logo_static.png
 
       - name: Build debug APK
         working-directory: android-szinti
