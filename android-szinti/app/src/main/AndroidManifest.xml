@@ -1,10 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
     <application
         android:allowBackup="false"
         android:label="Mazsola Klub Szinti"
-        android:icon="@drawable/app_icon"
+        android:icon="@drawable/logo_static"
+        android:roundIcon="@drawable/logo_static"
         android:theme="@style/AppTheme"
+        android:hardwareAccelerated="true"
         android:supportsRtl="true">
         <activity
             android:name=".MainActivity"
