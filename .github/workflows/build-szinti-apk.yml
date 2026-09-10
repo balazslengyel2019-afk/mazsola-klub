@@ -36,28 +36,29 @@ jobs:
         with:
           gradle-version: '8.13'
 
-      - name: Generate v2 art, intro and instrument samples
+      - name: Generate v2.1 art, centered intro and instrument samples
         run: |
           command -v ffmpeg >/dev/null || (sudo apt-get update && sudo apt-get install -y ffmpeg)
           python3 -m pip install --quiet pillow
           mkdir -p android-szinti/app/src/main/res/drawable-nodpi
           mkdir -p android-szinti/app/src/main/res/raw
 
-          # 3 second startup intro: the waving section of the supplied Mazsola Klub animation.
+          # 3 second startup intro. Crop around the animated badge and pad it to a centered 20:9 frame.
           ffmpeg -y -ss 0.35 -i assets/logo-animation.mp4 -t 3.0 \
-            -vf "scale=1280:720:flags=lanczos" \
+            -vf "crop=900:900:510:90,scale=700:700:flags=lanczos,pad=1600:720:(ow-iw)/2:(oh-ih)/2:color=white" \
             -an -c:v libx264 -profile:v baseline -level 3.1 -pix_fmt yuv420p -movflags +faststart \
             android-szinti/app/src/main/res/raw/intro.mp4
 
-          # Clean circular logo without the surrounding white video canvas.
+          # Clean circular logo used both in-app and as the APK launcher icon.
           ffmpeg -y -ss 1.8 -i assets/logo-animation.mp4 \
             -f lavfi -i color=c=white:s=512x512:d=1 \
-            -filter_complex "[0:v]crop=872:872:524:114,scale=512:512,format=rgba[v];[1:v]format=gray,geq=lum='if(lte((X-W/2)*(X-W/2)+(Y-H/2)*(Y-H/2),(W/2-18)*(W/2-18)),255,0)'[m];[v][m]alphamerge[out]" \
+            -filter_complex "[0:v]crop=872:872:524:114,scale=512:512,format=rgba[v];[1:v]format=gray,geq=lum='if(lte((X-W/2)*(X-W/2)+(Y-H/2)*(Y-H/2),(W/2-22)*(W/2-22)),255,0)'[m];[v][m]alphamerge[out]" \
             -map "[out]" -frames:v 1 \
             android-szinti/app/src/main/res/drawable-nodpi/logo_static.png
 
           cd android-szinti
           python3 tools/generate_art.py
+          python3 tools/patch_v21_art.py
           python3 tools/generate_samples.py
 
       - name: Build debug APK
@@ -68,7 +69,7 @@ jobs:
         run: |
           if [ -e /dev/kvm ]; then sudo chmod 666 /dev/kvm; fi
 
-      - name: Verify intro and synth startup on emulator
+      - name: Verify v2.1 intro, popup and synth on emulator
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -80,19 +81,25 @@ jobs:
             adb logcat -c
             adb shell am start -W -n com.mazsolaklub.szinti/.MainActivity
             sleep 5
+            # Open and close the About popup by tapping the logo and then the center close button.
+            adb shell input tap 150 130
+            sleep 1
+            adb shell input tap 540 520
+            sleep 1
+            # Select an instrument and play two keys.
             adb shell input tap 1200 430
             adb shell input tap 500 820
             adb shell input tap 740 820
             sleep 3
             adb shell pidof com.mazsolaklub.szinti >/dev/null
             adb shell dumpsys activity activities | grep -q "com.mazsolaklub.szinti/.MainActivity"
-            ! adb logcat -d -t 6000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti"
-            echo "Mazsola Klub Szinti 2.0 intro + synth smoke test passed."
+            ! adb logcat -d -t 7000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti"
+            echo "Mazsola Klub Szinti 2.1 smoke test passed."
 
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: mazsola-klub-szinti-v2-apk
+          name: mazsola-klub-szinti-v2.1-apk
           path: android-szinti/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
