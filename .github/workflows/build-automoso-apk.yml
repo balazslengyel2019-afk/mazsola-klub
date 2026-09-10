@@ -1,0 +1,75 @@
+name: Build Mazsola Automoso APK
+
+on:
+  push:
+    branches:
+      - automoso-apk-v1
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Download Android source bundle
+        run: |
+          mkdir -p buildsrc
+          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1ozkJHqlCufFKi93-FYiyHB2i3jCuTwP9"
+          unzip -q buildsrc/source.zip -d buildsrc
+          cp -a buildsrc/automoso-android ./automoso-android
+
+      - name: Prepare bundled web assets
+        run: |
+          mkdir -p automoso-android/app/src/main/assets/www/assets/vehicles
+          mkdir -p automoso-android/app/src/main/assets/www/assets/ui
+          mkdir -p automoso-android/app/src/main/assets/www/assets/video
+          mkdir -p automoso-android/app/src/main/res/drawable
+          cp automoso-android/www/index.html automoso-android/app/src/main/assets/www/index.html
+          cp automoso-android/www/styles.css automoso-android/app/src/main/assets/www/styles.css
+          cp automoso-android/www/app.js automoso-android/app/src/main/assets/www/app.js
+
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/garage.png "https://drive.google.com/uc?export=download&id=1Zz-VNi00tAbcXdfxyCGFRANVGZ42FWYo"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/logo.png "https://drive.google.com/uc?export=download&id=1vPGoqh3f1-FFsbvJkjyZhaxugnHiU-L4"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/traktor.png "https://drive.google.com/uc?export=download&id=1Uv_YUkpniz93XBFq4bOyzlILR7cnHY7W"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/villamos.png "https://drive.google.com/uc?export=download&id=1I6BUQUtBvRD2IJzORwgrVnhO6Xer-Vh6"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/hev.png "https://drive.google.com/uc?export=download&id=1pE6KjkNe_I1tPtVCBMp7GCe8-aq7vJFg"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/hokotro.png "https://drive.google.com/uc?export=download&id=1p9P6IWguThiWUyOZQUnqPp8WDywRQuuq"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/pickup.png "https://drive.google.com/uc?export=download&id=1KGp2o14nfJs0krMRDS4ry_u0pfGS2cg3"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/ui/pressure.png "https://drive.google.com/uc?export=download&id=1jUHR59XI4EGCd4bPGFnlLT1Ozd5OqSje"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/ui/foam.png "https://drive.google.com/uc?export=download&id=1tuZ9SCIrDhp9lA_Lot5ydGug4dDReGD8"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/ui/sponge.png "https://drive.google.com/uc?export=download&id=14zuTnh9ER447dFVbJBLYtVfJr4FDEPTj"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/ui/hose.png "https://drive.google.com/uc?export=download&id=1tQDrhgi7O5YQmf-cjLARAuI2KzSPBuAK"
+          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/video/intro.mp4 "https://drive.google.com/uc?export=download&id=1jbiPO6xseYs9HHr3-PSumAICQhOYGKei"
+
+          cp automoso-android/app/src/main/assets/www/assets/logo.png automoso-android/app/src/main/res/drawable/app_icon.png
+
+      - name: Build debug APK
+        working-directory: automoso-android
+        run: gradle --no-daemon assembleDebug
+
+      - name: Rename APK
+        run: |
+          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Automoso-v1.0.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mazsola-Klub-Automoso-v1.0
+          path: Mazsola-Klub-Automoso-v1.0.apk
+          retention-days: 30
