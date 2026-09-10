@@ -36,7 +36,7 @@ jobs:
         with:
           gradle-version: '8.13'
 
-      - name: Generate v2.4 art, centered intro and approved audio assets
+      - name: Generate v2.5 art, centered intro and approved audio assets
         run: |
           command -v ffmpeg >/dev/null || (sudo apt-get update && sudo apt-get install -y ffmpeg)
           python3 -m pip install --quiet pillow
@@ -80,7 +80,7 @@ jobs:
         run: |
           if [ -e /dev/kvm ]; then sudo chmod 666 /dev/kvm; fi
 
-      - name: Verify v2.4 lessons, REC playback and controls on emulator
+      - name: Verify v2.5 lessons, recording playback and controls on emulator
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -94,18 +94,18 @@ jobs:
             sleep 5
             # Select Nyelvdob, then exercise metronome and concert-hall toggles.
             adb shell input tap 2110 485
-            adb shell input tap 140 690
-            adb shell input tap 140 775
+            adb shell input tap 140 790
+            adb shell input tap 140 875
             # Open the five-song Kotta menu and select Boci, boci tarka.
-            adb shell input tap 2260 685
+            adb shell input tap 2260 735
             sleep 1
             adb shell input tap 1200 304
-            # Play the first expected notes and exercise REC / STOP / PLAY.
-            adb shell input tap 2260 776
+            # Play the first expected notes and exercise FELVÉTEL / LEÁLLÍTÁS / LEJÁTSZÁS.
+            adb shell input tap 2260 850
             adb shell input tap 290 850
             adb shell input tap 570 850
             adb shell input tap 2260 776
-            adb shell input tap 2260 855
+            adb shell input tap 2260 960
             sleep 3
             # Open and close the expanded About / help panel.
             adb shell input tap 130 130
@@ -115,12 +115,12 @@ jobs:
             adb shell pidof com.mazsolaklub.szinti >/dev/null
             adb shell dumpsys activity activities | grep -q "com.mazsolaklub.szinti/.MainActivity"
             ! adb logcat -d -t 9000 | grep -E "FATAL EXCEPTION|ANR in com\.mazsolaklub\.szinti|Fatal signal.*com\.mazsolaklub\.szinti"
-            echo "Mazsola Klub Szinti 2.4 smoke test passed."
+            echo "Mazsola Klub Szinti 2.5 smoke test passed."
 
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: mazsola-klub-szinti-v2.4-apk
+          name: mazsola-klub-szinti-v2.5-apk
           path: android-szinti/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
