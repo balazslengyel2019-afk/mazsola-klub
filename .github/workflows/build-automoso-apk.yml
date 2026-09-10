@@ -30,7 +30,7 @@ jobs:
       - name: Download Android source bundle
         run: |
           mkdir -p buildsrc
-          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1QkG-B-k_WvKJGEdEolLgd7YErtT57BJM"
+          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1R1_KCG0EVPs6qL9jzQ4NDhrhCJQLXQma"
           unzip -q buildsrc/source.zip -d buildsrc
           cp -a buildsrc/automoso-android-v1.1 ./automoso-android
 
