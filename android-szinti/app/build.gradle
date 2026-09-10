@@ -7,7 +7,7 @@ android {
     compileSdk 36
 
     defaultConfig {
-        applicationId 'com.mazsolaklub.szinti'
+        applicationId 'com.mazsolaklubszinti.myapp'
         minSdk 28
         targetSdk 36
         versionCode 8
