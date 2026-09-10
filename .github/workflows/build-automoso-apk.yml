@@ -30,19 +30,15 @@ jobs:
       - name: Download Android source bundle
         run: |
           mkdir -p buildsrc
-          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1R1_KCG0EVPs6qL9jzQ4NDhrhCJQLXQma"
+          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1To446gwjf54DNTPXBOM4by2zqgooCfVe"
           unzip -q buildsrc/source.zip -d buildsrc
-          cp -a buildsrc/automoso-android-v1.1 ./automoso-android
+          cp -a buildsrc/v12build ./automoso-android
 
       - name: Prepare bundled web assets
         run: |
-          mkdir -p automoso-android/app/src/main/assets/www/assets/vehicles
-          mkdir -p automoso-android/app/src/main/assets/www/assets/ui
-          mkdir -p automoso-android/app/src/main/assets/www/assets/video
+          mkdir -p automoso-android/app/src/main/assets/www
           mkdir -p automoso-android/app/src/main/res/drawable
-          cp automoso-android/www/index.html automoso-android/app/src/main/assets/www/index.html
-          cp automoso-android/www/styles.css automoso-android/app/src/main/assets/www/styles.css
-          cp automoso-android/www/app.js automoso-android/app/src/main/assets/www/app.js
+          cp -a automoso-android/www/. automoso-android/app/src/main/assets/www/
 
           curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/garage.png "https://drive.google.com/uc?export=download&id=1Zz-VNi00tAbcXdfxyCGFRANVGZ42FWYo"
           curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/logo.png "https://drive.google.com/uc?export=download&id=1vPGoqh3f1-FFsbvJkjyZhaxugnHiU-L4"
@@ -59,17 +55,22 @@ jobs:
 
           cp automoso-android/app/src/main/assets/www/assets/logo.png automoso-android/app/src/main/res/drawable/app_icon.png
 
+      - name: Verify v1.2 audio bundle
+        run: |
+          test "$(find automoso-android/app/src/main/assets/www/assets/audio/horns -name '*.wav' | wc -l)" -eq 30
+          grep -q "versionName '1.2'" automoso-android/app/build.gradle
+
       - name: Build debug APK
         working-directory: automoso-android
         run: gradle --no-daemon assembleDebug
 
       - name: Rename APK
         run: |
-          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Automoso-v1.1.apk
+          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Automoso-v1.2.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola-Klub-Automoso-v1.1
-          path: Mazsola-Klub-Automoso-v1.1.apk
+          name: Mazsola-Klub-Automoso-v1.2
+          path: Mazsola-Klub-Automoso-v1.2.apk
           retention-days: 30
