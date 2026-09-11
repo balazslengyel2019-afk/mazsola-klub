@@ -23,3 +23,9 @@
 .games-features span{display:inline-flex;align-items:center;min-height:36px;padding:7px 13px;border:1px solid #c9deeb;border-radius:999px;background:#fff;color:#123656;font-size:13px;font-weight:900;box-shadow:0 3px 0 #dbeaf3}
 @media(max-width:850px){.games-card{grid-template-columns:220px 1fr;gap:26px;padding:28px}.games-copy h2{font-size:35px}}
 @media(max-width:620px){header nav{gap:8px}header nav a{font-size:12px}.games{padding-top:36px;padding-bottom:8px}.games-card{grid-template-columns:1fr;gap:12px;padding:22px 20px 24px;border-radius:22px}.games-art img{width:190px}.games-copy{text-align:center}.games-copy .eyebrow{margin-bottom:8px}.games-copy h2{font-size:31px}.games-copy>p{font-size:15px;margin-bottom:18px}.games-features{justify-content:center}.games-features span{font-size:12px;padding:6px 10px}}
+
+.games-list{display:grid;gap:24px}
+.games-card--wash{background:linear-gradient(135deg,#eefaff 0%,#fffdf5 62%,#ecfff5 100%)}
+.games-card--wash::after{background:#25aee420}
+.games-card--halloween{background:linear-gradient(135deg,#f6f0ff 0%,#fffdf8 62%,#fff0d4 100%)}
+.games-card--halloween::after{background:#7338ba1c}
