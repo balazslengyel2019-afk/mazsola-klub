@@ -19,11 +19,14 @@ download "1Q4Z5PknJsVKnjJbpaVKPaBpLZaYKBnel" "$DRAW/menu_bg.png"
 download "1atvJgPM_Yvqb4CqkGxeoj4ZunDXRnmgx" "$DRAW/menu_logo.png"
 download "1KjaofVk3_hFGyqcoZdfqWa47SSzZTL04" "$DRAW/app_icon.png"
 download "1VGZlV5j8REv1HmWtWCfe8jiVM3daJ2xM" "$RAW/spooky_loop.mp3"
+download "1G3lhqsp-K4_WYRwQ3YJ9dfNEhkDm0kG6" "$RAW/boo_laugh.mp3"
+download "149Tk0WObWGZnB6uJA6SDj7Jco6hULTGf" "$RAW/evil_laugh.mp3"
+download "1bGIhfMW0XrVeGDPyHz-LzGL4rqWmJkSI" "$RAW/intro.mp4"
 
 # New layered map
 download "11pN8itBK1-8ONtJ0KIAPigTcVH_YmEeu" "$DRAW/sky_bg.jpg"
 download "1S1IWvW9Xz5Gyct9kDDW5_TN5r-XoX7si" "$DRAW/city_layer.png"
-download "1uPRYnk7izhNiuTjCnb16iqrQBAn6cs4A" "$DRAW/sidewalk.png"
+download "1bOAN8gq4_bypwR-W-2DBmUzxTBnQkVMD" "$DRAW/sidewalk.jpg"
 
 # Sweets
 download "1l2TFtZM5MU-L9XVeGXuNzzHDC6RmAeFP" "$DRAW/sweet_csoki.png"
@@ -38,4 +41,4 @@ download "1oscIOXdUe7ARlAowJmgSgkPXQJGnEBD9" "$DRAW/vampire_side.png"
 download "1R10Oi-UFy67YHvVfg6khN-mhcRTJiH76" "$DRAW/skeleton_front.png"
 download "1zI-YkUl4sRPaQmxhhyC9cyjXwaBpP3gH" "$DRAW/skeleton_side.png"
 
-echo "All v1.2 assets downloaded."
+echo "All v1.3 assets downloaded."
