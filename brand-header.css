@@ -1,0 +1,10 @@
+.site-header{max-width:1200px;min-height:116px;margin:0 auto;padding:0 36px;display:flex;align-items:center;justify-content:space-between;gap:28px;box-sizing:border-box}
+.site-brand{display:flex;align-items:center;gap:12px;color:#0866a9;text-decoration:none;font-family:Nunito,'Trebuchet MS',sans-serif;font-weight:1000;line-height:1}
+.site-brand img{display:block;width:76px;height:76px;object-fit:contain;flex:0 0 76px}
+.site-brand>span{display:block;font-size:25px;letter-spacing:-.5px;white-space:nowrap}
+.site-brand small{display:block;margin-top:8px;color:#0866a9;font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:none}
+.site-header .site-back{color:#0866a9;text-decoration:none;font-family:Nunito,'Trebuchet MS',sans-serif;font-size:14px;font-weight:900;white-space:nowrap}
+.site-header .site-back:hover{text-decoration:underline}
+.site-header nav{display:flex;align-items:center}
+@media(max-width:850px){.site-header{padding:0 24px}}
+@media(max-width:620px){.site-header{min-height:93px;padding:0 16px;gap:12px}.site-brand{gap:7px}.site-brand img{width:54px;height:54px;flex-basis:54px}.site-brand>span{font-size:19px}.site-brand small{margin-top:6px;font-size:11px;letter-spacing:0}.site-header .site-back{font-size:12px}}
