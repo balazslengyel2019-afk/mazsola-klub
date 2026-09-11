@@ -1,0 +1,14 @@
+name = "mazsola-contact-form"
+main = "src/index.js"
+compatibility_date = "2026-09-11"
+
+routes = [
+  { pattern = "mazsolaklub.com/api/contact*", zone_name = "mazsolaklub.com" }
+]
+
+[vars]
+CONTACT_TO = "hello@mazsolaklub.com"
+CONTACT_FROM = "web@mazsolaklub.com"
+
+[[send_email]]
+name = "EMAIL"
