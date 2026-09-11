@@ -41,8 +41,8 @@
   ]
 }
 </script>
-<link rel="stylesheet" href="/jatekok.css">
-<link rel="stylesheet" href="/ovodaknak/style.css">
+<link rel="stylesheet" href="/jatekok.css?v=20260911-3">
+<link rel="stylesheet" href="/ovodaknak/style.css?v=20260911-3">
 </head>
 <body class="edu-page">
 <header class="wrap">
@@ -89,12 +89,26 @@
 <div class="notice"><strong>Bölcsődéknek is könnyen válogatható</strong><p>A katalógusban sok rövidebb mondóka, állatos dal, altató és egyszerűen követhető refrén található. A keresővel egy konkrét szóra is rá lehet keresni.</p></div>
 </section>
 
-<section class="edu-cta">
+<section class="edu-cta" id="dalotlet">
 <div class="wrap edu-cta-inner">
 <div><p class="eyebrow">VAN EGY TÉMÁTOK, AMIRE NINCS DAL?</p><h2>Dalötletet is szívesen fogadunk.</h2><p>Ha egy óvodai vagy bölcsődei témához hiányzik valami a katalógusból, írjatok nekünk. A Mazsola Klub folyamatosan bővül.</p></div>
-<a class="button primary" href="mailto:hello@mazsolaklub.com?subject=Dalötlet%20óvodából%20vagy%20bölcsődéből">Írjatok nekünk →</a>
+<button class="button primary" type="button" id="open-idea-form">Írjatok nekünk →</button>
 </div>
 </section>
+
+<dialog class="idea-dialog" id="idea-dialog" aria-labelledby="idea-title">
+<form class="idea-form" id="idea-form">
+<div class="idea-form__head"><div><p class="eyebrow">DALÖTLET</p><h2 id="idea-title">Mit hallgatnátok szívesen?</h2><p>Írd meg röviden az ötletet. Az üzenet a <strong>hello@mazsolaklub.com</strong> címre érkezik.</p></div><button class="idea-close" type="button" id="close-idea-form" aria-label="Űrlap bezárása">×</button></div>
+<div class="idea-fields">
+<label>Név <span>(opcionális)</span><input type="text" name="name" autocomplete="name" maxlength="80"></label>
+<label>E-mail cím <input type="email" name="email" autocomplete="email" maxlength="120" required></label>
+<label>Intézmény <span>(opcionális)</span><input type="text" name="institution" autocomplete="organization" maxlength="120"></label>
+<label class="idea-wide">Dalötlet / üzenet <textarea name="message" rows="6" maxlength="2000" required placeholder="Például: jó lenne egy dal az őszi erdei állatokról..."></textarea></label>
+</div>
+<div class="idea-form__actions"><button class="button primary" type="submit" id="idea-submit">Üzenet küldése →</button><p class="idea-status" id="idea-status" role="status" aria-live="polite"></p></div>
+</form>
+</dialog>
+<script src="/ovodaknak/contact.js?v=20260911-3" defer></script>
 </main>
 <footer><div class="wrap footer-row"><span>© 2026 Mazsola Klub · Magyar gyerekdalok</span><span><a href="/">Főoldal</a> · <a href="mailto:hello@mazsolaklub.com">hello@mazsolaklub.com</a></span></div></footer>
 </body>
