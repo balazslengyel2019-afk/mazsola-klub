@@ -29,8 +29,9 @@ jobs:
 
       - name: Download v2.0 Android source bundle
         run: |
+          python -m pip install --disable-pip-version-check gdown
           mkdir -p buildsrc
-          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1NhNF4W46ySZlAFj8wcLS2S9Dc-qCh2Ni"
+          gdown "https://drive.google.com/uc?id=1NhNF4W46ySZlAFj8wcLS2S9Dc-qCh2Ni" -O buildsrc/source.zip
           unzip -q buildsrc/source.zip -d buildsrc
           cp -a buildsrc/v20build ./automoso-android
 
