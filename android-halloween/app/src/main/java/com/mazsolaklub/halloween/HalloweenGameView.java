@@ -46,9 +46,21 @@ public class HalloweenGameView extends View {
 
     private Bitmap menuBg, menuLogo;
     private Bitmap skyBg, cityLayer, sidewalk;
-    private Bitmap vampireFront, vampireSide, skeletonFront, skeletonSide;
     private Bitmap frog, witch;
     private Bitmap[] sweets;
+
+    private final Bitmap[] characterFronts = new Bitmap[8];
+    private final Bitmap[] characterSides = new Bitmap[8];
+    private final String[] characterNames = {
+            "Kis vámpír",
+            "Csontváz",
+            "Szellem",
+            "Múmia",
+            "Varázsló",
+            "Boszorkány",
+            "Tökjelmez",
+            "Farkas"
+    };
 
     private MediaPlayer music;
     private MediaPlayer booSfx;
@@ -88,6 +100,8 @@ public class HalloweenGameView extends View {
     private boolean backPressed = false;
     private boolean musicPressed = false;
     private boolean jumpPressed = false;
+    private boolean againPressed = false;
+    private boolean gameOverMenuPressed = false;
 
     private final List<Item> items = new ArrayList<>();
     private final List<Item> frogs = new ArrayList<>();
@@ -96,8 +110,7 @@ public class HalloweenGameView extends View {
     private final RectF musicRect = new RectF();
     private final RectF backRect = new RectF();
     private final RectF[] bottomRects = {new RectF(),new RectF(),new RectF(),new RectF()};
-    private final RectF vampireRect = new RectF();
-    private final RectF skeletonRect = new RectF();
+    private final RectF[] characterRects = new RectF[8];
     private final RectF jumpRect = new RectF();
     private final RectF againRect = new RectF();
     private final RectF menuRect = new RectF();
@@ -120,6 +133,10 @@ public class HalloweenGameView extends View {
         setFocusable(true);
         setKeepScreenOn(true);
 
+        for (int i=0;i<characterRects.length;i++) {
+            characterRects[i] = new RectF();
+        }
+
         prefs = context.getSharedPreferences("mazsola_halloween", Context.MODE_PRIVATE);
         bestScore = prefs.getInt("bestScore", 0);
         musicEnabled = prefs.getBoolean("music", true);
@@ -136,10 +153,29 @@ public class HalloweenGameView extends View {
         cityLayer = decode(R.drawable.city_layer);
         sidewalk = decode(R.drawable.sidewalk);
 
-        vampireFront = decode(R.drawable.vampire_front);
-        vampireSide = decode(R.drawable.vampire_side);
-        skeletonFront = decode(R.drawable.skeleton_front);
-        skeletonSide = decode(R.drawable.skeleton_side);
+        characterFronts[0] = decode(R.drawable.vampire_front);
+        characterSides[0] = decode(R.drawable.vampire_side);
+
+        characterFronts[1] = decode(R.drawable.skeleton_front);
+        characterSides[1] = decode(R.drawable.skeleton_side);
+
+        characterFronts[2] = decode(R.drawable.ghost_front);
+        characterSides[2] = decode(R.drawable.ghost_side);
+
+        characterFronts[3] = decode(R.drawable.mummy_front);
+        characterSides[3] = decode(R.drawable.mummy_side);
+
+        characterFronts[4] = decode(R.drawable.wizard_front);
+        characterSides[4] = decode(R.drawable.wizard_side);
+
+        characterFronts[5] = decode(R.drawable.little_witch_front);
+        characterSides[5] = decode(R.drawable.little_witch_side);
+
+        characterFronts[6] = decode(R.drawable.pumpkin_front);
+        characterSides[6] = decode(R.drawable.pumpkin_side);
+
+        characterFronts[7] = decode(R.drawable.wolf_front);
+        characterSides[7] = decode(R.drawable.wolf_side);
 
         frog = decode(R.drawable.frog);
         witch = decode(R.drawable.witch);
@@ -204,7 +240,6 @@ public class HalloweenGameView extends View {
         p.setColor(0x26000000);
         c.drawRect(0,0,BASE_W,BASE_H,p);
 
-        // Preserve the attached logo's real aspect ratio even on extra-wide phone screens.
         drawBitmapUndistortedCentered(c, menuLogo, BASE_W/2f, 18f, 500f);
 
         playRect.set(610, 530, 1310, 755);
@@ -234,36 +269,51 @@ public class HalloweenGameView extends View {
             c.drawText(names[i],bottomRects[i].centerX(),bottomRects[i].centerY()+13,p);
         }
 
-        // Aligned vertically with the social button row.
         p.setTextAlign(Paint.Align.LEFT);
         p.setTextSize(25);
         p.setTypeface(Typeface.DEFAULT_BOLD);
         p.setColor(0xE6FFFFFF);
-        c.drawText("v1.3",48,982,p);
+        c.drawText("v2.0",48,982,p);
     }
 
     private void drawSelect(Canvas c) {
         resetUiPaint();
         drawFillCrop(c, menuBg, 0,0,BASE_W,BASE_H);
 
-        p.setColor(0x990B0820);
+        p.setColor(0xA00B0820);
         c.drawRect(0,0,BASE_W,BASE_H,p);
 
         p.setTextAlign(Paint.Align.CENTER);
         p.setTypeface(Typeface.DEFAULT_BOLD);
         p.setColor(Color.WHITE);
-        p.setTextSize(66);
-        c.drawText("VÁLASSZ KARAKTERT!",BASE_W/2f,105f,p);
+        p.setTextSize(52);
+        c.drawText("VÁLASSZ KARAKTERT!",BASE_W/2f,82f,p);
 
-        p.setTextSize(30);
+        p.setTextSize(25);
         p.setColor(0xFFE7D8FF);
-        c.drawText("Koppints egyszer a kiválasztáshoz, még egyszer az induláshoz",BASE_W/2f,155f,p);
+        c.drawText("Koppints egyszer a kiválasztáshoz, még egyszer az induláshoz",BASE_W/2f,122f,p);
 
-        vampireRect.set(340,230,820,850);
-        skeletonRect.set(1100,230,1580,850);
+        float startX = 190f;
+        float cardW = 340f;
+        float cardH = 330f;
+        float gapX = 60f;
+        float row1Y = 165f;
+        float row2Y = 555f;
 
-        drawCharacterCard(c,vampireFront,vampireRect,selectedCharacter==0,"Kis vámpír");
-        drawCharacterCard(c,skeletonFront,skeletonRect,selectedCharacter==1,"Csontváz");
+        for (int i=0;i<8;i++) {
+            int col = i%4;
+            int row = i/4;
+            float left = startX + col*(cardW+gapX);
+            float top = row==0 ? row1Y : row2Y;
+
+            characterRects[i].set(left,top,left+cardW,top+cardH);
+            drawCharacterCard(
+                    c,
+                    characterFronts[i],
+                    characterRects[i],
+                    selectedCharacter==i,
+                    characterNames[i]);
+        }
 
         backRect.set(35,35,250,125);
         drawPurpleButton(c,backRect,"‹ VISSZA",31,backPressed);
@@ -291,29 +341,36 @@ public class HalloweenGameView extends View {
             Paint gp = new Paint(Paint.ANTI_ALIAS_FLAG);
             gp.setColor(0xFFFFD22E);
             gp.setStyle(Paint.Style.STROKE);
-            gp.setStrokeWidth(24);
-            gp.setMaskFilter(new BlurMaskFilter(28,BlurMaskFilter.Blur.NORMAL));
-            c.drawRoundRect(r,55,55,gp);
+            gp.setStrokeWidth(18);
+            gp.setMaskFilter(new BlurMaskFilter(22,BlurMaskFilter.Blur.NORMAL));
+            c.drawRoundRect(r,42,42,gp);
         }
 
         p.setStyle(Paint.Style.FILL);
-        p.setColor(selected ? 0xD9422850 : 0xB5271744);
-        c.drawRoundRect(r,55,55,p);
+        p.setColor(selected ? 0xE04A2B58 : 0xC02A1948);
+        c.drawRoundRect(r,42,42,p);
 
         p.setStyle(Paint.Style.STROKE);
-        p.setStrokeWidth(selected ? 10 : 5);
+        p.setStrokeWidth(selected ? 8 : 4);
         p.setColor(selected ? 0xFFFFD631 : 0xFF8C68BF);
-        c.drawRoundRect(r,55,55,p);
+        c.drawRoundRect(r,42,42,p);
         p.setStyle(Paint.Style.FILL);
 
-        float pad=42;
-        drawBitmapContain(c,b,r.left+pad,r.top+pad,r.width()-pad*2,r.height()-150);
+        float pad = 18f;
+        float labelH = 54f;
+        drawBitmapContain(
+                c,
+                b,
+                r.left+pad,
+                r.top+pad,
+                r.width()-pad*2,
+                r.height()-labelH-pad*2);
 
         p.setColor(Color.WHITE);
         p.setTextAlign(Paint.Align.CENTER);
         p.setTypeface(Typeface.DEFAULT_BOLD);
-        p.setTextSize(45);
-        c.drawText(name,r.centerX(),r.bottom-48,p);
+        p.setTextSize(29);
+        c.drawText(name,r.centerX(),r.bottom-17f,p);
     }
 
     private void startGame() {
@@ -334,10 +391,7 @@ public class HalloweenGameView extends View {
         grounded = true;
         jumpsUsed = 0;
 
-        playPressed = false;
-        backPressed = false;
-        musicPressed = false;
-        jumpPressed = false;
+        clearPressedStates();
         dying = false;
 
         long now = SystemClock.uptimeMillis();
@@ -448,7 +502,6 @@ public class HalloweenGameView extends View {
             int type = random.nextInt(3);
             float size = type==1 ? 120f : 112f;
 
-            // Full-screen vertical distribution, but still reachable with the double jump.
             float minY = 75f;
             float maxY = GROUND_Y-size-12f;
             float y = minY + random.nextFloat()*(maxY-minY);
@@ -490,6 +543,7 @@ public class HalloweenGameView extends View {
 
         state=GAMEOVER;
         dying=false;
+        clearPressedStates();
         ensureMusicPlaying();
     }
 
@@ -508,7 +562,11 @@ public class HalloweenGameView extends View {
         drawFog(c);
         drawSidewalkTiles(c);
 
-        Bitmap charBmp = selectedCharacter==1 ? skeletonSide : vampireSide;
+        int idx = selectedCharacter>=0 && selectedCharacter<characterSides.length
+                ? selectedCharacter
+                : 0;
+
+        Bitmap charBmp = characterSides[idx];
         float ch=320f;
         float cw=ch*charBmp.getWidth()/(float)charBmp.getHeight();
         drawBitmapContain(c,charBmp,150f,charY-ch,cw,ch);
@@ -615,10 +673,10 @@ public class HalloweenGameView extends View {
         c.drawText("Legjobb eredmény: "+bestScore,BASE_W/2f,430f,p);
 
         againRect.set(610,520,1310,710);
-        draw3DButton(c,againRect,"ÚJRA",64,false);
+        draw3DButton(c,againRect,"ÚJRA",64,againPressed);
 
         menuRect.set(690,770,1230,915);
-        drawPurpleButton(c,menuRect,"FŐMENÜ",44,false);
+        drawPurpleButton(c,menuRect,"FŐMENÜ",44,gameOverMenuPressed);
     }
 
     private void drawMusicButton(Canvas c) {
@@ -812,14 +870,11 @@ public class HalloweenGameView extends View {
                     return true;
                 }
 
-                if (vampireRect.contains(x,y)) {
-                    selectCharacter(0);
-                    return true;
-                }
-
-                if (skeletonRect.contains(x,y)) {
-                    selectCharacter(1);
-                    return true;
+                for (int i=0;i<characterRects.length;i++) {
+                    if (characterRects[i].contains(x,y)) {
+                        selectCharacter(i);
+                        return true;
+                    }
                 }
             } else if (state==GAME) {
                 if (jumpRect.contains(x,y)) {
@@ -830,14 +885,14 @@ public class HalloweenGameView extends View {
                 }
             } else if (state==GAMEOVER) {
                 if (againRect.contains(x,y)) {
-                    startGame();
+                    againPressed=true;
+                    invalidate();
                     return true;
                 }
 
                 if (menuRect.contains(x,y)) {
-                    state=MENU;
-                    selectedCharacter=-1;
-                    ensureMusicPlaying();
+                    gameOverMenuPressed=true;
+                    invalidate();
                     return true;
                 }
             }
@@ -884,6 +939,30 @@ public class HalloweenGameView extends View {
                 invalidate();
                 return true;
             }
+
+            if (againPressed) {
+                boolean activate = action==MotionEvent.ACTION_UP && againRect.contains(x,y);
+                againPressed=false;
+
+                if (activate) startGame();
+
+                invalidate();
+                return true;
+            }
+
+            if (gameOverMenuPressed) {
+                boolean activate = action==MotionEvent.ACTION_UP && menuRect.contains(x,y);
+                gameOverMenuPressed=false;
+
+                if (activate) {
+                    state=MENU;
+                    selectedCharacter=-1;
+                    ensureMusicPlaying();
+                }
+
+                invalidate();
+                return true;
+            }
         }
 
         return true;
@@ -895,6 +974,8 @@ public class HalloweenGameView extends View {
         } else {
             selectedCharacter=which;
         }
+
+        invalidate();
     }
 
     private void beginTransition() {
@@ -950,17 +1031,22 @@ public class HalloweenGameView extends View {
         state=MENU;
         selectedCharacter=-1;
         dying=false;
-
-        playPressed=false;
-        backPressed=false;
-        musicPressed=false;
-        jumpPressed=false;
+        clearPressedStates();
 
         items.clear();
         frogs.clear();
 
         ensureMusicPlaying();
         return true;
+    }
+
+    private void clearPressedStates() {
+        playPressed=false;
+        backPressed=false;
+        musicPressed=false;
+        jumpPressed=false;
+        againPressed=false;
+        gameOverMenuPressed=false;
     }
 
     private void ensureMusicPlaying() {
@@ -1058,9 +1144,6 @@ public class HalloweenGameView extends View {
 
     private void drawBitmapUndistortedCentered(Canvas c, Bitmap b, float cx, float y, float logicalH) {
         float sourceAspect = b.getWidth()/(float)b.getHeight();
-
-        // Canvas is scaled independently in X/Y on wide phones.
-        // Compensate here so the final on-screen logo keeps its original ratio.
         float correction = sx==0f ? 1f : sy/sx;
         float logicalW = logicalH*sourceAspect*correction;
 
