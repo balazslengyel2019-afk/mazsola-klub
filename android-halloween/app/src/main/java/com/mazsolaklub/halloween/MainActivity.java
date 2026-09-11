@@ -25,21 +25,22 @@ public class MainActivity extends Activity {
         applyImmersiveMode();
 
         root = new FrameLayout(this);
-        root.setBackgroundColor(Color.BLACK);
+        root.setBackgroundColor(Color.TRANSPARENT);
 
+        // The main menu is already rendered behind the intro, so there is never a black gap.
         gameView = new HalloweenGameView(this);
-        gameView.setVisibility(View.INVISIBLE);
+        gameView.setVisibility(View.VISIBLE);
         root.addView(gameView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
         introView = new VideoView(this);
-        introView.setBackgroundColor(Color.BLACK);
+        introView.setBackgroundColor(Color.TRANSPARENT);
         introView.setMediaController(null);
 
         FrameLayout.LayoutParams introParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER);
         root.addView(introView, introParams);
 
@@ -47,15 +48,46 @@ public class MainActivity extends Activity {
 
         Uri introUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.intro);
         introView.setVideoURI(introUri);
+
         introView.setOnPreparedListener(mp -> {
             mp.setLooping(false);
+            mp.setVolume(0f, 0f);
+
+            int videoW = mp.getVideoWidth();
+            int videoH = mp.getVideoHeight();
+
+            if (videoW > 0 && videoH > 0) {
+                int screenW = getResources().getDisplayMetrics().widthPixels;
+                int targetH = Math.round(screenW * (videoH / (float) videoW));
+
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                        screenW,
+                        targetH,
+                        Gravity.CENTER);
+                introView.setLayoutParams(lp);
+            }
+
+            introView.setAlpha(1f);
             introView.start();
-            handler.postDelayed(this::finishIntro, 3000);
+
+            // Exactly 3 seconds visible, then a short crossfade into the already-rendered main menu.
+            handler.postDelayed(this::fadeOutIntro, 3000);
         });
+
         introView.setOnErrorListener((mp, what, extra) -> {
             finishIntro();
             return true;
         });
+    }
+
+    private void fadeOutIntro() {
+        if (!introShowing || introView == null) return;
+
+        introView.animate()
+                .alpha(0f)
+                .setDuration(450)
+                .withEndAction(this::finishIntro)
+                .start();
     }
 
     private void finishIntro() {
@@ -72,8 +104,7 @@ public class MainActivity extends Activity {
             introView = null;
         }
 
-        gameView.setVisibility(View.VISIBLE);
-        gameView.onResumeGame();
+        if (gameView != null) gameView.onResumeGame();
         applyImmersiveMode();
     }
 
@@ -91,13 +122,20 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         applyImmersiveMode();
-        if (!introShowing && gameView != null) gameView.onResumeGame();
+
+        if (!introShowing && gameView != null) {
+            gameView.onResumeGame();
+        }
     }
 
     @Override
     protected void onPause() {
         if (gameView != null) gameView.onPauseGame();
-        if (introView != null && introView.isPlaying()) introView.pause();
+
+        if (introView != null && introView.isPlaying()) {
+            introView.pause();
+        }
+
         super.onPause();
     }
 
@@ -107,6 +145,7 @@ public class MainActivity extends Activity {
             finishIntro();
             return;
         }
+
         if (gameView != null && gameView.handleBack()) return;
         super.onBackPressed();
     }
