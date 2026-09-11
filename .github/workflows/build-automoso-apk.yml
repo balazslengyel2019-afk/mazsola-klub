@@ -27,13 +27,13 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Download v2.4 Android source bundle
+      - name: Download v2.5 Android source bundle
         run: |
           python -m pip install --disable-pip-version-check gdown pillow
           mkdir -p buildsrc
-          gdown "https://drive.google.com/uc?id=19vLfHGg49i4SxJX7BasSADZEGzmlDK3z" -O buildsrc/source.zip
+          gdown "https://drive.google.com/uc?id=1Rs90lsHWLSZtJUZMpvuMX3BSDboB2FMy" -O buildsrc/source.zip
           unzip -q buildsrc/source.zip -d buildsrc
-          cp -a buildsrc/v24build ./automoso-android
+          cp -a buildsrc/v25build ./automoso-android
 
       - name: Prepare bundled web assets
         run: |
@@ -43,7 +43,7 @@ jobs:
           cp -a automoso-android/www/. automoso-android/app/src/main/assets/www/
           cp automoso-android/www/assets/app-icon.png automoso-android/app/src/main/res/drawable/app_icon.png
 
-      - name: Verify v2.4 bundle
+      - name: Verify v2.5 bundle
         run: |
           test "$(find automoso-android/app/src/main/assets/www/assets/audio/horns -name '*.wav' | wc -l)" -eq 30
           test "$(find automoso-android/app/src/main/assets/www/assets/vehicles -name '*.png' | wc -l)" -eq 30
@@ -51,14 +51,12 @@ jobs:
           test -f automoso-android/app/src/main/assets/www/assets/cloud.png
           test -f automoso-android/app/src/main/assets/www/assets/plane.png
           test -f automoso-android/app/src/main/assets/www/assets/hot-air-balloon.png
-          grep -q "versionName '2.4'" automoso-android/app/build.gradle
-          grep -q "versionCode 12" automoso-android/app/build.gradle
-          grep -q "threshold:.97" automoso-android/app/src/main/assets/www/app.js
-          grep -q "threshold:.99" automoso-android/app/src/main/assets/www/app.js
+          grep -q "versionName '2.5'" automoso-android/app/build.gradle
+          grep -q "versionCode 13" automoso-android/app/build.gradle
           grep -q "FASTEST_TIME_KEYS" automoso-android/app/src/main/assets/www/app.js
-          grep -q "bestTimeValue" automoso-android/app/src/main/assets/www/index.html
-          grep -q "selector-balloon" automoso-android/app/src/main/assets/www/index.html
-          grep -q "vehicleSelectGlowV24" automoso-android/app/src/main/assets/www/styles.css
+          grep -q "updateBestTimeUI" automoso-android/app/src/main/assets/www/app.js
+          grep -q "version-badge" automoso-android/app/src/main/assets/www/index.html
+          grep -q "drop-shadow(5px 0 0 #fff)" automoso-android/app/src/main/assets/www/styles.css
           python - <<'PY'
           from PIL import Image
           from pathlib import Path
@@ -70,9 +68,11 @@ jobs:
               if Image.open(f).size != (1600,900):
                   bad.append((f.name,Image.open(f).size))
           assert not bad, bad
-          balloon=Image.open("automoso-android/app/src/main/assets/www/assets/hot-air-balloon.png")
-          assert balloon.mode in ("RGBA","LA","P")
-          print("v2.4 verified: pink glow + best time + 97/99 thresholds + balloon.")
+          for name in ("combine.png","crane-truck.png"):
+              im=Image.open(p/name)
+              assert im.size == (1600,900)
+              assert im.mode in ("RGBA","LA","P")
+          print("v2.5 verified: white outline + best time visibility + refreshed combine/crane + version badge.")
           PY
 
       - name: Build debug APK
@@ -81,11 +81,11 @@ jobs:
 
       - name: Rename APK
         run: |
-          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v2.4.apk
+          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v2.5.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola-Klub-Moso-v2.4
-          path: Mazsola-Klub-Moso-v2.4.apk
+          name: Mazsola-Klub-Moso-v2.5
+          path: Mazsola-Klub-Moso-v2.5.apk
           retention-days: 30
