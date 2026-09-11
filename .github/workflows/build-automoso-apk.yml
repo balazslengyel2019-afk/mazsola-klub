@@ -27,13 +27,13 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Download v2.2 Android source bundle
+      - name: Download v2.3 Android source bundle
         run: |
           python -m pip install --disable-pip-version-check gdown pillow
           mkdir -p buildsrc
-          gdown "https://drive.google.com/uc?id=1QYue2_EaryW5S-z6qag-ht1vujmYVL_A" -O buildsrc/source.zip
+          gdown "https://drive.google.com/uc?id=1spg-RE5Ya9aJT_ZEtDKdrn-mV3rLyvnI" -O buildsrc/source.zip
           unzip -q buildsrc/source.zip -d buildsrc
-          cp -a buildsrc/v22build ./automoso-android
+          cp -a buildsrc/v23build ./automoso-android
 
       - name: Prepare bundled web assets
         run: |
@@ -43,18 +43,22 @@ jobs:
           cp -a automoso-android/www/. automoso-android/app/src/main/assets/www/
           cp automoso-android/www/assets/app-icon.png automoso-android/app/src/main/res/drawable/app_icon.png
 
-      - name: Verify v2.2 bundle
+      - name: Verify v2.3 bundle
         run: |
           test "$(find automoso-android/app/src/main/assets/www/assets/audio/horns -name '*.wav' | wc -l)" -eq 30
           test "$(find automoso-android/app/src/main/assets/www/assets/vehicles -name '*.png' | wc -l)" -eq 30
           test "$(grep -o "asset:'assets/vehicles/" automoso-android/app/src/main/assets/www/app.js | wc -l)" -eq 30
           test -f automoso-android/app/src/main/assets/www/assets/cloud.png
-          grep -q "versionName '2.2'" automoso-android/app/build.gradle
-          grep -q "versionCode 10" automoso-android/app/build.gradle
-          grep -q "playShopChime" automoso-android/app/src/main/assets/www/app.js
-          grep -q "selector-cloud-layer" automoso-android/app/src/main/assets/www/index.html
-          grep -q "carousel-vehicle.rail-vehicle img" automoso-android/app/src/main/assets/www/styles.css
-          grep -q "translateX(-50%)" automoso-android/app/src/main/assets/www/styles.css
+          test -f automoso-android/app/src/main/assets/www/assets/plane.png
+          grep -q "versionName '2.3'" automoso-android/app/build.gradle
+          grep -q "versionCode 11" automoso-android/app/build.gradle
+          grep -q "FASTEST_TIME_KEY" automoso-android/app/src/main/assets/www/app.js
+          grep -q "timerDisplay" automoso-android/app/src/main/assets/www/app.js
+          grep -q "startWashTimer" automoso-android/app/src/main/assets/www/app.js
+          grep -q "bestTimeValue" automoso-android/app/src/main/assets/www/index.html
+          grep -q "selector-plane" automoso-android/app/src/main/assets/www/index.html
+          grep -q "vehicleSelectGlowV23" automoso-android/app/src/main/assets/www/styles.css
+          grep -q "rgba(255,88,190,.22)" automoso-android/app/src/main/assets/www/app.js
           python - <<'PY'
           from PIL import Image
           from pathlib import Path
@@ -67,8 +71,10 @@ jobs:
                   bad.append((f.name,Image.open(f).size))
           assert not bad, bad
           cloud=Image.open("automoso-android/app/src/main/assets/www/assets/cloud.png")
+          plane=Image.open("automoso-android/app/src/main/assets/www/assets/plane.png")
           assert cloud.mode in ("RGBA","LA","P")
-          print("v2.2 verified: 30 normalized vehicles + animated cloud sprite.")
+          assert plane.mode in ("RGBA","LA","P")
+          print("v2.3 verified: timer + best time + plane + blue glow + pink foam.")
           PY
 
       - name: Build debug APK
@@ -77,11 +83,11 @@ jobs:
 
       - name: Rename APK
         run: |
-          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v2.2.apk
+          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v2.3.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola-Klub-Moso-v2.2
-          path: Mazsola-Klub-Moso-v2.2.apk
+          name: Mazsola-Klub-Moso-v2.3
+          path: Mazsola-Klub-Moso-v2.3.apk
           retention-days: 30
