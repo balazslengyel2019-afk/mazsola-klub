@@ -16,7 +16,7 @@ download() {
 
 # Menu
 download "1Q4Z5PknJsVKnjJbpaVKPaBpLZaYKBnel" "$DRAW/menu_bg.png"
-download "1b0TH2B27xeer-VOdMkHowq_2lMpDlFEc" "$DRAW/logo.png"
+download "1atvJgPM_Yvqb4CqkGxeoj4ZunDXRnmgx" "$DRAW/menu_logo.png"
 download "1KjaofVk3_hFGyqcoZdfqWa47SSzZTL04" "$DRAW/app_icon.png"
 download "1VGZlV5j8REv1HmWtWCfe8jiVM3daJ2xM" "$RAW/spooky_loop.mp3"
 
@@ -38,4 +38,4 @@ download "1oscIOXdUe7ARlAowJmgSgkPXQJGnEBD9" "$DRAW/vampire_side.png"
 download "1R10Oi-UFy67YHvVfg6khN-mhcRTJiH76" "$DRAW/skeleton_front.png"
 download "1zI-YkUl4sRPaQmxhhyC9cyjXwaBpP3gH" "$DRAW/skeleton_side.png"
 
-echo "All v1.1 assets downloaded."
+echo "All v1.2 assets downloaded."
