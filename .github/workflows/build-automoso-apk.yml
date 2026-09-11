@@ -27,13 +27,13 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Download v2.0 Android source bundle
+      - name: Download v2.1 Android source bundle
         run: |
-          python -m pip install --disable-pip-version-check gdown
+          python -m pip install --disable-pip-version-check gdown pillow
           mkdir -p buildsrc
-          gdown "https://drive.google.com/uc?id=1NhNF4W46ySZlAFj8wcLS2S9Dc-qCh2Ni" -O buildsrc/source.zip
+          gdown "https://drive.google.com/uc?id=1rQiNTCdJhfy7QvVn0oVmIShgdZnYw1_4" -O buildsrc/source.zip
           unzip -q buildsrc/source.zip -d buildsrc
-          cp -a buildsrc/v20build ./automoso-android
+          cp -a buildsrc/v21build ./automoso-android
 
       - name: Prepare bundled web assets
         run: |
@@ -43,16 +43,30 @@ jobs:
           cp -a automoso-android/www/. automoso-android/app/src/main/assets/www/
           cp automoso-android/www/assets/app-icon.png automoso-android/app/src/main/res/drawable/app_icon.png
 
-      - name: Verify v2.0 bundle
+      - name: Verify v2.1 bundle
         run: |
           test "$(find automoso-android/app/src/main/assets/www/assets/audio/horns -name '*.wav' | wc -l)" -eq 30
           test "$(find automoso-android/app/src/main/assets/www/assets/vehicles -name '*.png' | wc -l)" -eq 30
           test "$(grep -o "asset:'assets/vehicles/" automoso-android/app/src/main/assets/www/app.js | wc -l)" -eq 30
-          grep -q "versionName '2.0'" automoso-android/app/build.gradle
-          grep -q "versionCode 8" automoso-android/app/build.gradle
-          grep -q -- "--vehicle-vw" automoso-android/app/src/main/assets/www/app.js
-          grep -q "bottom: 26.2vh" automoso-android/app/src/main/assets/www/styles.css
-          grep -q "vehicleSelectGlowV20" automoso-android/app/src/main/assets/www/styles.css
+          grep -q "versionName '2.1'" automoso-android/app/build.gradle
+          grep -q "versionCode 9" automoso-android/app/build.gradle
+          grep -q "HIT_MASK_W = 160" automoso-android/app/src/main/assets/www/app.js
+          grep -q "pointerHitsVehicle" automoso-android/app/src/main/assets/www/app.js
+          grep -q "height: 84vh" automoso-android/app/src/main/assets/www/styles.css
+          grep -q "vehicleSelectGlowV21" automoso-android/app/src/main/assets/www/styles.css
+          python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          p=Path("automoso-android/app/src/main/assets/www/assets/vehicles")
+          files=list(p.glob("*.png"))
+          assert len(files)==30
+          bad=[]
+          for f in files:
+              if Image.open(f).size != (1600,900):
+                  bad.append((f.name,Image.open(f).size))
+          assert not bad, bad
+          print("All 30 vehicle PNGs are 1600x900.")
+          PY
 
       - name: Build debug APK
         working-directory: automoso-android
@@ -60,11 +74,11 @@ jobs:
 
       - name: Rename APK
         run: |
-          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v2.0.apk
+          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v2.1.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola-Klub-Moso-v2.0
-          path: Mazsola-Klub-Moso-v2.0.apk
+          name: Mazsola-Klub-Moso-v2.1
+          path: Mazsola-Klub-Moso-v2.1.apk
           retention-days: 30
