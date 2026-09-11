@@ -8,7 +8,8 @@
   const submit=document.querySelector('#idea-submit');
   if(!dialog||!open||!close||!form)return;
 
-  const openDialog=()=>{status.textContent='';status.className='idea-status';dialog.showModal();};
+  let openedAt=0;
+  const openDialog=()=>{openedAt=Date.now();status.textContent='';status.className='idea-status';dialog.showModal();};
   const closeDialog=()=>{if(dialog.open)dialog.close();};
 
   open.addEventListener('click',openDialog);
@@ -23,6 +24,8 @@
     e.preventDefault();
     if(!form.reportValidity())return;
     const data=Object.fromEntries(new FormData(form).entries());
+    data.website='';
+    data.startedAt=openedAt||Date.now();
     status.className='idea-status';
     status.textContent='Küldés…';
     form.classList.add('is-sending');
