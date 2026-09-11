@@ -1,0 +1,49 @@
+name: Build Mazsola Halloween APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'android-halloween/**'
+      - '.github/workflows/mazsola-halloween-apk.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-halloween
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Download game assets from Drive
+        run: |
+          chmod +x download_assets.sh
+          ./download_assets.sh
+
+      - name: Build APK
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Rename APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Mazsola_Klub_Halloween_v1.0.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mazsola_Klub_Halloween_v1.0
+          path: android-halloween/Mazsola_Klub_Halloween_v1.0.apk
+          retention-days: 14
