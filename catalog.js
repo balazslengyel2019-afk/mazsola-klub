@@ -50,7 +50,7 @@ fetch('songs.json').then(r=>{if(!r.ok)throw Error('catalog');return r.json()}).t
   const section=document.createElement('section');
   section.className='video-banner';
   section.setAttribute('aria-label','Mazsola Klub gyerekdalok');
-  section.innerHTML='<video muted loop playsinline preload="none" poster="assets/cover.png" aria-hidden="true"><source src="assets/mazsola-bg.mp4" type="video/mp4"></video><div class="video-banner__content"><p class="video-banner__eyebrow">MAZSOLA KLUB</p><h2>Több mint <strong>300</strong> magyar gyerekdal egy helyen.</h2><p class="video-banner__lead">Járművek, állatok, népdalok, évszakok és zenés kalandok a Mazsola Klubban.</p></div>';
+  section.innerHTML='<video muted loop playsinline preload="none" poster="assets/cover.png" aria-hidden="true"><source src="/assets/video%201.mp4" type="video/mp4"></video><div class="video-banner__content"><p class="video-banner__eyebrow">MAZSOLA KLUB</p><h2>Több mint <strong>300</strong> magyar gyerekdal egy helyen.</h2><p class="video-banner__lead">Járművek, állatok, népdalok, évszakok és zenés kalandok a Mazsola Klubban.</p></div>';
   about.before(section);
   const video=section.querySelector('video');
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
