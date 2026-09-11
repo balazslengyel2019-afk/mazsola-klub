@@ -30,9 +30,9 @@ jobs:
       - name: Download Android source bundle
         run: |
           mkdir -p buildsrc
-          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=12XuZehbZZkucMsSf1sKIj8gyQA6GdJR8"
+          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1sSv1NC8yEBRRc5Ybohx2gomBfIQcHyhg"
           unzip -q buildsrc/source.zip -d buildsrc
-          cp -a buildsrc/v13build ./automoso-android
+          cp -a buildsrc/v14build ./automoso-android
 
       - name: Prepare bundled web assets
         run: |
@@ -41,15 +41,19 @@ jobs:
           cp -a automoso-android/www/. automoso-android/app/src/main/assets/www/
           cp automoso-android/www/assets/app-icon.png automoso-android/app/src/main/res/drawable/app_icon.png
 
-      - name: Verify v1.3 bundle
+      - name: Verify v1.4 bundle
         run: |
           test "$(find automoso-android/app/src/main/assets/www/assets/audio/horns -name '*.wav' | wc -l)" -eq 30
           test -f automoso-android/app/src/main/assets/www/assets/garage-v13.jpg
           test -f automoso-android/app/src/main/assets/www/assets/logo-original.png
           test -f automoso-android/app/src/main/assets/www/assets/app-icon.png
-          grep -q "versionName '1.3'" automoso-android/app/build.gradle
-          grep -q "threshold:.95" automoso-android/app/src/main/assets/www/app.js
-          ! grep -q "drawSpinningWheels" automoso-android/app/src/main/assets/www/app.js
+          grep -q "versionName '1.4'" automoso-android/app/build.gradle
+          grep -q "versionCode 5" automoso-android/app/build.gradle
+          test "$(grep -o "threshold:.96" automoso-android/app/src/main/assets/www/app.js | wc -l)" -eq 4
+          grep -q "vehicle-carousel" automoso-android/app/src/main/assets/www/index.html
+          grep -q "carouselSwipeStart" automoso-android/app/src/main/assets/www/app.js
+          grep -q "introVideo.classList.add('ready')" automoso-android/app/src/main/assets/www/app.js
+          ! grep -q "vehicle-name" automoso-android/app/src/main/assets/www/index.html
 
       - name: Build debug APK
         working-directory: automoso-android
@@ -57,11 +61,11 @@ jobs:
 
       - name: Rename APK
         run: |
-          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v1.3.apk
+          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v1.4.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola-Klub-Moso-v1.3
-          path: Mazsola-Klub-Moso-v1.3.apk
+          name: Mazsola-Klub-Moso-v1.4
+          path: Mazsola-Klub-Moso-v1.4.apk
           retention-days: 30
