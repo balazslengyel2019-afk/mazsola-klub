@@ -28,10 +28,10 @@ A meglévő statikus weboldalhoz nem nyúl. Külön Worker route-ként csak az `
 5. Adj hozzá route-ot:
    - `mazsolaklub.com/api/contact*`
 6. Variables:
-   - `CONTACT_TO=hello@mazsolaklub.com`
+   - `CONTACT_TO=klubmazsola@gmail.com`
    - `CONTACT_FROM=web@mazsolaklub.com`
 
-A `CONTACT_TO` címnek Cloudflare-ben verified destination címnek kell lennie.
+A `CONTACT_TO` címnek Cloudflare-ben verified destination címnek kell lennie. Jelenleg: `klubmazsola@gmail.com`.
 A `CONTACT_FROM` feladó domainjének Email Service küldésre engedélyezett domainnek kell lennie.
 
 ## Frontend
