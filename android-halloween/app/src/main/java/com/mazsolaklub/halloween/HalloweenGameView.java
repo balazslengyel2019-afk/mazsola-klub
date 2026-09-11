@@ -36,7 +36,7 @@ public class HalloweenGameView extends View {
     private final SharedPreferences prefs;
     private final Typeface halloweenTypeface = Typeface.create("sans-serif-condensed", Typeface.BOLD_ITALIC);
 
-    private Bitmap menuBg, logo;
+    private Bitmap menuBg, menuLogo;
     private Bitmap skyBg, cityLayer, sidewalk;
     private Bitmap vampireFront, vampireSide, skeletonFront, skeletonSide;
     private Bitmap frog, witch;
@@ -58,11 +58,14 @@ public class HalloweenGameView extends View {
     private float speed = 430f;
     private float charY = 0f, charVy = 0f;
     private boolean grounded = true;
-    private final float groundY = 850f;
+    private final float groundY = 856f;
+    private int jumpsUsed = 0;
+    private boolean jumpPressed = false;
     private long nextSweetAt, nextFrogAt;
     private boolean dying = false;
     private long dyingStarted;
     private float witchX;
+    private float witchY;
 
     private final List<Item> items = new ArrayList<>();
     private final List<Item> frogs = new ArrayList<>();
@@ -98,7 +101,7 @@ public class HalloweenGameView extends View {
 
     private void loadAssets() {
         menuBg = decode(R.drawable.menu_bg);
-        logo = decode(R.drawable.logo);
+        menuLogo = decode(R.drawable.menu_logo);
         skyBg = decode(R.drawable.sky_bg);
         cityLayer = decode(R.drawable.city_layer);
         sidewalk = decode(R.drawable.sidewalk);
@@ -153,15 +156,9 @@ public class HalloweenGameView extends View {
         p.setColor(0x26000000);
         c.drawRect(0,0,BASE_W,BASE_H,p);
 
-        // Real circular Mazsola Klub logo, never stretched.
-        drawCircularLogo(c, logo, BASE_W/2f, 175f, 142f);
-
-        p.setTypeface(halloweenTypeface);
-        p.setTextSkewX(-0.08f);
-        drawOutlinedText(c, "MAZSOLA KLUB", BASE_W/2f, 370f, 66f, 0xFFFFA51F, 0xFF32105C, 10f);
-        drawOutlinedText(c, "HALLOWEEN", BASE_W/2f, 438f, 55f, 0xFFFFD343, 0xFF32105C, 9f);
-        p.setTextSkewX(0f);
-        p.setTypeface(Typeface.DEFAULT_BOLD);
+        // Full v1.2 Halloween Mazsola Klub logo from the attached PNG.
+        // Draw with contain scaling so the artwork is never distorted.
+        drawBitmapContain(c, menuLogo, BASE_W/2f - 245f, 25f, 490f, 490f);
 
         playRect.set(610, 520, 1310, 745);
         draw3DButton(c, playRect, "JÁTÉK", 84);
@@ -193,7 +190,7 @@ public class HalloweenGameView extends View {
         p.setTextAlign(Paint.Align.LEFT);
         p.setTextSize(24);
         p.setColor(0xCCFFFFFF);
-        c.drawText("v1.1", 24, 1048, p);
+        c.drawText("v1.2", 24, 1038, p);
     }
 
     private void drawCircularLogo(Canvas c, Bitmap b, float cx, float cy, float radius) {
@@ -295,6 +292,8 @@ public class HalloweenGameView extends View {
         charY=groundY;
         charVy=0;
         grounded=true;
+        jumpsUsed=0;
+        jumpPressed=false;
         dying=false;
         long now=SystemClock.uptimeMillis();
         nextSweetAt=now+700;
@@ -304,14 +303,24 @@ public class HalloweenGameView extends View {
 
     private void updateGame(float dt, long now) {
         if (dying) {
-            witchX -= 1150f*dt;
-            if (now-dyingStarted>1900) finishGame();
+            float targetX = 270f;
+            float targetY = charY - 315f;
+            float dx = targetX - witchX;
+            float dy = targetY - witchY;
+            float dist = (float)Math.sqrt(dx*dx + dy*dy);
+            float witchSpeed = 1180f;
+            if (dist > 1f) {
+                float step = Math.min(dist, witchSpeed * dt);
+                witchX += dx / dist * step;
+                witchY += dy / dist * step;
+            }
+            if (dist < 95f || now-dyingStarted>2600) finishGame();
             return;
         }
 
         speed = Math.min(760f, 430f + score*5.5f);
 
-        float cityH = 425f;
+        float cityH = 760f;
         float cityW = cityH * cityLayer.getWidth() / (float)cityLayer.getHeight();
         cityX -= speed * 0.22f * dt;
         while (cityX <= -cityW) cityX += cityW;
@@ -329,6 +338,7 @@ public class HalloweenGameView extends View {
             charY=groundY;
             charVy=0;
             grounded=true;
+            jumpsUsed=0;
         }
 
         if (now>=nextSweetAt) {
@@ -372,17 +382,21 @@ public class HalloweenGameView extends View {
 
     private void spawnSweet() {
         int type=random.nextInt(3);
-        float size = type==1 ? 118 : 108;
-        boolean high=random.nextBoolean();
-        float y = high ? 565f : 705f;
+        float size = type==1 ? 120f : 112f;
+        float[] levels = {728f, 590f, 455f};
+        float y = levels[random.nextInt(levels.length)];
         items.add(new Item(BASE_W+80,y,size,size,type));
-        if (random.nextFloat()<0.28f) {
-            items.add(new Item(BASE_W+250, high?705f:565f,size,size,random.nextInt(3)));
+
+        // Sometimes add a second sweet at a different height to make the route less predictable.
+        if (random.nextFloat()<0.35f) {
+            float secondY = levels[random.nextInt(levels.length)];
+            items.add(new Item(BASE_W+240,secondY,size,size,random.nextInt(3)));
         }
     }
 
     private void spawnFrog() {
-        frogs.add(new Item(BASE_W+100, 738, 150, 112, 0));
+        // Bottom aligned to the same sidewalk surface as the character.
+        frogs.add(new Item(BASE_W+100, groundY-112f, 150, 112, 0));
     }
 
     private RectF getCharacterHitbox() {
@@ -394,7 +408,8 @@ public class HalloweenGameView extends View {
     private void triggerWitch(long now) {
         dying=true;
         dyingStarted=now;
-        witchX=BASE_W+50;
+        witchX=BASE_W+80f;
+        witchY=185f;
     }
 
     private void finishGame() {
@@ -414,9 +429,9 @@ public class HalloweenGameView extends View {
         drawFillCrop(c, skyBg, 0,0,BASE_W,BASE_H);
 
         // 2. Slow scrolling Halloween city.
-        float cityH = 425f;
+        float cityH = 760f;
         float cityW = cityH * cityLayer.getWidth() / (float)cityLayer.getHeight();
-        float cityY = 405f;
+        float cityY = 70f;
         for (float x=cityX; x<BASE_W; x+=cityW) {
             drawBitmapFit(c, cityLayer, x, cityY, cityW, cityH);
         }
@@ -452,14 +467,14 @@ public class HalloweenGameView extends View {
         c.drawText("REKORD: " + bestScore,65,120,p);
 
         jumpRect.set(1570,790,1870,1030);
-        draw3DButton(c,jumpRect,"UGRÁS",54);
+        draw3DButton(c,jumpRect,"UGRÁS",54,jumpPressed);
 
         if (dying) {
             p.setColor(0x55000000);
             c.drawRect(0,0,BASE_W,BASE_H,p);
             float wh=380;
             float ww=wh*witch.getWidth()/(float)witch.getHeight();
-            drawBitmapContain(c,witch,witchX,270,ww,wh);
+            drawBitmapContain(c,witch,witchX,witchY,ww,wh);
             p.setColor(Color.WHITE);
             p.setTextAlign(Paint.Align.CENTER);
             p.setTextSize(52);
@@ -498,10 +513,16 @@ public class HalloweenGameView extends View {
     }
 
     private void jump() {
-        if (state==GAME && !dying && grounded) {
-            grounded=false;
-            charVy=-880f;
+        if (state!=GAME || dying || jumpsUsed>=2) return;
+
+        grounded=false;
+        if (jumpsUsed==0) {
+            charVy=-860f;
+        } else {
+            // Stronger second jump for high sweets.
+            charVy=-1080f;
         }
+        jumpsUsed++;
     }
 
     private void drawGameOver(Canvas c) {
@@ -527,24 +548,39 @@ public class HalloweenGameView extends View {
     }
 
     private void draw3DButton(Canvas c, RectF r, String text, float textSize) {
+        draw3DButton(c,r,text,textSize,false);
+    }
+
+    private void draw3DButton(Canvas c, RectF r, String text, float textSize, boolean pressed) {
         p.setTypeface(Typeface.DEFAULT_BOLD);
-        RectF shadow=new RectF(r.left,r.top+24,r.right,r.bottom+24);
-        p.setColor(0xFFB04B00);
+
+        float pressOffset = pressed ? 18f : 0f;
+        float shadowDepth = pressed ? 7f : 24f;
+        RectF face = new RectF(r.left, r.top + pressOffset, r.right, r.bottom + pressOffset);
+        RectF shadow = new RectF(r.left, r.top + shadowDepth, r.right, r.bottom + shadowDepth);
+
+        p.setColor(pressed ? 0xFF8E3A00 : 0xFFB04B00);
         c.drawRoundRect(shadow,55,55,p);
-        p.setShader(new LinearGradient(r.left,r.top,r.left,r.bottom,0xFFFFD44A,0xFFFF8120, Shader.TileMode.CLAMP));
-        c.drawRoundRect(r,55,55,p);
+
+        p.setShader(new LinearGradient(face.left,face.top,face.left,face.bottom,
+                pressed ? 0xFFFFA62C : 0xFFFFD44A,
+                pressed ? 0xFFE96912 : 0xFFFF8120,
+                Shader.TileMode.CLAMP));
+        c.drawRoundRect(face,55,55,p);
         p.setShader(null);
+
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeWidth(8);
-        p.setColor(0xFFFFE990);
-        c.drawRoundRect(new RectF(r.left+8,r.top+8,r.right-8,r.bottom-8),48,48,p);
+        p.setColor(pressed ? 0xFFFFCD68 : 0xFFFFE990);
+        c.drawRoundRect(new RectF(face.left+8,face.top+8,face.right-8,face.bottom-8),48,48,p);
         p.setStyle(Paint.Style.FILL);
+
         p.setTextAlign(Paint.Align.CENTER);
         p.setTextSize(textSize);
         p.setFakeBoldText(true);
         p.setColor(Color.WHITE);
-        p.setShadowLayer(7,0,5,0xAA4B1A00);
-        c.drawText(text,r.centerX(),r.centerY()+textSize*.34f,p);
+        p.setShadowLayer(pressed ? 2f : 7f,0,pressed ? 2f : 5f,0xAA4B1A00);
+        c.drawText(text,face.centerX(),face.centerY()+textSize*.34f,p);
         p.clearShadowLayer();
         p.setFakeBoldText(false);
     }
@@ -593,7 +629,15 @@ public class HalloweenGameView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        if (e.getAction()!=MotionEvent.ACTION_DOWN) return true;
+        int action = e.getActionMasked();
+
+        if (action==MotionEvent.ACTION_UP || action==MotionEvent.ACTION_CANCEL) {
+            jumpPressed=false;
+            invalidate();
+            return true;
+        }
+        if (action!=MotionEvent.ACTION_DOWN) return true;
+
         float x=e.getX()/sx, y=e.getY()/sy;
 
         if (aboutOpen) {
@@ -622,7 +666,11 @@ public class HalloweenGameView extends View {
             else if(vampireRect.contains(x,y)) selectCharacter(0);
             else if(skeletonRect.contains(x,y)) selectCharacter(1);
         } else if(state==GAME) {
-            if(jumpRect.contains(x,y)) jump();
+            if(jumpRect.contains(x,y)) {
+                jumpPressed=true;
+                jump();
+                invalidate();
+            }
         } else if(state==GAMEOVER) {
             if(againRect.contains(x,y)) startGame();
             else if(menuRect.contains(x,y)) {
@@ -662,6 +710,7 @@ public class HalloweenGameView extends View {
         state=MENU;
         selectedCharacter=-1;
         dying=false;
+        jumpPressed=false;
         items.clear();
         frogs.clear();
         ensureMusicPlaying();
