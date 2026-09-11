@@ -7,7 +7,7 @@ routes = [
 ]
 
 [vars]
-CONTACT_TO = "hello@mazsolaklub.com"
+CONTACT_TO = "klubmazsola@gmail.com"
 CONTACT_FROM = "web@mazsolaklub.com"
 
 [[send_email]]
