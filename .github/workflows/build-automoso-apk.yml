@@ -27,12 +27,138 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Download Android source bundle
+      - name: Download v1.4 Android source bundle
         run: |
           mkdir -p buildsrc
           curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1sSv1NC8yEBRRc5Ybohx2gomBfIQcHyhg"
           unzip -q buildsrc/source.zip -d buildsrc
           cp -a buildsrc/v14build ./automoso-android
+
+      - name: Apply v1.5 UI and behavior changes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path("automoso-android")
+
+          # Android version.
+          p = root / "app/build.gradle"
+          s = p.read_text()
+          s = s.replace("versionCode 5", "versionCode 6")
+          s = s.replace("versionName '1.4'", "versionName '1.5'")
+          p.write_text(s)
+
+          # Use exactly the same grey back button in selector and wash screen.
+          p = root / "www/index.html"
+          s = p.read_text()
+          s = s.replace(
+              'class="round-back-button" aria-label="Vissza a főmenübe"',
+              'class="back-button select-back-button" aria-label="Vissza a főmenübe"'
+          )
+          p.write_text(s)
+
+          # Edge-to-edge carousel, full departure before fade, centered wash vehicle.
+          p = root / "www/app.js"
+          s = p.read_text()
+          s = s.replace(
+              "const step = Math.max(340, vw * .72);",
+              "const step = Math.max(340, vw);"
+          )
+          old = """const vw = carouselViewport.clientWidth || window.innerWidth;
+    card.style.transform = `translate(calc(-50% + ${vw * 1.18}px), -50%) scale(.93)`;
+    carouselPrompt.innerHTML = '<span>✨</span> Irány a mosó!';
+    await sleep(720);"""
+          new = """const vw = window.innerWidth || carouselViewport.clientWidth || 1600;
+    const cardWidth = card.getBoundingClientRect().width || vw * .62;
+    const exitPx = (vw / 2) + (cardWidth / 2) + 80;
+    card.style.transform = `translate(calc(-50% + ${exitPx}px), -50%) scale(.93)`;
+    await sleep(880);"""
+          if old not in s:
+              raise SystemExit("Expected v1.4 departure block not found")
+          s = s.replace(old, new)
+          s = s.replace("const centerX = 635;", "const centerX = W / 2;")
+          p.write_text(s)
+
+          # Final visual overrides.
+          p = root / "www/styles.css"
+          s = p.read_text()
+          s += r'''
+
+/* =========================================================
+   V1.5 — supplied menu/garage artwork + cleaner selection/wash UI
+   ========================================================= */
+
+.menu-bg {
+  background: url("assets/fomenu.jpg") center center / cover no-repeat !important;
+  filter: none !important;
+}
+.menu-bg::after {
+  background: linear-gradient(90deg, rgba(0,54,104,.10), transparent 30%, transparent 74%, rgba(0,54,104,.08)) !important;
+}
+.menu-water,
+.menu-bubbles { display: none !important; }
+
+.depot-scene {
+  inset: 0 !important;
+  background: url("assets/garazs.jpg") center center / cover no-repeat !important;
+}
+.depot-scene > * { display: none !important; }
+.select-shade { background: linear-gradient(180deg, rgba(3,63,105,.04), transparent 28%, rgba(1,41,66,.04)) !important; }
+
+.select-header,
+.carousel-prompt { display: none !important; }
+
+.vehicle-carousel {
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+.carousel-viewport {
+  inset: 0 !important;
+  overflow: hidden !important;
+}
+.carousel-vehicle {
+  top: 59% !important;
+  width: min(68vw, 940px) !important;
+  height: min(68vh, 610px) !important;
+}
+.carousel-vehicle.departing {
+  transition: transform .84s cubic-bezier(.58,.02,.86,.42) !important;
+  opacity: 1 !important;
+}
+.carousel-vehicle.rail-vehicle img { transform: none !important; }
+.carousel-dots { bottom: 2.2vh !important; }
+
+.select-back-button {
+  left: 1.5vw !important;
+  top: 2vh !important;
+  background: rgba(4,31,55,.58) !important;
+  color: #fff !important;
+  border: 2px solid rgba(255,255,255,.65) !important;
+  box-shadow: 0 5px 13px rgba(0,0,0,.18) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+.step-title,
+.tip-bubble { display: none !important; }
+
+.progress-area {
+  left: 18vw !important;
+  right: 18vw !important;
+}
+
+@media (max-height: 620px) {
+  .vehicle-carousel { top: 0 !important; bottom: 0 !important; }
+  .carousel-vehicle { top: 59% !important; width: min(66vw, 820px) !important; height: min(68vh, 500px) !important; }
+  .carousel-dots { bottom: 2vh !important; }
+}
+'''
+          p.write_text(s)
+          PY
+
+          curl -L --fail --retry 3 -o automoso-android/www/assets/fomenu.jpg "https://drive.google.com/uc?export=download&id=1Cfmm1Tp7xFiBrmOORIMAyohWJ0QUpo_l"
+          curl -L --fail --retry 3 -o automoso-android/www/assets/garazs.jpg "https://drive.google.com/uc?export=download&id=1jkZ0WGigcq2r6pE7Q5TaxYS9eNeQwBh6"
 
       - name: Prepare bundled web assets
         run: |
@@ -41,19 +167,23 @@ jobs:
           cp -a automoso-android/www/. automoso-android/app/src/main/assets/www/
           cp automoso-android/www/assets/app-icon.png automoso-android/app/src/main/res/drawable/app_icon.png
 
-      - name: Verify v1.4 bundle
+      - name: Verify v1.5 bundle
         run: |
           test "$(find automoso-android/app/src/main/assets/www/assets/audio/horns -name '*.wav' | wc -l)" -eq 30
+          test -f automoso-android/app/src/main/assets/www/assets/fomenu.jpg
+          test -f automoso-android/app/src/main/assets/www/assets/garazs.jpg
           test -f automoso-android/app/src/main/assets/www/assets/garage-v13.jpg
-          test -f automoso-android/app/src/main/assets/www/assets/logo-original.png
-          test -f automoso-android/app/src/main/assets/www/assets/app-icon.png
-          grep -q "versionName '1.4'" automoso-android/app/build.gradle
-          grep -q "versionCode 5" automoso-android/app/build.gradle
+          grep -q "versionName '1.5'" automoso-android/app/build.gradle
+          grep -q "versionCode 6" automoso-android/app/build.gradle
           test "$(grep -o "threshold:.96" automoso-android/app/src/main/assets/www/app.js | wc -l)" -eq 4
-          grep -q "vehicle-carousel" automoso-android/app/src/main/assets/www/index.html
-          grep -q "carouselSwipeStart" automoso-android/app/src/main/assets/www/app.js
-          grep -q "introVideo.classList.add('ready')" automoso-android/app/src/main/assets/www/app.js
-          ! grep -q "vehicle-name" automoso-android/app/src/main/assets/www/index.html
+          grep -q "const centerX = W / 2;" automoso-android/app/src/main/assets/www/app.js
+          grep -q "const step = Math.max(340, vw);" automoso-android/app/src/main/assets/www/app.js
+          grep -q "const exitPx = (vw / 2) + (cardWidth / 2) + 80;" automoso-android/app/src/main/assets/www/app.js
+          grep -q "assets/fomenu.jpg" automoso-android/app/src/main/assets/www/styles.css
+          grep -q "assets/garazs.jpg" automoso-android/app/src/main/assets/www/styles.css
+          grep -q "carousel-prompt { display: none" automoso-android/app/src/main/assets/www/styles.css
+          grep -q "step-title," automoso-android/app/src/main/assets/www/styles.css
+          grep -q 'class="back-button select-back-button"' automoso-android/app/src/main/assets/www/index.html
 
       - name: Build debug APK
         working-directory: automoso-android
@@ -61,11 +191,11 @@ jobs:
 
       - name: Rename APK
         run: |
-          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v1.4.apk
+          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v1.5.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola-Klub-Moso-v1.4
-          path: Mazsola-Klub-Moso-v1.4.apk
+          name: Mazsola-Klub-Moso-v1.5
+          path: Mazsola-Klub-Moso-v1.5.apk
           retention-days: 30
