@@ -1,0 +1,71 @@
+
+
+/* =========================================================
+   V1.5 — supplied menu/garage artwork + cleaner selection/wash UI
+   ========================================================= */
+
+.menu-bg {
+  background: url("assets/fomenu.jpg") center center / cover no-repeat !important;
+  filter: none !important;
+}
+.menu-bg::after {
+  background: linear-gradient(90deg, rgba(0,54,104,.10), transparent 30%, transparent 74%, rgba(0,54,104,.08)) !important;
+}
+.menu-water,
+.menu-bubbles { display: none !important; }
+
+.depot-scene {
+  inset: 0 !important;
+  background: url("assets/garazs.jpg") center center / cover no-repeat !important;
+}
+.depot-scene > * { display: none !important; }
+.select-shade { background: linear-gradient(180deg, rgba(3,63,105,.04), transparent 28%, rgba(1,41,66,.04)) !important; }
+
+.select-header,
+.carousel-prompt { display: none !important; }
+
+.vehicle-carousel {
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+.carousel-viewport {
+  inset: 0 !important;
+  overflow: hidden !important;
+}
+.carousel-vehicle {
+  top: 59% !important;
+  width: min(68vw, 940px) !important;
+  height: min(68vh, 610px) !important;
+}
+.carousel-vehicle.departing {
+  transition: transform .84s cubic-bezier(.58,.02,.86,.42) !important;
+  opacity: 1 !important;
+}
+.carousel-vehicle.rail-vehicle img { transform: none !important; }
+.carousel-dots { bottom: 2.2vh !important; }
+
+.select-back-button {
+  left: 1.5vw !important;
+  top: 2vh !important;
+  background: rgba(4,31,55,.58) !important;
+  color: #fff !important;
+  border: 2px solid rgba(255,255,255,.65) !important;
+  box-shadow: 0 5px 13px rgba(0,0,0,.18) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+.step-title,
+.tip-bubble { display: none !important; }
+
+.progress-area {
+  left: 18vw !important;
+  right: 18vw !important;
+}
+
+@media (max-height: 620px) {
+  .vehicle-carousel { top: 0 !important; bottom: 0 !important; }
+  .carousel-vehicle { top: 59% !important; width: min(66vw, 820px) !important; height: min(68vh, 500px) !important; }
+  .carousel-dots { bottom: 2vh !important; }
+}
