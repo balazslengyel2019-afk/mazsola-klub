@@ -51,7 +51,7 @@ jobs:
           grep -q "versionName '2.0'" automoso-android/app/build.gradle
           grep -q "versionCode 8" automoso-android/app/build.gradle
           grep -q -- "--vehicle-vw" automoso-android/app/src/main/assets/www/app.js
-          grep -q "bottom:26.2vh" automoso-android/app/src/main/assets/www/styles.css
+          grep -q "bottom: 26.2vh" automoso-android/app/src/main/assets/www/styles.css
           grep -q "vehicleSelectGlowV20" automoso-android/app/src/main/assets/www/styles.css
 
       - name: Build debug APK
