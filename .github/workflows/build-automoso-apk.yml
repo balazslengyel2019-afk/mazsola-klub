@@ -30,38 +30,26 @@ jobs:
       - name: Download Android source bundle
         run: |
           mkdir -p buildsrc
-          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1To446gwjf54DNTPXBOM4by2zqgooCfVe"
+          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=12XuZehbZZkucMsSf1sKIj8gyQA6GdJR8"
           unzip -q buildsrc/source.zip -d buildsrc
-          cp -a buildsrc/v12build ./automoso-android
+          cp -a buildsrc/v13build ./automoso-android
 
       - name: Prepare bundled web assets
         run: |
           mkdir -p automoso-android/app/src/main/assets/www
-          mkdir -p automoso-android/app/src/main/assets/www/assets/vehicles
-          mkdir -p automoso-android/app/src/main/assets/www/assets/ui
-          mkdir -p automoso-android/app/src/main/assets/www/assets/video
           mkdir -p automoso-android/app/src/main/res/drawable
           cp -a automoso-android/www/. automoso-android/app/src/main/assets/www/
+          cp automoso-android/www/assets/app-icon.png automoso-android/app/src/main/res/drawable/app_icon.png
 
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/garage.png "https://drive.google.com/uc?export=download&id=1Zz-VNi00tAbcXdfxyCGFRANVGZ42FWYo"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/logo.png "https://drive.google.com/uc?export=download&id=1vPGoqh3f1-FFsbvJkjyZhaxugnHiU-L4"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/traktor.png "https://drive.google.com/uc?export=download&id=1Uv_YUkpniz93XBFq4bOyzlILR7cnHY7W"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/villamos.png "https://drive.google.com/uc?export=download&id=1I6BUQUtBvRD2IJzORwgrVnhO6Xer-Vh6"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/hev.png "https://drive.google.com/uc?export=download&id=1pE6KjkNe_I1tPtVCBMp7GCe8-aq7vJFg"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/hokotro.png "https://drive.google.com/uc?export=download&id=1p9P6IWguThiWUyOZQUnqPp8WDywRQuuq"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/vehicles/pickup.png "https://drive.google.com/uc?export=download&id=1KGp2o14nfJs0krMRDS4ry_u0pfGS2cg3"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/ui/pressure.png "https://drive.google.com/uc?export=download&id=1jUHR59XI4EGCd4bPGFnlLT1Ozd5OqSje"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/ui/foam.png "https://drive.google.com/uc?export=download&id=1tuZ9SCIrDhp9lA_Lot5ydGug4dDReGD8"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/ui/sponge.png "https://drive.google.com/uc?export=download&id=14zuTnh9ER447dFVbJBLYtVfJr4FDEPTj"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/ui/hose.png "https://drive.google.com/uc?export=download&id=1tQDrhgi7O5YQmf-cjLARAuI2KzSPBuAK"
-          curl -L --fail --retry 3 -o automoso-android/app/src/main/assets/www/assets/video/intro.mp4 "https://drive.google.com/uc?export=download&id=1jbiPO6xseYs9HHr3-PSumAICQhOYGKei"
-
-          cp automoso-android/app/src/main/assets/www/assets/logo.png automoso-android/app/src/main/res/drawable/app_icon.png
-
-      - name: Verify v1.2 audio bundle
+      - name: Verify v1.3 bundle
         run: |
           test "$(find automoso-android/app/src/main/assets/www/assets/audio/horns -name '*.wav' | wc -l)" -eq 30
-          grep -q "versionName '1.2'" automoso-android/app/build.gradle
+          test -f automoso-android/app/src/main/assets/www/assets/garage-v13.jpg
+          test -f automoso-android/app/src/main/assets/www/assets/logo-original.png
+          test -f automoso-android/app/src/main/assets/www/assets/app-icon.png
+          grep -q "versionName '1.3'" automoso-android/app/build.gradle
+          grep -q "threshold:.95" automoso-android/app/src/main/assets/www/app.js
+          ! grep -q "drawSpinningWheels" automoso-android/app/src/main/assets/www/app.js
 
       - name: Build debug APK
         working-directory: automoso-android
@@ -69,11 +57,11 @@ jobs:
 
       - name: Rename APK
         run: |
-          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Automoso-v1.2.apk
+          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v1.3.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola-Klub-Automoso-v1.2
-          path: Mazsola-Klub-Automoso-v1.2.apk
+          name: Mazsola-Klub-Moso-v1.3
+          path: Mazsola-Klub-Moso-v1.3.apk
           retention-days: 30
