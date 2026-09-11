@@ -1,0 +1,48 @@
+/* V2.0 — all 30 vehicles + normalized rail-line carousel */
+.carousel-vehicle {
+  left:50% !important;
+  top:auto !important;
+  bottom:26.2vh !important;
+  width:100vw !important;
+  height:58vh !important;
+  display:flex !important;
+  align-items:flex-end !important;
+  justify-content:center !important;
+  transform-origin:50% 100% !important;
+  overflow:visible !important;
+  filter:none !important;
+}
+.carousel-vehicle img {
+  width:auto !important;
+  height:auto !important;
+  max-width:min(var(--vehicle-vw,56vw),1180px) !important;
+  max-height:min(var(--vehicle-maxh,48vh),540px) !important;
+  object-fit:contain !important;
+  object-position:center bottom !important;
+  filter:drop-shadow(0 6px 5px rgba(0,38,62,.20)) !important;
+}
+.carousel-vehicle.current { filter:none !important; }
+.carousel-vehicle.current img {
+  filter:drop-shadow(0 6px 5px rgba(0,38,62,.20)) !important;
+}
+.carousel-vehicle.ready {
+  animation:vehicleSelectGlowV20 .72s ease-in-out infinite alternate !important;
+}
+.carousel-vehicle.ready img {
+  filter:drop-shadow(0 0 8px #fff6a0) drop-shadow(0 0 24px #ffd51b) drop-shadow(0 6px 5px rgba(0,38,62,.22)) !important;
+}
+@keyframes vehicleSelectGlowV20 {
+  from { filter:drop-shadow(0 0 2px rgba(255,215,0,.25)); }
+  to { filter:drop-shadow(0 0 20px rgba(255,215,0,.95)); }
+}
+.carousel-dots {
+  max-width:76vw !important;
+  gap:4px !important;
+  flex-wrap:nowrap !important;
+}
+.carousel-dots i { width:6px !important; height:6px !important; border-width:1px !important; }
+.carousel-dots i.active { width:11px !important; }
+@media (max-height:620px) {
+  .carousel-vehicle { bottom:26.2vh !important; width:100vw !important; height:56vh !important; }
+  .carousel-vehicle img { max-height:min(var(--vehicle-maxh,46vh),430px) !important; }
+}
