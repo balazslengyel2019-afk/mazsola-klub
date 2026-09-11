@@ -27,48 +27,31 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Download v1.4 Android source bundle
+      - name: Download v2.0 Android source bundle
         run: |
           mkdir -p buildsrc
-          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1sSv1NC8yEBRRc5Ybohx2gomBfIQcHyhg"
+          curl -L --fail --retry 3 -o buildsrc/source.zip "https://drive.google.com/uc?export=download&id=1NhNF4W46ySZlAFj8wcLS2S9Dc-qCh2Ni"
           unzip -q buildsrc/source.zip -d buildsrc
-          cp -a buildsrc/v14build ./automoso-android
-
-      - name: Apply v1.5 changes
-        run: |
-          python .github/v15/apply_v15.py automoso-android
-          cat .github/v15/v15.css >> automoso-android/www/styles.css
-          curl -L --fail --retry 3 -o automoso-android/www/assets/fomenu.jpg "https://drive.google.com/uc?export=download&id=1Cfmm1Tp7xFiBrmOORIMAyohWJ0QUpo_l"
-          curl -L --fail --retry 3 -o automoso-android/www/assets/garazs.jpg "https://drive.google.com/uc?export=download&id=1jkZ0WGigcq2r6pE7Q5TaxYS9eNeQwBh6"
-
-      - name: Apply v1.6 changes
-        run: |
-          python -m pip install --disable-pip-version-check pillow
-          python .github/v16/apply_v16.py automoso-android
-          cat .github/v16/v16.css >> automoso-android/www/styles.css
+          cp -a buildsrc/v20build ./automoso-android
 
       - name: Prepare bundled web assets
         run: |
+          rm -rf automoso-android/app/src/main/assets/www
           mkdir -p automoso-android/app/src/main/assets/www
           mkdir -p automoso-android/app/src/main/res/drawable
           cp -a automoso-android/www/. automoso-android/app/src/main/assets/www/
           cp automoso-android/www/assets/app-icon.png automoso-android/app/src/main/res/drawable/app_icon.png
 
-      - name: Verify v1.6 bundle
+      - name: Verify v2.0 bundle
         run: |
           test "$(find automoso-android/app/src/main/assets/www/assets/audio/horns -name '*.wav' | wc -l)" -eq 30
-          test -f automoso-android/app/src/main/assets/www/assets/fomenu.jpg
-          test -f automoso-android/app/src/main/assets/www/assets/garazs.jpg
-          test -f automoso-android/app/src/main/assets/www/assets/garage-v13.jpg
-          grep -q "versionName '1.6'" automoso-android/app/build.gradle
-          grep -q "versionCode 7" automoso-android/app/build.gradle
-          grep -q 'android:roundIcon="@drawable/app_icon"' automoso-android/app/src/main/AndroidManifest.xml
-          test "$(grep -o "threshold:.96" automoso-android/app/src/main/assets/www/app.js | wc -l)" -eq 4
-          grep -q "translateX(calc(-50%" automoso-android/app/src/main/assets/www/app.js
-          grep -q "word-klub { color:#ff503d" automoso-android/app/src/main/assets/www/styles.css
-          grep -q "menu-bubbles { display:block" automoso-android/app/src/main/assets/www/styles.css
-          grep -q "bottom:23.8vh" automoso-android/app/src/main/assets/www/styles.css
-          ! grep -q 'class="about-links"' automoso-android/app/src/main/assets/www/index.html
+          test "$(find automoso-android/app/src/main/assets/www/assets/vehicles -name '*.png' | wc -l)" -eq 30
+          test "$(grep -o "asset:'assets/vehicles/" automoso-android/app/src/main/assets/www/app.js | wc -l)" -eq 30
+          grep -q "versionName '2.0'" automoso-android/app/build.gradle
+          grep -q "versionCode 8" automoso-android/app/build.gradle
+          grep -q -- "--vehicle-vw" automoso-android/app/src/main/assets/www/app.js
+          grep -q "bottom:26.2vh" automoso-android/app/src/main/assets/www/styles.css
+          grep -q "vehicleSelectGlowV20" automoso-android/app/src/main/assets/www/styles.css
 
       - name: Build debug APK
         working-directory: automoso-android
@@ -76,11 +59,11 @@ jobs:
 
       - name: Rename APK
         run: |
-          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v1.6.apk
+          cp automoso-android/app/build/outputs/apk/debug/app-debug.apk Mazsola-Klub-Moso-v2.0.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola-Klub-Moso-v1.6
-          path: Mazsola-Klub-Moso-v1.6.apk
+          name: Mazsola-Klub-Moso-v2.0
+          path: Mazsola-Klub-Moso-v2.0.apk
           retention-days: 30
