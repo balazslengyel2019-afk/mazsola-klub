@@ -41,4 +41,22 @@ download "1oscIOXdUe7ARlAowJmgSgkPXQJGnEBD9" "$DRAW/vampire_side.png"
 download "1R10Oi-UFy67YHvVfg6khN-mhcRTJiH76" "$DRAW/skeleton_front.png"
 download "1zI-YkUl4sRPaQmxhhyC9cyjXwaBpP3gH" "$DRAW/skeleton_side.png"
 
-echo "All v1.3 assets downloaded."
+download "1VGJBp6W3mFw9Gd_UgDba_L4yYP0Ov3Ph" "$DRAW/ghost_front.png"
+download "17oYXw4OVG92zCx6FTu02OxG-Ti30gFBq" "$DRAW/ghost_side.png"
+
+download "1T5iSFRCwZ6WrEV_xXQbcz17WkMSANCWN" "$DRAW/mummy_front.png"
+download "11zFm9z3udt8AG2E07SODyAZt7B_s5K9k" "$DRAW/mummy_side.png"
+
+download "1zZ3ih0mL6THlgyjxi-FPh5qz-vCmXbXo" "$DRAW/wizard_front.png"
+download "1WtehSxAoF_Bt17AbmkE1e4zvUbl_Fljo" "$DRAW/wizard_side.png"
+
+download "1IHRtDhXhtWDF1a_onZvlFxclNWGtkfNG" "$DRAW/little_witch_front.png"
+download "16zlCLmp7QJ2nX0yHbrVczSrp8SHeTOpd" "$DRAW/little_witch_side.png"
+
+download "1fFBbH4MLhamZ6mBPAiV00Kj0cqzD-wHB" "$DRAW/pumpkin_front.png"
+download "17rX16oKDf1SO1tyrszgw85AUVurHWw5u" "$DRAW/pumpkin_side.png"
+
+download "1bYavWhIMO8EQ-96GXC4MviB2oQD62fV9" "$DRAW/wolf_front.png"
+download "1w9pkqhlrE8I4aVPq2gu5iRRWXMPrm4d0" "$DRAW/wolf_side.png"
+
+echo "All v2.0 assets downloaded."
