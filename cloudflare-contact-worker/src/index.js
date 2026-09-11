@@ -113,7 +113,7 @@ export default {
       return json({ error: "Az üzenet túl sok hivatkozást tartalmaz." }, 400);
     }
 
-    const to = env.CONTACT_TO || "hello@mazsolaklub.com";
+    const to = env.CONTACT_TO || "klubmazsola@gmail.com";
     const from = env.CONTACT_FROM || "web@mazsolaklub.com";
 
     const safeName = escapeHtml(name || "Nincs megadva");
