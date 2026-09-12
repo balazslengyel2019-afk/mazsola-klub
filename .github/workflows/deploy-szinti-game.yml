@@ -52,13 +52,7 @@ jobs:
           css = css_path.read_text(encoding="utf-8")
           marker = "/* Mazsola Klub site fullscreen override */"
           if marker not in css:
-              css += """
-          
-/* Mazsola Klub site fullscreen override */
-html,body{width:100%!important;height:100%!important;min-height:100%!important;margin:0!important;overflow:hidden!important;background:#75d6ff!important}
-#stage{position:relative!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-width:none!important;max-height:none!important;margin:0!important;top:0!important;transform:none!important;overflow:hidden!important}
-#intro{width:100vw!important;height:100vh!important;height:100dvh!important}
-"""
+              css += "\n\n/* Mazsola Klub site fullscreen override */\nhtml,body{width:100%!important;height:100%!important;min-height:100%!important;margin:0!important;overflow:hidden!important;background:#75d6ff!important}\n#stage{position:relative!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-width:none!important;max-height:none!important;margin:0!important;top:0!important;transform:none!important;overflow:hidden!important}\n#intro{width:100vw!important;height:100vh!important;height:100dvh!important}\n"
           css_path.write_text(css, encoding="utf-8")
 
       - name: Verify package
