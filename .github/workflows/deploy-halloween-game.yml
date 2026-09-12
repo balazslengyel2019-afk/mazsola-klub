@@ -47,6 +47,13 @@ jobs:
                   '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">',
                   '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">\n  <meta name="robots" content="noindex,follow">'
               )
+          fullscreen = """  <style>
+    html, body { width:100% !important; height:100% !important; margin:0 !important; overflow:hidden !important; background:#16082f !important; }
+    #app { width:100vw !important; height:100vh !important; height:100dvh !important; display:block !important; overflow:hidden !important; background:#16082f !important; }
+    #stage { position:relative !important; width:100vw !important; height:100vh !important; height:100dvh !important; max-width:none !important; max-height:none !important; aspect-ratio:auto !important; margin:0 !important; overflow:hidden !important; }
+  </style>\n"""
+          if "aspect-ratio:auto !important" not in text:
+              text = text.replace("</head>", fullscreen + "</head>")
           path.write_text(text, encoding="utf-8")
 
       - name: Verify package
