@@ -8,3 +8,20 @@
 .site-header nav{display:flex;align-items:center}
 @media(max-width:850px){.site-header{padding:0 24px}}
 @media(max-width:620px){.site-header{min-height:93px;padding:0 16px;gap:12px}.site-brand{gap:7px}.site-brand img{width:54px;height:54px;flex-basis:54px}.site-brand>span{font-size:19px}.site-brand small{margin-top:6px;font-size:11px;letter-spacing:0}.site-header .site-back{font-size:12px}}
+
+@media(max-width:620px){
+  .site-header{width:100%;max-width:100vw;min-width:0;overflow:hidden}
+  .site-brand{min-width:0;flex:0 1 auto}
+  .site-brand img{width:46px;height:46px;flex-basis:46px}
+  .site-brand>span{font-size:17px}
+  .site-header nav{min-width:0;gap:8px;flex:0 1 auto}
+  .site-header nav a{font-size:11px;white-space:nowrap}
+}
+@media(max-width:480px){
+  .site-header{padding-inline:12px;gap:8px}
+  .site-brand{gap:6px}
+  .site-brand small{display:none}
+  .site-brand>span{font-size:16px}
+  .site-header nav{gap:7px}
+  .site-header nav a{font-size:10px}
+}
