@@ -305,13 +305,18 @@ function resetWashTimer() {
     if (!carouselVehicles.length) return;
     carouselPointerStart = {x:e.clientX, y:e.clientY, id:e.pointerId};
     carouselDragging = false;
-    try { carouselViewport.setPointerCapture(e.pointerId); } catch(_) {}
   }
 
   function carouselSwipeMove(e) {
     if (!carouselPointerStart || e.pointerId !== carouselPointerStart.id) return;
     const dx=e.clientX-carouselPointerStart.x, dy=e.clientY-carouselPointerStart.y;
-    if (Math.abs(dx)>10 && Math.abs(dx)>Math.abs(dy)) carouselDragging=true;
+    if (!carouselDragging && Math.abs(dx)>10 && Math.abs(dx)>Math.abs(dy)) {
+      carouselDragging = true;
+      // Do not capture taps on vehicle buttons. Pointer capture is enabled
+      // only after a real horizontal drag starts, otherwise the button
+      // never receives its click/pointerup and cannot be selected.
+      try { carouselViewport.setPointerCapture(e.pointerId); } catch(_) {}
+    }
   }
 
   function carouselSwipeEnd(e) {
