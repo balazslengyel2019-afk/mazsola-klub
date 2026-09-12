@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="robots" content="noindex,follow" />
+  <meta name="theme-color" content="#11aef5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Mazsola Klub Mosó</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="stage" aria-label="Mazsola Klub Mosó">
+    <section id="introScreen" class="screen intro-screen active" aria-label="Mazsola Klub intro">
+      <video id="introVideo" src="assets/video/intro.mp4" autoplay muted playsinline preload="auto" disablepictureinpicture></video>
+    </section>
+
+    <section id="menuScreen" class="screen menu-screen" aria-label="Főmenü">
+      <div class="version-badge" aria-label="Verzió 2.5">v2.5</div>
+      <div class="menu-bg" aria-hidden="true"></div>
+      <div class="menu-water" aria-hidden="true"></div>
+      <div class="menu-bubbles" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+
+      <div class="menu-hero">
+        <div class="menu-logo-wrap">
+          <img src="assets/logo-original.png" alt="Mazsola Klub" class="main-logo" draggable="false" />
+        </div>
+        <div class="menu-action-area">
+          <h1 class="playful-title" aria-label="Mazsola Klub Mosó">
+            <span class="word-mazsola">Mazsola</span>
+            <span class="word-klub">Klub</span>
+            <span class="word-moso">Mosó</span>
+          </h1>
+          <button id="garageButton" class="garage-cta" type="button" aria-label="Garázs megnyitása">
+            <span class="garage-cta-icon" aria-hidden="true">
+              <svg viewBox="0 0 100 100" role="img">
+                <path d="M12 44 50 14l38 30v42H12Z" fill="#fff" opacity=".96"/>
+                <path d="M23 46h54v40H23Z" fill="#bff4ff"/>
+                <path d="M30 59h40v27H30Z" fill="#22bde7"/>
+                <path d="M37 70h26l5 8H32Z" fill="#fff"/>
+                <circle cx="40" cy="80" r="5" fill="#13476d"/><circle cx="61" cy="80" r="5" fill="#13476d"/>
+              </svg>
+            </span>
+            <span class="garage-cta-label">Garázs</span>
+            <span class="garage-cta-arrow" aria-hidden="true">➜</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="menu-footer-buttons" aria-label="Mazsola Klub linkek">
+        <a class="footer-action social-youtube" href="https://www.youtube.com/@mazsola-klub"><span aria-hidden="true">▶</span><b>YouTube</b></a>
+        <a class="footer-action social-facebook" href="https://www.facebook.com/mazsolaklub/"><span aria-hidden="true">f</span><b>Facebook</b></a>
+        <a class="footer-action social-web" href="https://mazsolaklub.com/"><span aria-hidden="true">🌐</span><b>Weboldal</b></a>
+        <button id="aboutButton" class="footer-action social-about" type="button"><span aria-hidden="true">ⓘ</span><b>Rólunk</b></button>
+      </div>
+    </section>
+
+    <section id="selectScreen" class="screen select-screen" aria-label="Járműválasztó">
+      <div class="depot-scene" aria-hidden="true">
+        <div class="depot-cloud cloud-a"></div>
+        <div class="depot-cloud cloud-b"></div>
+        <div class="depot-sun"></div>
+        <div class="depot-hills"></div>
+        <div class="depot-building"><span></span><span></span><span></span></div>
+        <div class="depot-trees"></div>
+        <div class="depot-rail"></div>
+        <div class="depot-road"></div>
+      </div>
+      <div class="select-shade"></div>
+      <div class="selector-cloud-layer" aria-hidden="true">
+        <img class="selector-cloud selector-cloud-1" src="assets/cloud.png" alt="" draggable="false" />
+        <img class="selector-cloud selector-cloud-2" src="assets/cloud.png" alt="" draggable="false" />
+        <img class="selector-cloud selector-cloud-3" src="assets/cloud.png" alt="" draggable="false" />
+        <img class="selector-cloud selector-cloud-4" src="assets/cloud.png" alt="" draggable="false" />
+        <img class="selector-plane" src="assets/plane.png" alt="" draggable="false" />
+        <img class="selector-balloon" src="assets/hot-air-balloon.png" alt="" draggable="false" />
+      </div>
+      <button id="menuBackButton" class="back-button select-back-button" aria-label="Vissza a főmenübe">‹</button>
+      <header class="select-header">
+        <h1>Válassz járművet!</h1>
+        <p>Húzd oldalra, majd érintsd meg a járművet.</p>
+        <div class="best-time-board"><span class="best-time-label">Leggyorsabb mosás</span><strong id="bestTimeValue">--:--.-</strong></div>
+      </header>
+
+      <div id="vehicleCarousel" class="vehicle-carousel" aria-label="Járművek">
+        <button id="carouselPrev" class="carousel-arrow carousel-prev" type="button" aria-label="Előző jármű">‹</button>
+        <div id="carouselViewport" class="carousel-viewport">
+          <div id="carouselTrack" class="carousel-track"></div>
+        </div>
+        <button id="carouselNext" class="carousel-arrow carousel-next" type="button" aria-label="Következő jármű">›</button>
+      </div>
+      <div id="carouselDots" class="carousel-dots" aria-hidden="true"></div>
+      <div id="carouselPrompt" class="carousel-prompt"><span>☝</span> Érintsd meg a járművet!</div>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen" aria-label="Mosó játék">
+      <img src="assets/garage-v13.jpg" class="garage-bg" alt="" draggable="false" />
+      <canvas id="gameCanvas" width="1600" height="900"></canvas>
+
+      <div id="timerDisplay" class="timer-display" aria-live="polite">00:00.0</div>
+      <div id="stepTitle" class="step-title" aria-live="polite"></div>
+      <div id="tipBubble" class="tip-bubble">Húzd végig a járművön!</div>
+
+      <aside id="toolPanel" class="tool-panel" aria-label="Mosási lépések">
+        <button class="tool-button" data-step="1" aria-label="1. Magasnyomású mosó">
+          <img src="assets/ui/pressure.png" alt="" /><span class="done-mark">✓</span><span class="lock-mark">🔒</span>
+        </button>
+        <button class="tool-button" data-step="2" aria-label="2. Habpisztoly">
+          <img src="assets/ui/foam.png" alt="" /><span class="done-mark">✓</span><span class="lock-mark">🔒</span>
+        </button>
+        <button class="tool-button" data-step="3" aria-label="3. Szivacs">
+          <img src="assets/ui/sponge.png" alt="" /><span class="done-mark">✓</span><span class="lock-mark">🔒</span>
+        </button>
+        <button class="tool-button" data-step="4" aria-label="4. Tiszta vizes slag">
+          <img src="assets/ui/hose.png" alt="" /><span class="done-mark">✓</span><span class="lock-mark">🔒</span>
+        </button>
+      </aside>
+
+      <div id="progressArea" class="progress-area" aria-live="polite">
+        <div id="progressWrap" class="progress-wrap" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+        <div id="progressText" class="progress-text">0%</div>
+      </div>
+
+      <div id="successCard" class="success-card" aria-live="assertive">
+        <strong>Szuper!</strong><span>Tiszta lett!</span>
+      </div>
+
+      <button id="backButton" class="back-button" aria-label="Vissza a járművekhez">‹</button>
+      <canvas id="celebrationCanvas" width="1600" height="900"></canvas>
+    </section>
+
+    <div id="aboutModal" class="about-modal" aria-hidden="true">
+      <div class="about-panel" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+        <button id="aboutClose" class="about-close" type="button" aria-label="Bezárás">×</button>
+        <h2 id="aboutTitle">Mazsola Klub Mosó</h2>
+        <div class="about-columns">
+          <div>
+            <h3>Mi a Mazsola Klub?</h3>
+            <p>A Mazsola Klub egy magyar gyerekzenei projekt, ahol saját gyerekdalokat, mondókákat, népdal-feldolgozásokat és játékos videókat készítünk főleg óvodás és kisiskolás gyerekeknek.</p>
+            <p>Sok dalunk szól járművekről: vonatokról, munkagépekről, buszokról, traktorokról és más izgalmas gépekről. A játékban ezek közül több járművet is megtalálsz.</p>
+          </div>
+          <div>
+            <h3>Hogyan kell játszani?</h3>
+            <p>Válassz egy járművet a garázsban, majd tisztítsd meg négy lépésben. A sorrendet a számozott eszközök mutatják.</p>
+            <p><strong>1.</strong> Magasnyomású mosóval lazítsd fel a sarat. <strong>2.</strong> Fújd be habbal. <strong>3.</strong> Szivaccsal súrold át. <strong>4.</strong> Tiszta vizes slaggal öblítsd le.</p>
+            <p>Az első három lépésnél legalább 97%-ig dolgozz, a végső slagos öblítésnél pedig 99%-ig, hogy ne maradjon kosz a járművön. Ha kész vagy, a jármű csillogva és dudálva kihajt a mosóból.</p>
+          </div>
+        </div>
+        <button id="aboutOk" class="about-ok" type="button">Rendben</button>
+      </div>
+    </div>
+
+    <div id="fadeLayer" class="fade-layer"></div>
+    <div id="rotateNotice" class="rotate-notice">
+      <div class="rotate-icon">↻</div><strong>Fordítsd el a készüléket!</strong><span>A játék fekvő nézetben működik a legjobban.</span>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
