@@ -1,0 +1,143 @@
+name: Deploy Mazsola Klub Moso web game
+
+on:
+  push:
+    paths:
+      - ".github/workflows/deploy-moso-game.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install downloader
+        run: pip install --disable-pip-version-check gdown
+
+      - name: Download game from Google Drive
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _moso_download moso/game
+          mkdir -p _moso_download moso/game
+          gdown --folder "https://drive.google.com/drive/folders/15k2UtALvlFUEfSjiwMt-fYJLYqij7Fqq" -O _moso_download --remaining-ok
+          ROOT_DIR="$(dirname "$(find _moso_download -type f -name index.html | head -n 1)")"
+          test -n "$ROOT_DIR"
+          cp -a "$ROOT_DIR"/. moso/game/
+          test -f moso/game/index.html
+          test -f moso/game/app.js
+          test -f moso/game/styles.css
+
+      - name: Patch web controls
+        shell: python
+        run: |
+          from pathlib import Path
+
+          app_path = Path("moso/game/app.js")
+          app = app_path.read_text(encoding="utf-8")
+
+          old_click = """      btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                if (carouselDragging || i !== carouselIndex) return;
+                const img = btn.querySelector('img');
+                // Selection only reacts when the child actually touches an opaque
+                // part of the vehicle sprite. Transparent canvas space does nothing.
+                if (!pointerHitsVehicle(v, img, e)) return;
+                if (!carouselArmed) {
+                  carouselArmed = true;
+                  updateCarouselUI();
+                  btn.classList.add('ready');
+                  unlockAudio();
+                  return;
+                }
+                await confirmCarouselVehicle(v, btn);
+              });"""
+
+          new_click = """      btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                if (carouselDragging || i !== carouselIndex) return;
+                const img = btn.querySelector('img');
+                // Web: one tap/click selects the visible vehicle immediately.
+                if (!pointerHitsVehicle(v, img, e)) return;
+                carouselArmed = true;
+                updateCarouselUI();
+                btn.classList.add('ready');
+                unlockAudio();
+                await sleep(90);
+                await confirmCarouselVehicle(v, btn);
+              });"""
+
+          if old_click not in app:
+              raise SystemExit("Vehicle click handler not found")
+          app = app.replace(old_click, new_click, 1)
+
+          old_start = """  function carouselSwipeStart(e) {
+              if (!carouselVehicles.length) return;
+              carouselPointerStart = {x:e.clientX, y:e.clientY, id:e.pointerId};
+              carouselDragging = false;
+              try { carouselViewport.setPointerCapture(e.pointerId); } catch(_) {}
+            }"""
+
+          new_start = """  function carouselSwipeStart(e) {
+              if (!carouselVehicles.length) return;
+              carouselPointerStart = {x:e.clientX, y:e.clientY, id:e.pointerId};
+              carouselDragging = false;
+              // Simple taps are not pointer-captured so the vehicle receives its click.
+            }"""
+
+          if old_start not in app:
+              raise SystemExit("carouselSwipeStart handler not found")
+          app = app.replace(old_start, new_start, 1)
+
+          old_move = """  function carouselSwipeMove(e) {
+              if (!carouselPointerStart || e.pointerId !== carouselPointerStart.id) return;
+              const dx=e.clientX-carouselPointerStart.x, dy=e.clientY-carouselPointerStart.y;
+              if (Math.abs(dx)>10 && Math.abs(dx)>Math.abs(dy)) carouselDragging=true;
+            }"""
+
+          new_move = """  function carouselSwipeMove(e) {
+              if (!carouselPointerStart || e.pointerId !== carouselPointerStart.id) return;
+              const dx=e.clientX-carouselPointerStart.x, dy=e.clientY-carouselPointerStart.y;
+              if (Math.abs(dx)>10 && Math.abs(dx)>Math.abs(dy)) {
+                if (!carouselDragging) {
+                  carouselDragging = true;
+                  try { carouselViewport.setPointerCapture(e.pointerId); } catch(_) {}
+                }
+              }
+            }"""
+
+          if old_move not in app:
+              raise SystemExit("carouselSwipeMove handler not found")
+          app = app.replace(old_move, new_move, 1)
+          app_path.write_text(app, encoding="utf-8")
+
+          index_path = Path("moso/game/index.html")
+          index = index_path.read_text(encoding="utf-8")
+          viewport = '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />'
+          if 'name="robots"' not in index:
+              index = index.replace(viewport, viewport + '\n  <meta name="robots" content="noindex,follow" />', 1)
+          index_path.write_text(index, encoding="utf-8")
+
+      - name: Commit web game
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Mazsola Klub Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add moso/game
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Deploy fullscreen Moso web game"
+          git push
