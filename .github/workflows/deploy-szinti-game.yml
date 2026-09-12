@@ -1,4 +1,5 @@
 name: Deploy Mazsola Klub Szinti web game
+# Rewritten web UI build
 
 on:
   push:
