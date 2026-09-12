@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="robots" content="noindex,follow">
+  <meta name="theme-color" content="#74d7ff">
+  <title>Mazsola Klub Szinti</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="orientationHint">Fordítsd el a készüléket fekvő nézetbe 🎹</div>
+
+  <div id="intro" aria-label="Mazsola Klub intro">
+    <video id="introVideo" src="assets/intro.mp4" autoplay muted playsinline preload="auto"></video>
+  </div>
+
+  <main id="stage" class="hidden" aria-label="Mazsola Klub Szinti">
+    <div class="bg-layer"></div>
+    <div class="cloud cloud-a"></div><div class="cloud cloud-b"></div><div class="cloud cloud-c"></div>
+    <div class="sun"><span>⌣</span></div>
+    <div class="balloon"><i></i></div>
+    <div class="plane">✈</div>
+
+    <header class="topbar">
+      <button id="aboutOpen" class="logo-button" aria-label="Rólunk">
+        <img src="assets/logo.png" alt="Mazsola Klub">
+      </button>
+      <nav class="links" aria-label="Mazsola Klub linkek">
+        <a class="link-pill red" href="https://www.youtube.com/@mazsola-klub" target="_blank" rel="noopener">Dalaink</a>
+        <a class="link-pill blue" href="https://facebook.com/mazsolaklub" target="_blank" rel="noopener">Facebook</a>
+        <a class="link-pill green" href="https://mazsolaklub.com" target="_blank" rel="noopener">mazsolaklub.com</a>
+      </nav>
+      <div class="version">v2.5 WEB</div>
+    </header>
+
+    <section id="lessonStrip" class="lesson-strip hidden" aria-live="polite">
+      <button id="lessonClose" class="lesson-close" aria-label="Kotta bezárása">×</button>
+      <h2 id="lessonTitle">Boci, boci tarka</h2>
+      <div id="lessonNotes" class="lesson-notes"></div>
+      <div id="lessonProgress" class="lesson-progress"></div>
+      <div id="lessonComplete" class="lesson-complete hidden">Szuper! Megcsináltad!</div>
+    </section>
+
+    <section class="instrument-rack" aria-label="Hangszerek">
+      <button class="instrument active" data-inst="piano"><img src="assets/icons/piano.png" alt=""><span>Zongora</span></button>
+      <button class="instrument" data-inst="bass"><img src="assets/icons/bass.png" alt=""><span>Bőgő</span></button>
+      <button class="instrument" data-inst="violin"><img src="assets/icons/violin.png" alt=""><span>Hegedű</span></button>
+      <button class="instrument" data-inst="xylophone"><img src="assets/icons/xylophone.png" alt=""><span>Xilofon</span></button>
+      <button class="instrument" data-inst="cimbalom"><img src="assets/icons/cimbalom.png" alt=""><span>Cimbalom</span></button>
+      <button class="instrument" data-inst="synth"><img src="assets/icons/synth.png" alt=""><span>Szinti</span></button>
+      <button class="instrument" data-inst="tonguedrum"><img src="assets/icons/tonguedrum.png" alt=""><span>Nyelvdob</span></button>
+    </section>
+
+    <section class="keyboard-shell" aria-label="Szinti billentyűzet">
+      <div class="left-controls side-controls">
+        <button id="metronomeBtn" class="rocker" aria-pressed="false">
+          <span class="led"></span><b>METRÓ</b><i class="switch"><em></em></i>
+        </button>
+        <button id="hallBtn" class="rocker hall" aria-pressed="false">
+          <span class="led"></span><b>TEREM</b><i class="switch"><em></em></i>
+        </button>
+      </div>
+
+      <div id="keyboard" class="keyboard"></div>
+
+      <div class="right-controls side-controls">
+        <button id="scoreBtn" class="side-btn score"><span class="big-icon">♫</span><b>KOTTA</b></button>
+        <button id="recordBtn" class="side-btn record"><span class="big-icon rec-icon"></span><b>FELVÉTEL</b></button>
+        <button id="playBtn" class="side-btn play" disabled><span class="big-icon play-icon"></span><b>LEJÁTSZÁS</b></button>
+      </div>
+    </section>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+  </main>
+
+  <div id="songModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="songTitle">
+    <div class="modal-card song-card">
+      <button class="modal-x" data-close="songModal">×</button>
+      <h2 id="songTitle">Kották</h2>
+      <p>Kövesd a pirossal kiemelt színt és számot a billentyűzeten!</p>
+      <div class="song-list">
+        <button data-song="0">Boci, boci tarka</button>
+        <button data-song="1">Érik a szőlő, hajlik a vessző</button>
+        <button data-song="2">Hej, Dunáról fúj a szél</button>
+        <button data-song="3">Száz liba egy sorba</button>
+        <button data-song="4">Kis kece lányom</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="aboutModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <div class="modal-card about-card">
+      <button class="modal-x" data-close="aboutModal">×</button>
+      <h2 id="aboutTitle">Mazsola Klub Szinti</h2>
+      <p class="lead">A Mazsola Klub magyar gyerekdalokkal, népdalokkal és játékos zenei tartalmakkal hozza közelebb a zenét a gyerekekhez. A Szinti mobilon, tableten és most már böngészőben is használható.</p>
+      <div class="about-grid">
+        <div>
+          <h3>Így használd</h3>
+          <p><b>HANGSZEREK</b> – Felül hét hangszer közül választhatsz, majd játssz a színes és számozott billentyűkön.</p>
+          <p><b>KOTTÁK</b> – Válassz egy ismert dalt. A következő billentyű erős piros kiemelést kap, a számsor pedig végigvezet az első versszak dallamán.</p>
+          <p><b>METRONÓM</b> – Egyenletes kattogással segít tartani a ritmust.</p>
+          <p><b>TEREM</b> – Bekapcsolva finom koncertterem-hatást ad a hangszer hangjához.</p>
+          <p><b>FELVÉTEL</b> – Rögzíti a leütött hangokat és az időzítésüket; a LEJÁTSZÁS gombbal visszahallgathatod.</p>
+        </div>
+        <div>
+          <h3>Játék és tanulás</h3>
+          <p>A cél nem a hagyományos zeneóra helyettesítése, hanem a kíváncsiság felkeltése. A színek, számok és az azonnali hangvisszajelzés miatt már a kisebb gyerekek is önállóan kísérletezhetnek.</p>
+          <p>A Kotta mód ismert dallamokon vezet végig, így játék közben fejlődhet a figyelem, a sorrendiség, a ritmusérzék és a billentyűk felismerése.</p>
+          <p>A <b>mazsolaklub.com</b> oldalon dalokat, kottákat és további zenei anyagokat találtok.</p>
+          <p class="good-wish">Jó zenélést kíván a Mazsola Klub!</p>
+        </div>
+      </div>
+      <button class="ok-btn" data-close="aboutModal">Rendben</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
