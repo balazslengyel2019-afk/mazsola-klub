@@ -42,32 +42,17 @@ jobs:
         shell: python
         run: |
           from pathlib import Path
+          import re
 
           app_path = Path("moso/game/app.js")
           app = app_path.read_text(encoding="utf-8")
 
-          old_click = """      btn.addEventListener('click', async (e) => {
-                e.preventDefault();
-                if (carouselDragging || i !== carouselIndex) return;
-                const img = btn.querySelector('img');
-                // Selection only reacts when the child actually touches an opaque
-                // part of the vehicle sprite. Transparent canvas space does nothing.
-                if (!pointerHitsVehicle(v, img, e)) return;
-                if (!carouselArmed) {
-                  carouselArmed = true;
-                  updateCarouselUI();
-                  btn.classList.add('ready');
-                  unlockAudio();
-                  return;
-                }
-                await confirmCarouselVehicle(v, btn);
-              });"""
-
+          start = app.index("      btn.addEventListener('click', async (e) => {")
+          end = app.index("      carouselTrack.appendChild(btn);", start)
           new_click = """      btn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 if (carouselDragging || i !== carouselIndex) return;
                 const img = btn.querySelector('img');
-                // Web: one tap/click selects the visible vehicle immediately.
                 if (!pointerHitsVehicle(v, img, e)) return;
                 carouselArmed = true;
                 updateCarouselUI();
@@ -75,37 +60,22 @@ jobs:
                 unlockAudio();
                 await sleep(90);
                 await confirmCarouselVehicle(v, btn);
-              });"""
+              });
+          """
+          app = app[:start] + new_click + app[end:]
 
-          if old_click not in app:
-              raise SystemExit("Vehicle click handler not found")
-          app = app.replace(old_click, new_click, 1)
-
-          old_start = """  function carouselSwipeStart(e) {
+          app, n1 = re.subn(
+              r"  function carouselSwipeStart\(e\) \{.*?\n  \}",
+              """  function carouselSwipeStart(e) {
               if (!carouselVehicles.length) return;
               carouselPointerStart = {x:e.clientX, y:e.clientY, id:e.pointerId};
               carouselDragging = false;
-              try { carouselViewport.setPointerCapture(e.pointerId); } catch(_) {}
-            }"""
-
-          new_start = """  function carouselSwipeStart(e) {
-              if (!carouselVehicles.length) return;
-              carouselPointerStart = {x:e.clientX, y:e.clientY, id:e.pointerId};
-              carouselDragging = false;
-              // Simple taps are not pointer-captured so the vehicle receives its click.
-            }"""
-
-          if old_start not in app:
-              raise SystemExit("carouselSwipeStart handler not found")
-          app = app.replace(old_start, new_start, 1)
-
-          old_move = """  function carouselSwipeMove(e) {
-              if (!carouselPointerStart || e.pointerId !== carouselPointerStart.id) return;
-              const dx=e.clientX-carouselPointerStart.x, dy=e.clientY-carouselPointerStart.y;
-              if (Math.abs(dx)>10 && Math.abs(dx)>Math.abs(dy)) carouselDragging=true;
-            }"""
-
-          new_move = """  function carouselSwipeMove(e) {
+            }""",
+              app, count=1, flags=re.S
+          )
+          app, n2 = re.subn(
+              r"  function carouselSwipeMove\(e\) \{.*?\n  \}",
+              """  function carouselSwipeMove(e) {
               if (!carouselPointerStart || e.pointerId !== carouselPointerStart.id) return;
               const dx=e.clientX-carouselPointerStart.x, dy=e.clientY-carouselPointerStart.y;
               if (Math.abs(dx)>10 && Math.abs(dx)>Math.abs(dy)) {
@@ -114,11 +84,12 @@ jobs:
                   try { carouselViewport.setPointerCapture(e.pointerId); } catch(_) {}
                 }
               }
-            }"""
+            }""",
+              app, count=1, flags=re.S
+          )
+          if n1 != 1 or n2 != 1:
+              raise SystemExit(f"Swipe handler patch failed: start={n1}, move={n2}")
 
-          if old_move not in app:
-              raise SystemExit("carouselSwipeMove handler not found")
-          app = app.replace(old_move, new_move, 1)
           app_path.write_text(app, encoding="utf-8")
 
           index_path = Path("moso/game/index.html")
@@ -127,6 +98,18 @@ jobs:
           if 'name="robots"' not in index:
               index = index.replace(viewport, viewport + '\n  <meta name="robots" content="noindex,follow" />', 1)
           index_path.write_text(index, encoding="utf-8")
+
+      - name: Verify game package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f moso/game/assets/video/intro.mp4
+          test -f moso/game/assets/ui/pressure.png
+          test -f moso/game/assets/ui/foam.png
+          test -f moso/game/assets/ui/sponge.png
+          test -f moso/game/assets/ui/hose.png
+          test "$(find moso/game/assets/vehicles -type f -name '*.png' | wc -l)" -ge 30
+          test "$(find moso/game/assets/audio/horns -type f -name '*.wav' | wc -l)" -ge 30
 
       - name: Commit web game
         shell: bash
