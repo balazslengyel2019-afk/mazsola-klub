@@ -1,0 +1,78 @@
+name: Deploy Mazsola Klub Halloween web game
+
+on:
+  push:
+    paths:
+      - ".github/workflows/deploy-halloween-game.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install downloader
+        run: pip install --disable-pip-version-check gdown
+
+      - name: Download Halloween web game ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _halloween_download _halloween_unpack halloween/game
+          mkdir -p _halloween_download _halloween_unpack halloween/game
+          gdown "https://drive.google.com/uc?id=1WpXDTWK2jhtokYvUtFgpgSaUZekxGhAP" -O _halloween_download/game.zip
+          unzip -q _halloween_download/game.zip -d _halloween_unpack
+          ROOT_DIR="$(dirname "$(find _halloween_unpack -type f -name index.html | head -n 1)")"
+          test -n "$ROOT_DIR"
+          cp -a "$ROOT_DIR"/. halloween/game/
+
+      - name: Patch fullscreen web page metadata
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path("halloween/game/index.html")
+          text = path.read_text(encoding="utf-8")
+          if 'name="robots"' not in text:
+              text = text.replace(
+                  '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">',
+                  '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">\n  <meta name="robots" content="noindex,follow">'
+              )
+          path.write_text(text, encoding="utf-8")
+
+      - name: Verify package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f halloween/game/index.html
+          test -f halloween/game/game.js
+          test -f halloween/game/styles.css
+          test -f halloween/game/manifest.webmanifest
+          test -f halloween/game/assets/video/intro.mp4
+          test -f halloween/game/assets/audio/spooky_loop.mp3
+          test -f halloween/game/assets/images/game/city.png
+          test -f halloween/game/assets/images/game/sidewalk.jpg
+          test "$(find halloween/game/assets/images/characters -type f -name '*.png' | wc -l)" -ge 16
+
+      - name: Commit Halloween web game
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Mazsola Klub Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add halloween/game
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Deploy fullscreen Halloween web game"
+          git push
