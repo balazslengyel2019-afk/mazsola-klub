@@ -1,0 +1,12 @@
+{
+  "name": "Mazsola Klub Halloween",
+  "short_name": "Mazsola Halloween",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#16082f",
+  "theme_color": "#16082f",
+  "icons": [
+    { "src": "assets/images/icon.png", "sizes": "1024x1024", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

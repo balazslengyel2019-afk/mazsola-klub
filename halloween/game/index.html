@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#16082f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Mazsola Klub Halloween</title>
+  <link rel="icon" type="image/png" href="assets/images/icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="app">
+    <div id="stage" aria-label="Mazsola Klub Halloween játék">
+      <section id="menuScreen" class="screen active menu-bg">
+        <div class="screen-shade"></div>
+        <img class="menu-logo" src="assets/images/menu_logo.png" alt="Mazsola Klub Halloween" />
+        <button id="playBtn" class="btn btn-orange btn-play" type="button">JÁTÉK</button>
+        <button class="music-btn btn-3d" type="button" aria-label="Zene ki-be">♫</button>
+
+        <div class="social-bar">
+          <a class="social youtube" href="https://www.youtube.com/@MazsolaKlub" target="_blank" rel="noopener">YouTube</a>
+          <a class="social facebook" href="https://www.facebook.com/mazsolaklub" target="_blank" rel="noopener">Facebook</a>
+          <a class="social website" href="https://mazsolaklub.com/" target="_blank" rel="noopener">Weboldal</a>
+          <button id="aboutBtn" class="social about" type="button">Rólunk</button>
+        </div>
+        <div class="version">v2.0 WEB</div>
+      </section>
+
+      <section id="selectScreen" class="screen menu-bg">
+        <div class="screen-shade dark"></div>
+        <h1>VÁLASSZ KARAKTERT!</h1>
+        <p class="select-help">Koppints egyszer a kiválasztáshoz, még egyszer az induláshoz</p>
+        <button id="backBtn" class="btn btn-purple btn-back" type="button">‹ VISSZA</button>
+        <button class="music-btn btn-3d" type="button" aria-label="Zene ki-be">♫</button>
+        <div id="characterGrid" class="character-grid"></div>
+      </section>
+
+      <section id="gameScreen" class="screen game-screen">
+        <canvas id="gameCanvas" width="1920" height="1080"></canvas>
+        <button class="music-btn btn-3d game-music" type="button" aria-label="Zene ki-be">♫</button>
+        <button id="jumpBtn" class="btn btn-orange btn-jump" type="button">UGRÁS</button>
+      </section>
+
+      <section id="gameOverScreen" class="screen game-over-screen" aria-live="polite">
+        <div class="game-over-panel">
+          <h2>JÁTÉK VÉGE</h2>
+          <div id="finalScore" class="final-score">Összegyűjtött édesség: 0</div>
+          <div id="bestScore" class="best-score">Legjobb eredmény: 0</div>
+          <button id="againBtn" class="btn btn-orange gameover-btn" type="button">ÚJRA</button>
+          <button id="menuBtn" class="btn btn-purple gameover-btn" type="button">FŐMENÜ</button>
+        </div>
+      </section>
+
+      <div id="transition" class="transition"></div>
+
+      <div id="aboutModal" class="modal" aria-hidden="true">
+        <div class="modal-card">
+          <h2>Mazsola Klub</h2>
+          <h3>Halloween édességgyűjtő</h3>
+          <p>Ugorj át a békákon, használd a dupla ugrást, és gyűjts össze minél több édességet!</p>
+          <p>Gyerekbarát, egyszerű, egymozdulatos játék.</p>
+          <p><strong>mazsolaklub.com</strong></p>
+          <button id="closeAbout" class="btn btn-purple" type="button">BEZÁRÁS</button>
+        </div>
+      </div>
+
+      <div id="introOverlay" class="intro-overlay">
+        <video id="introVideo" muted playsinline preload="auto">
+          <source src="assets/video/intro.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <div id="loading" class="loading">Betöltés…</div>
+    </div>
+
+    <div id="rotateHint" class="rotate-hint">
+      <div>Fordítsd el a készüléket fekvő módba</div>
+    </div>
+  </main>
+
+  <audio id="bgMusic" src="assets/audio/spooky_loop.mp3" loop preload="auto"></audio>
+  <audio id="booSound" src="assets/audio/boo_laugh.mp3" preload="auto"></audio>
+  <audio id="evilSound" src="assets/audio/evil_laugh.mp3" preload="auto"></audio>
+
+  <script src="game.js"></script>
+</body>
+</html>
