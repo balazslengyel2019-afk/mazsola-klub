@@ -231,18 +231,17 @@ function resetWashTimer() {
       btn.style.setProperty('--vehicle-maxh', `${v.selectorMaxH || 48}vh`);
       btn.innerHTML = `<img src="${v.asset}" alt="" draggable="false">`;
       btn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        if (carouselDragging || i !== carouselIndex) return;
-        const img = btn.querySelector('img');
-        // Web: one tap/click selects the visible vehicle immediately.
-        if (!pointerHitsVehicle(v, img, e)) return;
-        carouselArmed = true;
-        updateCarouselUI();
-        btn.classList.add('ready');
-        unlockAudio();
-        await sleep(90);
-        await confirmCarouselVehicle(v, btn);
-      });
+      e.preventDefault();
+      if (carouselDragging || i !== carouselIndex) return;
+      const img = btn.querySelector('img');
+      if (!pointerHitsVehicle(v, img, e)) return;
+      carouselArmed = true;
+      updateCarouselUI();
+      btn.classList.add('ready');
+      unlockAudio();
+      await sleep(90);
+      await confirmCarouselVehicle(v, btn);
+    });
       carouselTrack.appendChild(btn);
       const dot = document.createElement('i');
       carouselDots.appendChild(dot);
@@ -302,7 +301,6 @@ function resetWashTimer() {
     if (!carouselVehicles.length) return;
     carouselPointerStart = {x:e.clientX, y:e.clientY, id:e.pointerId};
     carouselDragging = false;
-    // Simple taps are not pointer-captured so the vehicle receives its click.
   }
 
   function carouselSwipeMove(e) {
