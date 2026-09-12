@@ -30,7 +30,7 @@ jobs:
           set -euo pipefail
           rm -rf _moso_download moso/game
           mkdir -p _moso_download moso/game
-          gdown --folder "https://drive.google.com/drive/folders/15k2UtALvlFUEfSjiwMt-fYJLYqij7Fqq" -O _moso_download --remaining-ok
+          gdown --folder "https://drive.google.com/drive/folders/15k2UtALvlFUEfSjiwMt-fYJLYqij7Fqq" -O _moso_download
           ROOT_DIR="$(dirname "$(find _moso_download -type f -name index.html | head -n 1)")"
           test -n "$ROOT_DIR"
           cp -a "$ROOT_DIR"/. moso/game/
