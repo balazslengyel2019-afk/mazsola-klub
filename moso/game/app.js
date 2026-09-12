@@ -231,17 +231,21 @@ function resetWashTimer() {
       btn.style.setProperty('--vehicle-maxh', `${v.selectorMaxH || 48}vh`);
       btn.innerHTML = `<img src="${v.asset}" alt="" draggable="false">`;
       btn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      if (carouselDragging || i !== carouselIndex) return;
-      const img = btn.querySelector('img');
-      if (!pointerHitsVehicle(v, img, e)) return;
-      carouselArmed = true;
-      updateCarouselUI();
-      btn.classList.add('ready');
-      unlockAudio();
-      await sleep(90);
-      await confirmCarouselVehicle(v, btn);
-    });
+        e.preventDefault();
+        if (carouselDragging || i !== carouselIndex) return;
+        const img = btn.querySelector('img');
+        // Selection only reacts when the child actually touches an opaque
+        // part of the vehicle sprite. Transparent canvas space does nothing.
+        if (!pointerHitsVehicle(v, img, e)) return;
+        if (!carouselArmed) {
+          carouselArmed = true;
+          updateCarouselUI();
+          btn.classList.add('ready');
+          unlockAudio();
+          return;
+        }
+        await confirmCarouselVehicle(v, btn);
+      });
       carouselTrack.appendChild(btn);
       const dot = document.createElement('i');
       carouselDots.appendChild(dot);
@@ -301,17 +305,13 @@ function resetWashTimer() {
     if (!carouselVehicles.length) return;
     carouselPointerStart = {x:e.clientX, y:e.clientY, id:e.pointerId};
     carouselDragging = false;
+    try { carouselViewport.setPointerCapture(e.pointerId); } catch(_) {}
   }
 
   function carouselSwipeMove(e) {
     if (!carouselPointerStart || e.pointerId !== carouselPointerStart.id) return;
     const dx=e.clientX-carouselPointerStart.x, dy=e.clientY-carouselPointerStart.y;
-    if (Math.abs(dx)>10 && Math.abs(dx)>Math.abs(dy)) {
-      if (!carouselDragging) {
-        carouselDragging = true;
-        try { carouselViewport.setPointerCapture(e.pointerId); } catch(_) {}
-      }
-    }
+    if (Math.abs(dx)>10 && Math.abs(dx)>Math.abs(dy)) carouselDragging=true;
   }
 
   function carouselSwipeEnd(e) {
