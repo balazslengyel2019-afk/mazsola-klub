@@ -3,115 +3,191 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#71cdf2">
   <meta name="robots" content="noindex,follow">
-  <meta name="theme-color" content="#74d7ff">
   <title>Mazsola Klub Szinti</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="orientationHint">Fordítsd el a készüléket fekvő nézetbe 🎹</div>
+  <div id="orientationHint" class="orientation-hint" aria-live="polite">
+    <div class="rotate-phone" aria-hidden="true">↻</div>
+    <strong>Fordítsd el a készüléket fekvő nézetbe</strong>
+    <span>Így fér el kényelmesen a teljes szinti.</span>
+  </div>
 
-  <div id="intro" aria-label="Mazsola Klub intro">
+  <div id="intro" class="intro-screen" aria-label="Mazsola Klub intro">
     <video id="introVideo" src="assets/intro.mp4" autoplay muted playsinline preload="auto"></video>
   </div>
 
-  <main id="stage" class="hidden" aria-label="Mazsola Klub Szinti">
-    <div class="bg-layer"></div>
-    <div class="cloud cloud-a"></div><div class="cloud cloud-b"></div><div class="cloud cloud-c"></div>
-    <div class="sun"><span>⌣</span></div>
-    <div class="balloon"><i></i></div>
-    <div class="plane">✈</div>
+  <main id="app" class="app hidden" aria-label="Mazsola Klub Szinti">
+    <div class="scene-bg" aria-hidden="true"></div>
+    <div class="scene-tint" aria-hidden="true"></div>
 
-    <header class="topbar">
-      <button id="aboutOpen" class="logo-button" aria-label="Rólunk">
+    <div class="decor decor-cloud cloud-1" aria-hidden="true"></div>
+    <div class="decor decor-cloud cloud-2" aria-hidden="true"></div>
+    <div class="decor decor-cloud cloud-3" aria-hidden="true"></div>
+
+    <svg class="decor smiling-sun" viewBox="0 0 120 120" aria-hidden="true">
+      <g class="sun-rays" stroke="#FFC52F" stroke-width="8" stroke-linecap="round">
+        <path d="M60 5v13M60 102v13M5 60h13M102 60h13M20 20l9 9M91 91l9 9M20 100l9-9M91 29l9-9"/>
+      </g>
+      <circle cx="60" cy="60" r="40" fill="#FFD84A" stroke="#F5A900" stroke-width="4"/>
+      <ellipse cx="45" cy="51" rx="5" ry="7" fill="#69451E"/>
+      <ellipse cx="75" cy="51" rx="5" ry="7" fill="#69451E"/>
+      <circle cx="43" cy="49" r="1.6" fill="#fff"/>
+      <circle cx="73" cy="49" r="1.6" fill="#fff"/>
+      <path d="M40 69c6 12 34 12 40 0" fill="none" stroke="#8B4A28" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="35" cy="64" r="5" fill="#FF8D72" opacity=".65"/>
+      <circle cx="85" cy="64" r="5" fill="#FF8D72" opacity=".65"/>
+    </svg>
+
+    <svg class="decor cartoon-plane" viewBox="0 0 220 100" aria-hidden="true">
+      <g>
+        <ellipse cx="111" cy="57" rx="73" ry="27" fill="#F34848" stroke="#9C2A2A" stroke-width="5"/>
+        <path d="M95 49L65 9h36l39 39z" fill="#FFD447" stroke="#A87400" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M103 64L67 91h42l40-28z" fill="#3EA8E7" stroke="#1E6C9B" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M165 43l29-20v30l-23 13z" fill="#FFD447" stroke="#A87400" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="75" cy="54" r="14" fill="#F8FCFF" stroke="#225B82" stroke-width="4"/>
+        <circle cx="113" cy="54" r="14" fill="#F8FCFF" stroke="#225B82" stroke-width="4"/>
+        <circle cx="75" cy="54" r="8" fill="#82D5FF"/>
+        <circle cx="113" cy="54" r="8" fill="#82D5FF"/>
+        <rect x="23" y="50" width="25" height="8" rx="4" fill="#6C4B2B"/>
+        <ellipse cx="20" cy="54" rx="5" ry="33" fill="#FFE36A" stroke="#A87400" stroke-width="3"/>
+      </g>
+    </svg>
+
+    <svg class="decor balloon" viewBox="0 0 90 130" aria-hidden="true">
+      <path d="M45 4C19 4 7 24 7 46c0 26 18 45 38 45s38-19 38-45C83 24 71 4 45 4z" fill="#FF5D68" stroke="#B3313C" stroke-width="4"/>
+      <path d="M31 8c-8 15-8 60 0 79M59 8c8 15 8 60 0 79" fill="none" stroke="#FFC843" stroke-width="9"/>
+      <path d="M43 91h4l-2 11z" fill="#9D5D2C"/>
+      <path d="M34 99l6 20M56 99l-6 20" stroke="#71523E" stroke-width="2"/>
+      <rect x="34" y="117" width="22" height="10" rx="2" fill="#B67A3C"/>
+    </svg>
+
+    <header class="top-scene">
+      <button id="aboutOpen" class="logo-button" type="button" aria-label="Rólunk és súgó">
         <img src="assets/logo.png" alt="Mazsola Klub">
       </button>
-      <nav class="links" aria-label="Mazsola Klub linkek">
+
+      <nav class="top-links" aria-label="Mazsola Klub linkek">
         <a class="link-pill red" href="https://www.youtube.com/@mazsola-klub" target="_blank" rel="noopener">Dalaink</a>
         <a class="link-pill blue" href="https://facebook.com/mazsolaklub" target="_blank" rel="noopener">Facebook</a>
         <a class="link-pill green" href="https://mazsolaklub.com" target="_blank" rel="noopener">mazsolaklub.com</a>
       </nav>
-      <div class="version">v2.5 WEB</div>
+
+      <div class="version-badge">v2.5 WEB</div>
     </header>
 
-    <section id="lessonStrip" class="lesson-strip hidden" aria-live="polite">
-      <button id="lessonClose" class="lesson-close" aria-label="Kotta bezárása">×</button>
-      <h2 id="lessonTitle">Boci, boci tarka</h2>
+    <section class="instrument-panel" aria-label="Hangszerválasztó">
+      <button class="instrument-card active" type="button" data-inst="piano" aria-pressed="true">
+        <img src="assets/icons/piano.png" alt=""><span>Zongora</span>
+      </button>
+      <button class="instrument-card" type="button" data-inst="bass" aria-pressed="false">
+        <img src="assets/icons/bass.png" alt=""><span>Bőgő</span>
+      </button>
+      <button class="instrument-card" type="button" data-inst="violin" aria-pressed="false">
+        <img src="assets/icons/violin.png" alt=""><span>Hegedű</span>
+      </button>
+      <button class="instrument-card" type="button" data-inst="xylophone" aria-pressed="false">
+        <img src="assets/icons/xylophone.png" alt=""><span>Xilofon</span>
+      </button>
+      <button class="instrument-card" type="button" data-inst="cimbalom" aria-pressed="false">
+        <img src="assets/icons/cimbalom.png" alt=""><span>Cimbalom</span>
+      </button>
+      <button class="instrument-card" type="button" data-inst="synth" aria-pressed="false">
+        <img src="assets/icons/synth.png" alt=""><span>Szinti</span>
+      </button>
+      <button class="instrument-card" type="button" data-inst="tonguedrum" aria-pressed="false">
+        <img src="assets/icons/tonguedrum.png" alt=""><span>Nyelvdob</span>
+      </button>
+    </section>
+
+    <section class="keyboard-console" aria-label="Szinti billentyűzet és vezérlők">
+      <aside class="control-column left-controls" aria-label="Effektek">
+        <button id="metronomeBtn" class="control-btn toggle-btn metronome" type="button" aria-pressed="false">
+          <span class="control-icon metronome-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><path d="M19 53h26L39 11H25L19 53z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M32 18v22l11-12" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="32" cy="43" r="3.5" fill="currentColor"/></svg>
+          </span>
+          <b>METRONÓM</b>
+          <span class="toggle-track" aria-hidden="true"><i></i></span>
+        </button>
+        <button id="echoBtn" class="control-btn toggle-btn echo" type="button" aria-pressed="false">
+          <span class="control-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><path d="M10 28h11l13-11v30L21 36H10z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/><path d="M41 24c4 3 6 6 6 8s-2 5-6 8M47 17c7 5 10 10 10 15s-3 10-10 15" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+          </span>
+          <b>VISSZHANG</b>
+          <span class="toggle-track" aria-hidden="true"><i></i></span>
+        </button>
+      </aside>
+
+      <div class="keyboard-frame">
+        <div id="keyboard" class="keyboard" aria-label="14 billentyűs szinti"></div>
+      </div>
+
+      <aside class="control-column right-controls" aria-label="Játékvezérlők">
+        <button id="scoreBtn" class="control-btn action-btn score" type="button">
+          <span class="control-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><path d="M18 11v34M18 12l29-6v34" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><ellipse cx="12" cy="48" rx="9" ry="7" fill="currentColor"/><ellipse cx="41" cy="43" rx="9" ry="7" fill="currentColor"/></svg>
+          </span><b>KOTTA</b>
+        </button>
+        <button id="recordBtn" class="control-btn action-btn record" type="button">
+          <span class="record-dot" aria-hidden="true"></span><b>FELVÉTEL</b>
+        </button>
+        <button id="playBtn" class="control-btn action-btn play" type="button" disabled>
+          <span class="play-triangle" aria-hidden="true"></span><b>LEJÁTSZÁS</b>
+        </button>
+      </aside>
+    </section>
+
+    <section id="lessonPanel" class="lesson-panel hidden" aria-live="polite">
+      <button id="lessonClose" class="lesson-close" type="button" aria-label="Kotta bezárása">×</button>
+      <div class="lesson-copy">
+        <span class="lesson-label">KOTTA</span>
+        <h2 id="lessonTitle">Boci, boci tarka</h2>
+      </div>
       <div id="lessonNotes" class="lesson-notes"></div>
       <div id="lessonProgress" class="lesson-progress"></div>
       <div id="lessonComplete" class="lesson-complete hidden">Szuper! Megcsináltad!</div>
-    </section>
-
-    <section class="instrument-rack" aria-label="Hangszerek">
-      <button class="instrument active" data-inst="piano"><img src="assets/icons/piano.png" alt=""><span>Zongora</span></button>
-      <button class="instrument" data-inst="bass"><img src="assets/icons/bass.png" alt=""><span>Bőgő</span></button>
-      <button class="instrument" data-inst="violin"><img src="assets/icons/violin.png" alt=""><span>Hegedű</span></button>
-      <button class="instrument" data-inst="xylophone"><img src="assets/icons/xylophone.png" alt=""><span>Xilofon</span></button>
-      <button class="instrument" data-inst="cimbalom"><img src="assets/icons/cimbalom.png" alt=""><span>Cimbalom</span></button>
-      <button class="instrument" data-inst="synth"><img src="assets/icons/synth.png" alt=""><span>Szinti</span></button>
-      <button class="instrument" data-inst="tonguedrum"><img src="assets/icons/tonguedrum.png" alt=""><span>Nyelvdob</span></button>
-    </section>
-
-    <section class="keyboard-shell" aria-label="Szinti billentyűzet">
-      <div class="left-controls side-controls">
-        <button id="metronomeBtn" class="rocker" aria-pressed="false">
-          <span class="led"></span><b>METRÓ</b><i class="switch"><em></em></i>
-        </button>
-        <button id="hallBtn" class="rocker hall" aria-pressed="false">
-          <span class="led"></span><b>TEREM</b><i class="switch"><em></em></i>
-        </button>
-      </div>
-
-      <div id="keyboard" class="keyboard"></div>
-
-      <div class="right-controls side-controls">
-        <button id="scoreBtn" class="side-btn score"><span class="big-icon">♫</span><b>KOTTA</b></button>
-        <button id="recordBtn" class="side-btn record"><span class="big-icon rec-icon"></span><b>FELVÉTEL</b></button>
-        <button id="playBtn" class="side-btn play" disabled><span class="big-icon play-icon"></span><b>LEJÁTSZÁS</b></button>
-      </div>
     </section>
 
     <div id="toast" class="toast" aria-live="polite"></div>
   </main>
 
   <div id="songModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="songTitle">
-    <div class="modal-card song-card">
-      <button class="modal-x" data-close="songModal">×</button>
-      <h2 id="songTitle">Kották</h2>
-      <p>Kövesd a pirossal kiemelt színt és számot a billentyűzeten!</p>
+    <div class="modal-card song-modal-card">
+      <button class="modal-close" type="button" data-close="songModal" aria-label="Bezárás">×</button>
+      <h2 id="songTitle">Válassz kottát!</h2>
+      <p>A következő billentyű piros keretet kap. Kövesd a színeket és a számokat!</p>
       <div class="song-list">
-        <button data-song="0">Boci, boci tarka</button>
-        <button data-song="1">Érik a szőlő, hajlik a vessző</button>
-        <button data-song="2">Hej, Dunáról fúj a szél</button>
-        <button data-song="3">Száz liba egy sorba</button>
-        <button data-song="4">Kis kece lányom</button>
+        <button type="button" data-song="0"><strong>Boci, boci tarka</strong><span>24 hang</span></button>
+        <button type="button" data-song="1"><strong>Érik a szőlő</strong><span>30 hang</span></button>
+        <button type="button" data-song="2"><strong>Hej, Dunáról fúj a szél</strong><span>40 hang</span></button>
       </div>
     </div>
   </div>
 
   <div id="aboutModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
     <div class="modal-card about-card">
-      <button class="modal-x" data-close="aboutModal">×</button>
+      <button class="modal-close" type="button" data-close="aboutModal" aria-label="Bezárás">×</button>
       <h2 id="aboutTitle">Mazsola Klub Szinti</h2>
-      <p class="lead">A Mazsola Klub magyar gyerekdalokkal, népdalokkal és játékos zenei tartalmakkal hozza közelebb a zenét a gyerekekhez. A Szinti mobilon, tableten és most már böngészőben is használható.</p>
+      <p class="about-lead">Játékos zenélés gyerekeknek hét hangszerrel, színes billentyűkkel, metronómmal, visszhanggal, kottákkal és felvétellel.</p>
       <div class="about-grid">
-        <div>
+        <section>
           <h3>Így használd</h3>
-          <p><b>HANGSZEREK</b> – Felül hét hangszer közül választhatsz, majd játssz a színes és számozott billentyűkön.</p>
-          <p><b>KOTTÁK</b> – Válassz egy ismert dalt. A következő billentyű erős piros kiemelést kap, a számsor pedig végigvezet az első versszak dallamán.</p>
-          <p><b>METRONÓM</b> – Egyenletes kattogással segít tartani a ritmust.</p>
-          <p><b>TEREM</b> – Bekapcsolva finom koncertterem-hatást ad a hangszer hangjához.</p>
-          <p><b>FELVÉTEL</b> – Rögzíti a leütött hangokat és az időzítésüket; a LEJÁTSZÁS gombbal visszahallgathatod.</p>
-        </div>
-        <div>
-          <h3>Játék és tanulás</h3>
-          <p>A cél nem a hagyományos zeneóra helyettesítése, hanem a kíváncsiság felkeltése. A színek, számok és az azonnali hangvisszajelzés miatt már a kisebb gyerekek is önállóan kísérletezhetnek.</p>
-          <p>A Kotta mód ismert dallamokon vezet végig, így játék közben fejlődhet a figyelem, a sorrendiség, a ritmusérzék és a billentyűk felismerése.</p>
-          <p>A <b>mazsolaklub.com</b> oldalon dalokat, kottákat és további zenei anyagokat találtok.</p>
+          <p><b>Hangszerek:</b> válassz felül a hét hangszer közül, majd játssz a színes és számozott billentyűkön.</p>
+          <p><b>Metronóm:</b> egyenletes kattogással segít tartani a ritmust.</p>
+          <p><b>Visszhang:</b> finom térhatást ad a megszólaló hangokhoz.</p>
+          <p><b>Kotta:</b> három ismert dallamnál a következő billentyű piros kiemelést kap.</p>
+        </section>
+        <section>
+          <h3>Felvétel és játék</h3>
+          <p><b>Felvétel:</b> rögzíti a leütött hangokat, a választott hangszert és az időzítést.</p>
+          <p><b>Lejátszás:</b> ugyanabban a ritmusban visszajátssza az elkészült kis dallamot.</p>
+          <p>A Szinti célja a kíváncsiság felkeltése, a hangok felfedezése, valamint a ritmus és a sorrendiség játékos gyakorlása.</p>
           <p class="good-wish">Jó zenélést kíván a Mazsola Klub!</p>
-        </div>
+        </section>
       </div>
-      <button class="ok-btn" data-close="aboutModal">Rendben</button>
+      <button class="modal-ok" type="button" data-close="aboutModal">Rendben</button>
     </div>
   </div>
 
