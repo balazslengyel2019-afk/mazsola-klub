@@ -1,0 +1,35 @@
+
+/* Shared language and international landing-page styles */
+.language-bar{max-width:1200px;margin:0 auto;padding:10px 36px 0;display:flex;justify-content:flex-end;align-items:center;gap:5px;font-size:11px;font-weight:1000;letter-spacing:.55px;color:#536979}
+.language-bar .language-label{margin-right:4px;font-weight:800;color:#7b8c98}
+.language-bar a,.language-bar .active{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:5px 8px;border:1px solid #d5e5ef;border-radius:999px;background:#fff;line-height:1}
+.language-bar a:hover{border-color:#0866a9;color:#0866a9}
+.language-bar .active{border-color:#123656;background:#123656;color:#fff}
+.intl-page .hero{padding-bottom:58px}
+.intl-page .featured{display:block}
+.intl-page .featured .featured-title p{margin-top:7px}
+.intl-page .featured img{background:#edf6fb}
+.intl-page .audiences{padding-top:22px}
+.intl-page .audience-card{min-height:250px}
+.intl-page .intl-song-card{display:block;text-decoration:none}
+.intl-page .intl-song-card .song-info{min-height:112px}
+.intl-page .intl-song-card h3{margin-bottom:0}
+.intl-page .playlist-cta{margin:34px 0 0;padding:24px 26px;border:1px solid #cfe2ef;border-radius:20px;background:linear-gradient(135deg,#eef8ff 0%,#fff8dd 100%);display:flex;align-items:center;justify-content:space-between;gap:24px}
+.intl-page .playlist-cta h3{margin:0 0 5px;font-size:22px}
+.intl-page .playlist-cta p{margin:0;color:#617486;font-size:14px}
+.intl-page .playlist-cta .button{flex:0 0 auto}
+.intl-page .about-inner{align-items:start}
+.intl-page footer{border-top:1px solid #e2ebf1}
+.intl-page .intl-footer-copy{font-size:14px;font-weight:900}
+.intl-page .faq-list{grid-template-columns:repeat(3,1fr)}
+@media(max-width:850px){
+  .language-bar{padding-inline:24px}
+  .intl-page .faq-list{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .language-bar{padding:8px 16px 0;font-size:10px}
+  .language-bar .language-label{display:none}
+  .intl-page .playlist-cta{align-items:flex-start;flex-direction:column;padding:20px}
+  .intl-page .playlist-cta .button{width:100%}
+  .intl-page .intl-song-card .song-info{min-height:0}
+}
