@@ -1,0 +1,91 @@
+name: Deploy Mazsola Klub Szinti web game
+
+on:
+  push:
+    paths:
+      - ".github/workflows/deploy-szinti-game.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install downloader
+        run: pip install --disable-pip-version-check gdown
+
+      - name: Download Szinti web game ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _szinti_download _szinti_unpack szinti/game
+          mkdir -p _szinti_download _szinti_unpack szinti/game
+          gdown "https://drive.google.com/uc?id=1yayK-lXJ3ArHZbIRVsG-uYR0s1asAE2H" -O _szinti_download/game.zip
+          unzip -q _szinti_download/game.zip -d _szinti_unpack
+          ROOT_DIR="$(dirname "$(find _szinti_unpack -type f -name index.html | head -n 1)")"
+          test -n "$ROOT_DIR"
+          cp -a "$ROOT_DIR"/. szinti/game/
+
+      - name: Patch fullscreen web page
+        shell: python
+        run: |
+          from pathlib import Path
+
+          index_path = Path("szinti/game/index.html")
+          index = index_path.read_text(encoding="utf-8")
+          viewport = '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">'
+          if 'name="robots"' not in index:
+              index = index.replace(viewport, viewport + '\n  <meta name="robots" content="noindex,follow">', 1)
+          index_path.write_text(index, encoding="utf-8")
+
+          css_path = Path("szinti/game/styles.css")
+          css = css_path.read_text(encoding="utf-8")
+          marker = "/* Mazsola Klub site fullscreen override */"
+          if marker not in css:
+              css += """
+          
+/* Mazsola Klub site fullscreen override */
+html,body{width:100%!important;height:100%!important;min-height:100%!important;margin:0!important;overflow:hidden!important;background:#75d6ff!important}
+#stage{position:relative!important;width:100vw!important;height:100vh!important;height:100dvh!important;max-width:none!important;max-height:none!important;margin:0!important;top:0!important;transform:none!important;overflow:hidden!important}
+#intro{width:100vw!important;height:100vh!important;height:100dvh!important}
+"""
+          css_path.write_text(css, encoding="utf-8")
+
+      - name: Verify package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f szinti/game/index.html
+          test -f szinti/game/app.js
+          test -f szinti/game/styles.css
+          test -f szinti/game/assets/intro.mp4
+          test -f szinti/game/assets/season_bg.jpg
+          test -f szinti/game/assets/logo.png
+          test -f szinti/game/assets/audio/piano_c4.wav
+          test -f szinti/game/assets/audio/metronome_click.wav
+          test "$(find szinti/game/assets/icons -type f -name '*.png' | wc -l)" -ge 7
+          test "$(find szinti/game/assets/audio -type f -name '*.wav' | wc -l)" -ge 15
+
+      - name: Commit Szinti web game
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Mazsola Klub Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add szinti/game
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Deploy fullscreen Szinti web game"
+          git push
