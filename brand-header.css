@@ -25,3 +25,33 @@
   .site-header nav{gap:7px}
   .site-header nav a{font-size:10px}
 }
+
+
+/* 2026-09-13 · brand header polish */
+.site-header{position:relative;min-height:104px}
+.site-header::after{content:"";position:absolute;left:36px;right:36px;bottom:0;height:1px;background:linear-gradient(90deg,transparent,#d9e8f2 14%,#d9e8f2 86%,transparent)}
+.site-brand img{filter:drop-shadow(0 7px 12px rgba(18,54,86,.10));transition:transform .2s ease}
+.site-brand:hover img{transform:rotate(-3deg) scale(1.035)}
+.site-brand>span{letter-spacing:-.65px}
+.site-header nav{gap:8px}
+.site-header nav a:not(.nav-yt){padding:9px 12px;border-radius:999px;transition:background .16s,color .16s,transform .16s}
+.site-header nav a:not(.nav-yt):hover{background:#edf6fb;color:#0866a9;transform:translateY(-1px)}
+.site-header .site-back{display:inline-flex;align-items:center;min-height:38px;padding:8px 13px;border:1px solid #d4e5ef;border-radius:999px;background:#fff;box-shadow:0 5px 14px rgba(18,54,86,.05);transition:.16s ease}
+.site-header .site-back:hover{text-decoration:none;border-color:#9fc9df;transform:translateY(-1px)}
+.site-header .nav-yt{border:1.5px solid #123656!important;background:linear-gradient(180deg,#ffdc63,#ffcc35)!important;box-shadow:0 4px 0 rgba(18,54,86,.22)!important}
+.site-header .nav-yt:hover{transform:translateY(-2px);box-shadow:0 6px 0 rgba(18,54,86,.22)!important}
+@media(max-width:850px){.site-header::after{left:24px;right:24px}}
+@media(max-width:620px){
+  .site-header{min-height:0;padding:10px 16px 12px;flex-wrap:wrap;gap:8px 12px;overflow:visible}
+  .site-header::after{left:16px;right:16px}
+  .site-brand{flex:1 1 auto}
+  .site-brand img{width:50px;height:50px;flex-basis:50px}
+  .site-brand>span{font-size:18px}
+  .site-brand small{display:block;font-size:10px}
+  .site-header nav{order:2;width:100%;min-width:0;display:flex;gap:7px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none;padding:3px 0 2px}
+  .site-header nav::-webkit-scrollbar{display:none}
+  .site-header nav a,.site-header nav a:not(.nav-yt){flex:0 0 auto;min-height:35px;display:inline-flex!important;align-items:center;padding:7px 10px!important;border:1px solid #d8e7f0;border-radius:999px;background:#f7fbfd;font-size:12px!important;white-space:nowrap}
+  .site-header nav .nav-yt{border-color:#173a59!important;box-shadow:none!important}
+  .site-header .site-back{font-size:12px;min-height:36px}
+}
+@media(max-width:420px){.site-brand small{display:none}.site-brand>span{font-size:17px}}
