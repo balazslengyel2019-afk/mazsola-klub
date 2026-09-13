@@ -10,3 +10,19 @@ header{display:flex;align-items:center;justify-content:space-between;min-height:
 footer{border-top:1px solid #e3edf3;padding:28px 0 40px;color:#647987;font-size:13px}.footer-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer-row a{font-weight:900;color:var(--blue)}
 @media(max-width:820px){.hero{grid-template-columns:1fr 280px;padding:42px;gap:24px}.features{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.wrap{width:min(100% - 30px,1120px)}header{min-height:84px}.brand img{width:48px;height:48px}.brand{font-size:19px}.hero{grid-template-columns:1fr;padding:30px 22px;text-align:left}.hero-art{grid-row:1}.hero-art img{max-width:230px}.hero h1{font-size:44px}.lead{font-size:16px}.section{padding:50px 0}.features{grid-template-columns:1fr}.privacy{padding-top:28px}.privacy h1{font-size:38px}.actions .button{width:100%}}
+
+
+/* 2026-09-13 · music game landing polish */
+.game-music{background:radial-gradient(circle at 8% 3%,rgba(98,193,237,.14),transparent 280px),#fffefa;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+.game-music h1,.game-music h2,.game-music h3{letter-spacing:-.025em;text-wrap:balance}
+.game-music .hero{border-color:#d2e4ef;border-radius:36px;box-shadow:0 24px 65px rgba(18,54,86,.10);background:radial-gradient(circle at 88% 12%,rgba(255,204,53,.20),transparent 240px),linear-gradient(135deg,#edf8ff 0%,#fffefa 62%,#fff3c4 100%)}
+.game-music .hero-art img{max-width:350px;filter:drop-shadow(0 22px 28px rgba(18,54,86,.20))}
+.game-music .feature{position:relative;overflow:hidden;border-color:#d4e6f0;box-shadow:0 10px 28px rgba(18,54,86,.08)}
+.game-music .feature::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(#79cbed,#0866a9)}
+.game-music .button{min-height:50px;border-width:1.5px;box-shadow:0 5px 0 rgba(18,54,86,.18)}
+.game-music .button:hover{transform:translateY(-2px);box-shadow:0 7px 0 rgba(18,54,86,.18)}
+.game-music .button.status{background:#eef5f8;color:#647987;border-color:#cbdce6;box-shadow:none;cursor:default;pointer-events:none}
+.game-music .notice{border-radius:22px;box-shadow:0 10px 28px rgba(18,54,86,.05)}
+.game-music .game-switcher__card{border-color:#d4e5ef;box-shadow:0 10px 28px rgba(18,54,86,.08)}
+.game-music .game-switcher__card:hover{box-shadow:0 18px 42px rgba(18,54,86,.13)}
+@media(max-width:620px){.game-music{background:#fffefa}.game-music .hero{border-radius:24px;box-shadow:0 14px 36px rgba(18,54,86,.08)}.game-music .hero-art img{max-width:215px}.game-music .actions{gap:9px}.game-music .button.status{min-height:46px}}
