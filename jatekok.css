@@ -33,3 +33,30 @@ footer{border-top:1px solid #e3edf3;padding:28px 0 40px;color:#647987;font-size:
 .game-switcher__card--halloween{background:linear-gradient(135deg,#f7f1ff 0%,#fff5df 100%)}
 @media(max-width:820px){.game-switcher__grid{grid-template-columns:1fr}}
 @media(max-width:620px){.game-switcher{padding:8px 0 54px}.game-switcher__card{grid-template-columns:92px 1fr;padding:17px;gap:16px;border-radius:20px}.game-switcher__card img{width:92px;height:92px}.game-switcher__card strong{font-size:19px}.game-switcher__card p{font-size:13px}.game-switcher__head h2{font-size:32px}}
+
+
+/* 2026-09-13 · game landing polish */
+.game-wash,.game-halloween{background:radial-gradient(circle at 8% 3%,rgba(98,193,237,.14),transparent 280px),#fffefa;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+.game-halloween{background:radial-gradient(circle at 90% 4%,rgba(118,66,176,.13),transparent 280px),#fffefa}
+.game-wash h1,.game-wash h2,.game-wash h3,.game-halloween h1,.game-halloween h2,.game-halloween h3{letter-spacing:-.025em;text-wrap:balance}
+.game-wash .hero,.game-halloween .hero{border-color:#d2e4ef;border-radius:36px;box-shadow:0 24px 65px rgba(18,54,86,.10)}
+.game-wash .hero{background:radial-gradient(circle at 88% 12%,rgba(58,191,235,.18),transparent 250px),linear-gradient(135deg,#ecfaff 0%,#fffefa 62%,#effff7 100%)}
+.game-halloween .hero{background:radial-gradient(circle at 88% 12%,rgba(112,55,183,.16),transparent 250px),linear-gradient(135deg,#f5efff 0%,#fffefa 62%,#fff0d8 100%)}
+.game-wash .hero-art img,.game-halloween .hero-art img{max-width:350px;filter:drop-shadow(0 22px 28px rgba(18,54,86,.20))}
+.game-wash .feature,.game-halloween .feature,.game-wash .step,.game-halloween .step{border-color:#d4e6f0;box-shadow:0 10px 28px rgba(18,54,86,.08)}
+.game-wash .feature,.game-halloween .feature{position:relative;overflow:hidden}
+.game-wash .feature::before,.game-halloween .feature::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(#79cbed,#0866a9)}
+.game-halloween .feature::before{background:linear-gradient(#c79aff,#6b35b6)}
+.game-wash .button,.game-halloween .button{min-height:50px;border-width:1.5px;box-shadow:0 5px 0 rgba(18,54,86,.18)}
+.game-wash .button:hover,.game-halloween .button:hover{transform:translateY(-2px);box-shadow:0 7px 0 rgba(18,54,86,.18)}
+.game-wash .button.status,.game-halloween .button.status{background:#eef5f8;color:#647987;border-color:#cbdce6;box-shadow:none;cursor:default;pointer-events:none}
+.game-wash .notice,.game-halloween .notice{border-radius:22px;box-shadow:0 10px 28px rgba(18,54,86,.05)}
+.game-wash .game-switcher__card,.game-halloween .game-switcher__card{border-color:#d4e5ef;box-shadow:0 10px 28px rgba(18,54,86,.08)}
+.game-wash .game-switcher__card:hover,.game-halloween .game-switcher__card:hover{box-shadow:0 18px 42px rgba(18,54,86,.13)}
+@media(max-width:620px){
+  .game-wash,.game-halloween{background:#fffefa}
+  .game-wash .hero,.game-halloween .hero{border-radius:24px;box-shadow:0 14px 36px rgba(18,54,86,.08)}
+  .game-wash .hero-art img,.game-halloween .hero-art img{max-width:215px}
+  .game-wash .actions,.game-halloween .actions{gap:9px}
+  .game-wash .button.status,.game-halloween .button.status{min-height:46px}
+}
