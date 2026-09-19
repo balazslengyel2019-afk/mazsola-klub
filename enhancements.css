@@ -222,3 +222,4 @@
 .support-note{margin:13px 0 0;color:#6d7f8c;font-size:12px;line-height:1.5}
 @media(max-width:850px){.support-card{grid-template-columns:1fr;gap:28px;padding:34px}.support-cta{max-width:520px;width:100%}}
 @media(max-width:620px){.support{padding-top:48px;padding-bottom:50px}.support-card{padding:24px 18px;border-radius:24px;gap:22px}.support-copy h2{font-size:32px}.support-copy>p{font-size:15px}.support-points{gap:7px}.support-points span{font-size:12px;padding:6px 10px}.support-cta{padding:20px 16px;border-radius:20px}.support-goal strong{font-size:39px}}
+.popular-card{text-decoration:none}
