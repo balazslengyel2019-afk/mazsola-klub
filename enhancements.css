@@ -201,3 +201,24 @@
   .home-page .trust-grid{padding-block:16px}
 }
 @media(max-width:420px){.home-page .cover img{height:172px}.home-page .audiences{padding-inline:15px}}
+
+
+/* 2026-09-19 · Ko-fi support section */
+.support{padding-top:72px;padding-bottom:72px;scroll-margin-top:24px}
+.support-card{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:54px;align-items:center;padding:44px 48px;border:1px solid #d4e6f0;border-radius:32px;background:radial-gradient(circle at 92% 8%,rgba(255,204,53,.24),transparent 250px),linear-gradient(135deg,#eef9ff 0%,#fffef8 60%,#fff5cf 100%);box-shadow:0 22px 60px rgba(18,54,86,.09)}
+.support-card::before{content:"";position:absolute;left:-90px;bottom:-120px;width:300px;height:300px;border-radius:50%;background:rgba(8,102,169,.06);pointer-events:none}
+.support-copy,.support-cta{position:relative;z-index:1}
+.support-copy .eyebrow{color:#0866a9;margin-bottom:10px}
+.support-copy h2{max-width:700px;margin:0 0 18px;font-size:clamp(34px,3.6vw,49px);line-height:1.08;letter-spacing:-1.5px;font-weight:1000}
+.support-copy>p{max-width:690px;margin:0;color:#5c7080;font-size:16px;line-height:1.72}
+.support-points{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+.support-points span{display:inline-flex;align-items:center;min-height:36px;padding:7px 13px;border:1px solid #c8deeb;border-radius:999px;background:#fff;color:#123656;font-size:13px;font-weight:900;box-shadow:0 3px 0 #dcebf3}
+.support-cta{padding:26px;border:1px solid #cfe2ed;border-radius:24px;background:rgba(255,255,255,.9);box-shadow:0 15px 38px rgba(18,54,86,.10);text-align:center}
+.support-goal{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
+.support-goal span{font-size:11px;font-weight:1000;letter-spacing:1.5px;color:#0866a9}
+.support-goal strong{display:block;margin:5px 0 1px;font-size:44px;line-height:1;font-weight:1000;color:#123656}
+.support-goal small{font-size:12px;font-weight:800;color:#667b89}
+.support-button{width:100%;min-height:54px}
+.support-note{margin:13px 0 0;color:#6d7f8c;font-size:12px;line-height:1.5}
+@media(max-width:850px){.support-card{grid-template-columns:1fr;gap:28px;padding:34px}.support-cta{max-width:520px;width:100%}}
+@media(max-width:620px){.support{padding-top:48px;padding-bottom:50px}.support-card{padding:24px 18px;border-radius:24px;gap:22px}.support-copy h2{font-size:32px}.support-copy>p{font-size:15px}.support-points{gap:7px}.support-points span{font-size:12px;padding:6px 10px}.support-cta{padding:20px 16px;border-radius:20px}.support-goal strong{font-size:39px}}
