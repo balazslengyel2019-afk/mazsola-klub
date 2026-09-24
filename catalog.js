@@ -3,7 +3,7 @@ const catalog=document.querySelector('#song-catalog'),search=document.querySelec
 const chips=[...document.querySelectorAll('.filter-chip')];
 let songs=[],filtered=[],limit=12,activeFilter='all';
 const normalize=s=>s.toLocaleLowerCase('hu').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-const cleanTitle=s=>s.replace(/[\u2600-\u27BF\u{1F000}-\u{1FAFF}\uFE0F]/gu,'').split('|')[0].replace(/\s+/g,' ').trim();
+const cleanTitle=s=>s.replace(/\s+/g,' ').trim();
 const categories={
   jarmuvek:['jarmu','vonat','mozdony','busz','auto','traktor','tuzolto','rendor','markolo','kotro','daru','uthenger','teherauto','terepjaro','mento','repulo','hajo','tengeralattjaro','motor','kukas','utcasepro','munkagep','kamion','taxi','villamos','metro','bicikli','kerekpar'],
   allatok:['allat','kutya','kutyus','cica','macska','nyuszi','nyul','barany','kecske','tehen','malac','tyuk','kacsa','liba','beka','suni','mokus','medve','macko','roka','bagoly','madar','csiga','pillango','szunyog','tucsok','dino','dinoszaurusz','allatkert','pingvin','oroszlan','elefant','zebra','majom','halacska'],
