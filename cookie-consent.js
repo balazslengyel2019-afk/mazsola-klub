@@ -80,11 +80,39 @@
     }
   }
 
+  function updateHungarianChannelState(){
+    if(location.pathname!=='/' || lang!=='hu')return;
+    const languageBar=document.querySelector('.language-bar');
+    if(languageBar)languageBar.remove();
+    document.querySelectorAll('link[rel="alternate"][hreflang="en"],link[rel="alternate"][hreflang="es"]').forEach(el=>el.remove());
+    const replacements=[
+      ['Több mint 300 videó','269 videó'],
+      ['Több mint 300 magyar gyerekdal','269 magyar nyelvű videó'],
+      ['300+','269']
+    ];
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    const nodes=[];
+    while(walker.nextNode())nodes.push(walker.currentNode);
+    for(const node of nodes){
+      let value=node.nodeValue;
+      for(const [from,to] of replacements)value=value.split(from).join(to);
+      node.nodeValue=value;
+    }
+    const description='269 magyar nyelvű gyerekdal, mondóka, népdal-feldolgozás, mese és saját játék a Mazsola Klubban. Szülőknek, óvodáknak és bölcsődéknek.';
+    const meta=document.querySelector('meta[name="description"]');
+    if(meta)meta.content=description;
+    const og=document.querySelector('meta[property="og:description"]');
+    if(og)og.content=description;
+    const twitter=document.querySelector('meta[name="twitter:description"]');
+    if(twitter)twitter.content=description;
+  }
+
   document.addEventListener('click',event=>{
     if(event.target.closest('[data-cookie-settings]'))openSettings();
   });
 
   const boot=()=>{
+    updateHungarianChannelState();
     addFooterLinks();
     const choice=storedChoice();
     if(choice==='accepted')loadAnalytics();
