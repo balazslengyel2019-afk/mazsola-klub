@@ -1,0 +1,11 @@
+/
+  Cache-Control: no-cache, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: no-cache, max-age=0, must-revalidate
+
+/songs.json
+  Cache-Control: no-cache, max-age=0, must-revalidate
+
+/catalog.js
+  Cache-Control: no-cache, max-age=0, must-revalidate
