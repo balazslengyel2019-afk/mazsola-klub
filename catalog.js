@@ -17,7 +17,7 @@ const popularPicks=[
   {id:'c4FL3mhotPA',title:'Óvodába megyek',note:'Ovis kedvenc'},
   {id:'Tk8-ElfvaoY',title:'Ősz az ajtón bekopogott',note:'Évszakos dal'},
   {id:'XUWX3kCLybY',title:'Nyelvtörő Dal',note:'Játékos beszéd'},
-  {id:'M5NH4aO1K2c',title:'Rózsa, rózsa, bazsarózsa',note:'Magyar népdal'},
+  {id:'M5NH4aO1K2c',title:'Rózsa, rózsa, bazsarózsa',note:'Népdal ihlette dal'},
   {id:'HoQ5kOMbuq4',title:'Kis Mackó Kalandja',note:'Állatos kaland'}
 ];
 function play(song){const label=cleanTitle(song.title);document.querySelector('#player-title').textContent=label;document.querySelector('#youtube-fallback').href='https://www.youtube.com/watch?v='+song.id;const frame=document.createElement('iframe');frame.src='https://www.youtube-nocookie.com/embed/'+song.id;frame.title=label;frame.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';mount.replaceChildren(frame);dialog.showModal();}
@@ -40,7 +40,7 @@ if(initialQuery)search.value=initialQuery;
 updateChipState();
 more.addEventListener('click',()=>{limit+=12;render()});document.querySelector('#close-player').addEventListener('click',()=>dialog.close());dialog.addEventListener('close',()=>mount.replaceChildren());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()}});
 catalogEmpty.textContent='Nincs ilyen találat. Próbálj másik szót vagy témát!';
-fetch('songs.json').then(r=>{if(!r.ok)throw Error('catalog');return r.json()}).then(data=>{songs=data;renderPopular();applyFilters(false)}).catch(()=>{count.textContent='';catalogError.innerHTML='A dalok listája most nem tölthető be. <a href="https://www.youtube.com/@mazsola-klub/videos" target="_blank" rel="noopener">Nézzétek meg a csatornán ↗</a>';catalogError.hidden=false;search.disabled=true;for(const chip of chips)chip.disabled=true});
+fetch('songs.json').then(r=>{if(!r.ok)throw Error('catalog');return r.json()}).then(data=>{songs=data;const bannerCount=document.querySelector('#video-count-banner');if(bannerCount)bannerCount.textContent=songs.length;renderPopular();applyFilters(false)}).catch(()=>{count.textContent='';catalogError.innerHTML='A dalok listája most nem tölthető be. <a href="https://www.youtube.com/@mazsola-klub/videos" target="_blank" rel="noopener">Nézzétek meg a csatornán ↗</a>';catalogError.hidden=false;search.disabled=true;for(const chip of chips)chip.disabled=true});
 
 (function insertVideoBanner(){
   if(!document.querySelector('link[href*="video-banner.css"]')){
@@ -51,7 +51,7 @@ fetch('songs.json').then(r=>{if(!r.ok)throw Error('catalog');return r.json()}).t
   const section=document.createElement('section');
   section.className='video-banner';
   section.setAttribute('aria-label','Mazsola Klub gyerekdalok');
-  section.innerHTML='<video muted loop playsinline preload="none" poster="assets/cover.png" aria-hidden="true"><source src="/assets/video%201.mp4" type="video/mp4"></video><div class="video-banner__content"><p class="video-banner__eyebrow">MAZSOLA KLUB</p><h2>Több mint <strong>300</strong> magyar gyerekdal egy helyen.</h2><p class="video-banner__lead">Járművek, állatok, népdalok, évszakok és zenés kalandok a Mazsola Klubban.</p></div>';
+  section.innerHTML='<video muted loop playsinline preload="none" poster="assets/cover.png" aria-hidden="true"><source src="/assets/video%201.mp4" type="video/mp4"></video><div class="video-banner__content"><p class="video-banner__eyebrow">MAZSOLA KLUB</p><h2><strong id="video-count-banner">269</strong> videó egy helyen.</h2><p class="video-banner__lead">Járművek, állatok, népdalok, évszakok és zenés kalandok a Mazsola Klubban.</p></div>';
   about.before(section);
   const video=section.querySelector('video');
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
