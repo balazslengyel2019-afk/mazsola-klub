@@ -108,12 +108,27 @@
     if(twitter)twitter.content=description;
   }
 
+  function addTestimonials(){
+    if(location.pathname!=='/' || lang!=='hu' || document.querySelector('.testimonials'))return;
+    const audiences=document.querySelector('.audiences');
+    if(!audiences)return;
+    const section=document.createElement('section');
+    section.className='testimonials wrap';
+    section.setAttribute('aria-labelledby','testimonials-title');
+    section.innerHTML='<div class="testimonials-head"><p class="eyebrow">VISSZAJELZÉSEK</p><h2 id="testimonials-title">Amit rólunk írtatok</h2><p>Valódi üzenetek családoktól és óvodáktól, akik velünk dalolnak.</p></div><div class="testimonial-grid"><article class="testimonial-card"><span class="testimonial-quote" aria-hidden="true">“</span><blockquote>„Annyira szép ez a dal, a 7 éves kislányommal beleszerettünk.”</blockquote><div class="testimonial-author"><strong>Dóri, anyuka</strong><span>a Fecskehívogató című dalról</span></div></article><article class="testimonial-card testimonial-card--featured"><span class="testimonial-quote" aria-hidden="true">“</span><blockquote>„Nagyon örültek a gyerekek. Hálásak vagyunk, nagyon szépen köszönjük.”</blockquote><div class="testimonial-author"><strong>Váci Evangélikus Egyházi Óvoda</strong><span>egy anyák napi műsor kapcsán</span></div></article><article class="testimonial-card"><span class="testimonial-quote" aria-hidden="true">“</span><blockquote>„Imádjuk a YouTube-csatornátokat. A Forgószél a kisfiam egyik kedvence.”</blockquote><div class="testimonial-author"><strong>Molnár család</strong><span>nézői visszajelzés</span></div></article></div>';
+    audiences.insertAdjacentElement('afterend',section);
+    const style=document.createElement('style');
+    style.textContent='.testimonials{padding-top:4px;padding-bottom:72px}.testimonials-head{max-width:760px;margin-bottom:27px}.testimonials-head .eyebrow{color:#0866a9;margin-bottom:9px}.testimonials-head h2{font-size:clamp(32px,3.4vw,44px);line-height:1.12;letter-spacing:-1.1px;margin:0 0 10px;font-weight:1000}.testimonials-head>p:last-child{margin:0;color:#617486;font-size:15px}.testimonial-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.testimonial-card{position:relative;display:flex;flex-direction:column;min-height:245px;padding:28px 25px 23px;border:1px solid #d6e6f0;border-radius:22px;background:#fff;box-shadow:0 14px 38px #1236560b;overflow:hidden}.testimonial-card--featured{background:linear-gradient(150deg,#eef9ff 0%,#fffdf5 68%,#fff5cc 100%);border-color:#bddbea}.testimonial-quote{position:absolute;right:19px;top:5px;color:#ffcc35;font-size:76px;line-height:1;font-weight:1000;font-family:Georgia,serif;opacity:.75}.testimonial-card blockquote{position:relative;z-index:1;margin:25px 0 28px;color:#123656;font-size:17px;line-height:1.65;font-weight:800}.testimonial-author{position:relative;z-index:1;margin-top:auto;padding-top:18px;border-top:1px solid #e2edf3}.testimonial-author strong{display:block;color:#123656;font-size:14px;font-weight:1000;line-height:1.35}.testimonial-author span{display:block;margin-top:4px;color:#6a7d8c;font-size:12px;line-height:1.4}@media(max-width:850px){.testimonial-grid{grid-template-columns:1fr}.testimonial-card{min-height:0}.testimonials{padding-bottom:56px}}@media(max-width:620px){.testimonials{padding-top:0;padding-bottom:44px}.testimonials-head h2{font-size:32px}.testimonial-card{padding:24px 21px 21px}.testimonial-card blockquote{font-size:16px;margin:21px 0 24px}}';
+    document.head.append(style);
+  }
+
   document.addEventListener('click',event=>{
     if(event.target.closest('[data-cookie-settings]'))openSettings();
   });
 
   const boot=()=>{
     updateHungarianChannelState();
+    addTestimonials();
     addFooterLinks();
     const choice=storedChoice();
     if(choice==='accepted')loadAnalytics();
