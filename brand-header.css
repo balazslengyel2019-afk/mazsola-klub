@@ -55,3 +55,19 @@
   .site-header .site-back{font-size:12px;min-height:36px}
 }
 @media(max-width:420px){.site-brand small{display:none}.site-brand>span{font-size:17px}}
+
+/* Shared navigation on all content pages. */
+html{scroll-padding-top:125px}
+.site-header{
+  position:sticky;top:0;z-index:1000;width:100%;max-width:none;
+  padding-inline:max(36px,calc((100vw - 1128px)/2));
+  background:rgba(255,254,250,.97);box-shadow:0 3px 16px rgba(18,54,86,.07);
+}
+.site-header nav{gap:6px}
+.site-header nav a{color:#123656;text-decoration:none;font-size:15px;font-weight:900;white-space:nowrap}
+@media(max-width:850px){.site-header{padding-inline:24px}}
+@media(max-width:620px){
+  html{scroll-padding-top:125px}
+  .site-header{padding:9px 16px 10px}
+  .site-header nav{gap:7px}
+}
