@@ -44,7 +44,7 @@
       setTimeout(closeDialog,1800);
     }catch(err){
       status.className='idea-status is-error';
-      status.textContent='A küldéshez még be kell kötnünk az e-mail szolgáltatást. Addig írj a hello@mazsolaklub.com címre.';
+      status.textContent='Az üzenet most nem küldhető el. Kérlek próbáld újra, vagy írj a hello@mazsolaklub.com címre.';
     }finally{
       form.classList.remove('is-sending');
       submit.disabled=false;
