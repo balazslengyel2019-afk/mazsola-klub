@@ -1,0 +1,28 @@
+name: Import autumn hero video
+
+on:
+  push:
+    paths:
+      - ".github/workflows/import-autumn-hero.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import-video:
+    runs-on: ubuntu-latest
+    env:
+      VIDEO_URL: 'https://sdmntprukwest.oaiusercontent.com/files/00000000-6894-8243-bb69-0be138281998/raw?se=2026-09-25T08%3A40%3A43Z&sp=r&sv=2026-02-06&sr=b&scid=84906ce7-982c-5fa9-86c9-6a6122feb808&skoid=e32cbaad-a1eb-4299-9f16-1b364ab43781&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-09-25T06%3A28%3A13Z&ske=2026-09-26T06%3A28%3A13Z&sks=b&skv=2026-02-06&sig=46lpSbpQ5iHP%2BKauXIBKISIwLeSk/EhVZieoYYGJmqc%3D'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download hero video
+        run: |
+          curl -L --fail --retry 3 "$VIDEO_URL" -o assets/hero-autumn-2026.mp4
+          test "$(stat -c%s assets/hero-autumn-2026.mp4)" -gt 1000000
+      - name: Commit video
+        run: |
+          git config user.name "Mazsola Klub Automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/hero-autumn-2026.mp4
+          git commit -m "Add animated autumn hero video"
+          git push
