@@ -74,7 +74,8 @@
       const group=document.createElement('span');
       group.className='footer-legal-links';
       group.dataset.footerLegal='true';
-      group.innerHTML='<a href="mailto:hello@mazsolaklub.com">'+copy.contact+'</a><a href="/adatkezeles/">'+copy.privacy+'</a><a href="/impresszum/">'+copy.imprint+'</a><button class="cookie-settings-button" type="button" data-cookie-settings>'+copy.settings+'</button>';
+      const hasContact=footer.querySelector('a[href^="mailto:"], #open-idea-form, [data-contact]');
+      group.innerHTML=(hasContact?'':'<a href="mailto:hello@mazsolaklub.com">'+copy.contact+'</a>')+'<a href="/adatkezeles/">'+copy.privacy+'</a><a href="/impresszum/">'+copy.imprint+'</a><button class="cookie-settings-button" type="button" data-cookie-settings>'+copy.settings+'</button>';
       const target=footer.querySelector('.footer-links,.footer-row')||footer;
       target.append(group);
     }
