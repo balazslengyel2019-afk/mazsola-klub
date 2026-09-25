@@ -225,6 +225,6 @@
 .popular-card{text-decoration:none}
 
 /* Consistent song and popular-video covers */
-.home-page .song-card,.home-page .popular-card{align-self:stretch}
+.home-page .song-card,.home-page .popular-card{display:flex;flex-direction:column;justify-content:flex-start;align-self:stretch}
 .home-page .song-card .thumb,.home-page .popular-card .thumb{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden;background:#e8f2f8}
 .home-page .song-card .thumb img,.home-page .popular-card .thumb img{position:absolute;inset:0;display:block;width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:center}
