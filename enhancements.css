@@ -296,3 +296,9 @@
 .halloween-bats i:nth-child(5){left:9%;bottom:13%;transform:rotate(4deg) scale(.5)}
 @media(max-width:850px){.halloween-spotlight{padding:58px 0 62px}.halloween-spotlight__head{grid-template-columns:1fr;gap:13px}.halloween-song-grid{grid-template-columns:1fr 1fr}.halloween-song-card:last-child{grid-column:1/-1;max-width:calc(50% - 9px)}}
 @media(max-width:620px){.halloween-spotlight{padding:46px 0 50px}.halloween-spotlight h2{font-size:38px}.halloween-spotlight__head>p{font-size:15px}.halloween-song-grid{grid-template-columns:1fr}.halloween-song-card:last-child{grid-column:auto;max-width:none}.halloween-spotlight__actions{align-items:stretch;gap:14px}.halloween-game-button{width:100%}.halloween-catalog-link{text-align:center;padding:8px 0}}
+
+/* Android APK download notice */
+.android-download-note{display:flex;align-items:flex-start;gap:16px;margin:0 0 24px;padding:18px 20px;border:1px solid #cfe6f3;border-radius:18px;background:#eef9ff;color:#123656}
+.android-download-note strong{flex:0 0 auto;font-weight:1000}
+.android-download-note span{color:#526b7c;line-height:1.5}
+@media(max-width:620px){.android-download-note{display:block}.android-download-note strong{display:block;margin-bottom:5px}}
