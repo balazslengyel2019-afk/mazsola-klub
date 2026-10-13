@@ -292,21 +292,14 @@
 .android-download-note span{color:#526b7c;line-height:1.5}
 @media(max-width:620px){.android-download-note{display:block}.android-download-note strong{display:block;margin-bottom:5px}}
 
-/* Seasonal leaves float across the entire homepage viewport, including while scrolling. */
-.autumn-leaves{position:fixed;inset:0;z-index:12;pointer-events:none;overflow:hidden;contain:layout paint}
-.autumn-leaf{position:absolute;display:block;top:-55px;width:38px;height:38px;opacity:.74;will-change:transform;background-position:center;background-repeat:no-repeat;background-size:contain;animation:mazsola-leaf-fall 17s linear infinite}
+/* Seasonal falling leaves: only the home page has the leaf elements and script. */
+.home-page .autumn-leaves{position:fixed;inset:0;z-index:12;pointer-events:none;overflow:hidden;contain:layout paint}
+.home-page .autumn-leaf{position:absolute;top:0;left:0;display:block;width:38px;height:38px;opacity:.74;will-change:transform;background-position:center;background-repeat:no-repeat;background-size:contain;pointer-events:none;user-select:none;-webkit-user-select:none}
 .autumn-leaf:nth-child(odd){background-image:url("data:image/webp;base64,UklGRtwDAABXRUJQVlA4WAoAAAAQAAAAMwAAMwAAQUxQSNsBAAABkEXbliFJN9HdY9u2bdu2bdu2bdu2bdvzZXtKd5AVFRGj34iYAPx3Rw/9G+TuF6ybXa/f6+bQvZiL3GXrYwBIM+QdyXeJ9EmQE5Fv0bFOGG3y7M68is5va6kwQgkNo4t+r4RRYbaOJ2CdpeD1YBUYejNbZJgO4e+I+Fa1Kq2gA99cn9bfoZRXhHyRVJ41kyS93X9pRvFBkJ/4xi98kxzAUjFXFgWY4sBLZcMZp8VOBKuY60RuK/JZyFsK0o1cw1754wcKb7GcTAmIsZGSfYUBJJqzeMGCcIAdCKI9ltU8Q4/RD0jy+t4N1axAMF8SXV/p11PTRsDhWn6UI3o9GDKPqrqYREqJD2pe54PU0A/VDIfMGkNXUe0SCYlWfKXqZ1WDxczIGTZS+ZNu5SOIWZUPUfXHqdkReKiJH1X41tZIB6lWSxWnbciO2MIjbxHkZ37xSeDrirtC92rLi5U8T4PhXxwOVCnWzCNCdpLmOPbRnsOje4ZCw+jrxVydQ6mIGRlBACLWReLnQp7HC7Mp8JsjB5Bqo5d8Mv3Y06OX2mSNFDuGMqt2GADh8yz63Bmhk1hxoGXW/HAukwXaRmgU7Edjo3YS6F8iP/TPVx76l65n6FdoYyjoHzUe/sMBAFZQOCDaAQAA0AsAnQEqNAA0AD7JUKJMp6QjIi4ZKqjwGQlsAMZv+9Hxa/bAbgDeQN44vyVkZ6/DT+ZazU4p3v041e5q+Oa78CtxH5kPvbVi8vtZaZ/x7p9MPai7wn1/Zp+8e8GyIVPZ/9nEMqaYgAD+4a8TzKgqBHezSO7NzZkxKNiO63bcvlDFhxfs963Qn7rfGuOnjx22I3a4hutE0BNR8ECvVeo5nd3Gn0D+PmnWNhyfl342jtL5PkYsUyLDBkLhxIebBEVqF+dkqO/fyyA96Ak+WGNM3GbYaZLmy2kP3H+Fsd/GcygIpKtKS4ymJMkE9ef0sP4R5faAXDGcR+e63dkBelkCBO4MzxZC2U6HzERsjBxXMh0U/YQRDOjkeb7Zh7xkVNzodksg6EOkRgMPynoY2+7KpiACBfCSDb3sMg+p9MIMdL0YP8febblKoUbxfzd2YXybLMlHe9R6pKRGRuIq5+QfARwkPE36LTeD/Hv0kcOVWF3WE7fAeka5LlUTdmoxe++dRMOr/9kI7GI1pzn5wzPzAZk6jNnLrSR2VUEYhex9416VovyfLRYhF4coakrP435qkrrKXDTpksZUDNevwfMjwwXwYqsU+CSawO6er+ul84uAdi5oYbHgAAAA")}
 .autumn-leaf:nth-child(even){background-image:url("data:image/webp;base64,UklGRmgCAABXRUJQVlA4WAoAAAAQAAAAMwAAIAAAQUxQSC0BAAABkEPbtrFXJ7Zt27Zt27adykblKpXzbNs2S9vWefh4q5QRMQGwbm9Rqa0KppEU8nqkxOCrayHbX/v857VflJAUpHwWBgA9WEHIDBVekAA4gp9ayOijwdOJPq8RfzWJkdBFh/gF/z9jS4DmSQa0gwSA8xtWr/dX8aLsp+WsbryDFeIJABAWk5CSkhATYiOvbvD4ze9Xn5DDPqeg8JCgoJCwiJj4hIS4QGkqCSnV+ZePkdvbw97G8sJAKyxrlLOcT2F+8jlyvgnYa1hQQCryWKLKimEfD/i6XoUrla2n33H1bP/jRq4ARE4j3rjFwfNCkBbmTjxqck5OqmXmOIuN+sC/GkhcYvSzVwgI7FIbQab3Y4HImp7b/32c2PUAcUEZSFV0i/AdTgdQ7KwRgnVOAFZQOCAUAQAAsAYAnQEqNAAhAD7BTp5LJ6Q/obAarVPwGAlE4FwHMaEaTrc4BtkOf/A0croZzBX+1VjCWlxlxj/ZPCzLVsAA/vtpiikwL5Dd4a2e5LSi+Ocr6N12ML3n5VViWQYR+u8qFJiun39d/1WooWmPgPNlRr/2nWpC/R9kMYPWLvDXV4MpUVMVdX+EwuL9LvS80c0cPmHUdkQgNRxJk/XMp77DH/7rD/8vNH/X/uh5qCns4josjokBZYgRz6QoxZXnF4WWjRFPnMrHL83CYnozWVnh2xTxcxbd+XS5kcyC8JcYFSVyKu4jaqZq7Hljl3JQ+LGdTF+kwIpeUNZMEqp0Z4SfNR//5nuADejZxt/9p03E4ZKRA6AA")}
-.autumn-leaf--1{left:9%;animation-duration:18s;animation-delay:-5s}
-.autumn-leaf--2{left:23%;width:31px;height:31px;animation-duration:21s;animation-delay:-14s}
-.autumn-leaf--3{left:39%;width:29px;height:29px;animation-duration:16s;animation-delay:-10s}
-.autumn-leaf--4{left:57%;animation-duration:22s;animation-delay:-2s}
-.autumn-leaf--5{left:76%;width:30px;height:30px;animation-duration:19s;animation-delay:-16s}
-.autumn-leaf--6{left:91%;width:34px;height:34px;animation-duration:23s;animation-delay:-8s}
-@keyframes mazsola-leaf-fall{0%{transform:translate3d(-12px,-55px,0) rotate(-35deg)}50%{transform:translate3d(16px,calc(50vh + 25px),0) rotate(120deg)}100%{transform:translate3d(-9px,calc(100vh + 120px),0) rotate(280deg)}}
-@media(max-width:640px){.autumn-leaf:nth-child(n+4){display:none}.autumn-leaf{opacity:.6}}
-@media(prefers-reduced-motion:reduce){.autumn-leaves{display:none}}
-
-/* Leaves can be caught, dragged and flicked without blocking the rest of the cover. */
-.autumn-leaf{pointer-events:auto;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
-.autumn-leaf.is-grabbed{cursor:grabbing;opacity:.95}
+.home-page .autumn-leaf--2{width:31px;height:31px}
+.home-page .autumn-leaf--3{width:29px;height:29px}
+.home-page .autumn-leaf--5{width:30px;height:30px}
+.home-page .autumn-leaf--6{width:34px;height:34px}
+@media(max-width:640px){.home-page .autumn-leaf:nth-child(n+4){display:none}.home-page .autumn-leaf{opacity:.60}}
+@media(prefers-reduced-motion:reduce){.home-page .autumn-leaves{display:none}}
