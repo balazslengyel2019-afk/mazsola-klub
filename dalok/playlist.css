@@ -176,7 +176,7 @@
 
 
 /* 2026-10-13 — responsive audit for the catalogue and all twelve themed playlists. */
-.playlist-page :is(.playlist-hero,.playlist-embed,.playlist-intro,.playlist-index-grid,.related-grid,.playlist-use-grid,.playlist-song-grid){min-width:0;max-width:100%}
+.playlist-page :is(.playlist-hero,.playlist-embed,.playlist-intro,.playlist-index-grid,.related-grid,.playlist-use-grid,.playlist-song-grid){min-width:0}
 .playlist-page :is(.playlist-hero,.playlist-embed,.playlist-intro,.playlist-index-grid,.related-grid,.playlist-use-grid,.playlist-song-grid) > *{min-width:0}
 .playlist-page :is(h1,h2,h3,.related-card strong,.playlist-index-card .go){overflow-wrap:anywhere;hyphens:auto}
 .playlist-page .playlist-player{min-width:0;max-width:100%}
