@@ -173,3 +173,28 @@
     border-radius:15px 15px 0 0;
   }
 }
+
+
+/* 2026-10-13 — responsive audit for the catalogue and all twelve themed playlists. */
+.playlist-page :is(.playlist-hero,.playlist-embed,.playlist-intro,.playlist-index-grid,.related-grid,.playlist-use-grid,.playlist-song-grid){min-width:0;max-width:100%}
+.playlist-page :is(.playlist-hero,.playlist-embed,.playlist-intro,.playlist-index-grid,.related-grid,.playlist-use-grid,.playlist-song-grid) > *{min-width:0}
+.playlist-page :is(h1,h2,h3,.related-card strong,.playlist-index-card .go){overflow-wrap:anywhere;hyphens:auto}
+.playlist-page .playlist-player{min-width:0;max-width:100%}
+.playlist-page .playlist-player iframe{max-width:100%}
+.playlist-page .hero-actions .button{max-width:100%;white-space:normal;text-align:center;overflow-wrap:anywhere}
+@media(max-width:850px){
+ .playlist-page .playlist-use-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .playlist-page .playlist-embed{max-width:calc(100% - 48px);box-sizing:border-box}
+}
+@media(max-width:620px){
+ .playlist-page .playlist-hero h1{font-size:clamp(29px,9vw,40px);line-height:1.08}
+ .playlist-page .playlist-index-hero h1{font-size:clamp(29px,9vw,40px)}
+ .playlist-page .playlist-use-grid{grid-template-columns:minmax(0,1fr)}
+ .playlist-page .playlist-embed{max-width:calc(100% - 32px);margin-inline:16px;min-width:0}
+ .playlist-page .playlist-hero .hero-actions{display:grid;grid-template-columns:minmax(0,1fr)}
+ .playlist-page .playlist-hero .hero-actions .button{width:100%;min-width:0;max-width:100%}
+}
+@media(max-width:380px){
+ .playlist-page .related-grid{grid-template-columns:minmax(0,1fr)}
+ .playlist-page .related-card{min-height:0}
+}
