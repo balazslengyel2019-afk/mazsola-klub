@@ -44,3 +44,10 @@ footer{border-top:1px solid #e3edf3;padding:28px 0 40px;color:#647987;font-size:
  .game-music .hero .lead{font-size:clamp(15px,4vw,17px);line-height:1.65}
  .game-music .section h2{font-size:clamp(27px,7.5vw,35px);overflow-wrap:anywhere}
 }
+
+/* Tablet: keep the synthesizer hero heading comfortably readable. */
+@media(min-width:621px) and (max-width:900px){
+ .game-music .hero{grid-template-columns:minmax(0,1fr);gap:20px;padding:clamp(27px,4.5vw,42px)}
+ .game-music .hero .hero-art{grid-row:1;max-width:280px;margin-inline:auto}
+ .game-music .hero h1{font-size:clamp(37px,5.8vw,49px);line-height:1.08}
+}
