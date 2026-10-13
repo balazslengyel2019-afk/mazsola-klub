@@ -91,8 +91,7 @@
   layer.addEventListener('pointercancel', finish);
 
   // A fast cursor swipe can also brush nearby leaves without clicking.
-  const cover = layer.parentElement;
-  cover.addEventListener('pointermove', (event) => {
+  document.addEventListener('pointermove', (event) => {
     if (event.pointerType === 'touch' || drags.has(event.pointerId)) return;
     const now = performance.now();
     if (!previousPointer || now - previousPointer.time > 160) {
