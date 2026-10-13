@@ -1,115 +1,140 @@
 (() => {
   'use strict';
+
+  // This script is loaded on the homepage only. The leaf layer never intercepts taps or clicks.
+  if (!document.body.classList.contains('home-page')) return;
   const layer = document.querySelector('.autumn-leaves');
-  if (!layer || !window.PointerEvent || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!layer) return;
 
-  const leaves = [...layer.querySelectorAll('.autumn-leaf')];
-  const busy = new WeakSet();
-  const drags = new Map();
-  const lastSweep = new WeakMap();
-  let previousPointer = null;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mobile = window.matchMedia('(max-width: 640px)');
+  const allLeaves = [...layer.querySelectorAll('.autumn-leaf')];
+  const rand = (min, max) => min + Math.random() * (max - min);
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  let states = [];
+  let viewWidth = window.innerWidth;
+  let viewHeight = window.innerHeight;
+  let lastFrame = 0;
+  let frameId = 0;
+  let mouse = null;
 
-  const start = (leaf) => {
-    if (busy.has(leaf)) return false;
-    busy.add(leaf);
-    // Freeze the exact animated position so the leaf cannot jump when grabbed.
-    const transform = getComputedStyle(leaf).transform;
-    leaf.style.animation = 'none';
-    leaf.style.transform = transform === 'none' ? 'translate3d(0,0,0)' : transform;
-    leaf.style.zIndex = '5';
-    return true;
-  };
-
-  const reset = (leaf) => {
-    leaf.style.removeProperty('animation');
-    leaf.style.removeProperty('transform');
-    leaf.style.removeProperty('z-index');
-    leaf.style.removeProperty('opacity');
-    busy.delete(leaf);
-  };
-
-  const dismiss = (leaf, dx, dy, speed = 1) => {
-    const base = leaf.style.transform;
-    const distance = Math.min(440, 170 + Math.hypot(dx, dy) * 1.2);
-    const norm = Math.max(1, Math.hypot(dx, dy));
-    const endX = dx / norm * distance;
-    const endY = dy / norm * distance + 85;
-    const rotate = Math.max(-260, Math.min(260, endX * .85));
-    const animation = leaf.animate([
-      { transform: base, opacity: getComputedStyle(leaf).opacity },
-      { transform: `translate3d(${endX}px,${endY}px,0) rotate(${rotate}deg) ${base}`, opacity: 0 }
-    ], { duration: Math.max(380, 780 / speed), easing: 'cubic-bezier(.2,.65,.3,1)' });
-    animation.finished.then(() => reset(leaf), () => reset(leaf));
-  };
-
-  leaves.forEach((leaf) => {
-    leaf.addEventListener('pointerdown', (event) => {
-      if (event.button !== 0 || !start(leaf)) return;
-      event.preventDefault();
-      event.stopPropagation();
-      const now = performance.now();
-      drags.set(event.pointerId, {
-        leaf, x: event.clientX, y: event.clientY,
-        lastX: event.clientX, lastY: event.clientY, lastTime: now,
-        vx: 0, vy: 0, base: leaf.style.transform
-      });
-      leaf.setPointerCapture(event.pointerId);
-      leaf.classList.add('is-grabbed');
-    });
-  });
-
-  function finish(event) {
-    const drag = drags.get(event.pointerId);
-    if (!drag) return;
-    drags.delete(event.pointerId);
-    const { leaf } = drag;
-    leaf.classList.remove('is-grabbed');
-    if (leaf.hasPointerCapture(event.pointerId)) leaf.releasePointerCapture(event.pointerId);
-    const dx = event.clientX - drag.x;
-    const dy = event.clientY - drag.y;
-    // Quick flicks fly away; slow drags float away on release.
-    const velocity = Math.hypot(drag.vx, drag.vy);
-    const flightX = velocity > .25 ? drag.vx * 260 : dx * .65 + (dx < 0 ? -100 : 100);
-    const flightY = velocity > .25 ? drag.vy * 260 : dy + 80;
-    dismiss(leaf, flightX, flightY, 1 + Math.min(1.5, velocity));
+  function resetLeaf(state, initial = false, index = 0) {
+    const width = state.element.offsetWidth || 38;
+    state.x = rand(0, Math.max(1, viewWidth - width));
+    // Each leaf always enters from above the screen, but at a different time.
+    state.y = -width - (initial ? rand(0, viewHeight * .65) + index * 30 : rand(0, 160));
+    state.speed = rand(28, 59);          // Different natural falling speeds, in px/sec.
+    state.drift = rand(-8, 8);
+    state.sway = rand(7, 20);
+    state.phase = rand(0, Math.PI * 2);
+    state.swayRate = rand(.65, 1.35);
+    state.angle = rand(-160, 160);
+    state.spin = rand(-23, 23);
+    state.windX = 0;
+    state.windY = 0;
+    state.width = width;
   }
 
-  layer.addEventListener('pointermove', (event) => {
-    const drag = drags.get(event.pointerId);
-    if (!drag) return;
-    event.preventDefault();
-    const now = performance.now();
-    const dt = Math.max(1, now - drag.lastTime);
-    drag.vx = (event.clientX - drag.lastX) / dt;
-    drag.vy = (event.clientY - drag.lastY) / dt;
-    drag.lastX = event.clientX;
-    drag.lastY = event.clientY;
-    drag.lastTime = now;
-    drag.leaf.style.transform = `translate3d(${event.clientX - drag.x}px,${event.clientY - drag.y}px,0) ${drag.base}`;
-  });
-  layer.addEventListener('pointerup', finish);
-  layer.addEventListener('pointercancel', finish);
+  function buildStates() {
+    const count = mobile.matches ? Math.min(3, allLeaves.length) : allLeaves.length;
+    viewWidth = window.innerWidth;
+    viewHeight = window.innerHeight;
+    states = allLeaves.slice(0, count).map((element, index) => {
+      const state = { element };
+      resetLeaf(state, true, index);
+      return state;
+    });
+  }
 
-  // A fast cursor swipe can also brush nearby leaves without clicking.
-  document.addEventListener('pointermove', (event) => {
-    if (event.pointerType === 'touch' || drags.has(event.pointerId)) return;
-    const now = performance.now();
-    if (!previousPointer || now - previousPointer.time > 160) {
-      previousPointer = { x: event.clientX, y: event.clientY, time: now };
+  function tick(now) {
+    if (reduceMotion.matches || document.hidden) {
+      frameId = 0;
+      lastFrame = 0;
       return;
     }
-    const dx = event.clientX - previousPointer.x;
-    const dy = event.clientY - previousPointer.y;
-    const dt = Math.max(1, now - previousPointer.time);
-    previousPointer = { x: event.clientX, y: event.clientY, time: now };
-    if (Math.hypot(dx, dy) / dt < .7) return;
-    for (const leaf of leaves) {
-      if (busy.has(leaf) || (now - (lastSweep.get(leaf) || 0) < 700)) continue;
-      const r = leaf.getBoundingClientRect();
-      const mx = r.left + r.width / 2, my = r.top + r.height / 2;
-      if (Math.hypot(event.clientX - mx, event.clientY - my) > 48) continue;
-      lastSweep.set(leaf, now);
-      if (start(leaf)) dismiss(leaf, dx * 8, dy * 8, 1.4);
+
+    const dt = lastFrame ? Math.min((now - lastFrame) / 1000, .05) : 0;
+    lastFrame = now;
+
+    for (const leaf of states) {
+      leaf.phase += leaf.swayRate * dt;
+      leaf.x += (leaf.drift + leaf.windX) * dt;
+      leaf.y += (leaf.speed + leaf.windY) * dt;
+      leaf.angle += leaf.spin * dt;
+
+      // Any mouse-induced breeze fades gradually, without flicking leaves away.
+      leaf.windX *= Math.exp(-2.4 * dt);
+      leaf.windY *= Math.exp(-3.2 * dt);
+
+      const x = leaf.x + Math.sin(leaf.phase) * leaf.sway;
+      // Keep each leaf near the visible width, even with a gentle side drift.
+      leaf.x = clamp(leaf.x, -8, viewWidth - leaf.width + 8);
+      leaf.element.style.transform =
+        'translate3d(' + x.toFixed(1) + 'px,' + leaf.y.toFixed(1) + 'px,0) rotate(' + leaf.angle.toFixed(1) + 'deg)';
+
+      if (leaf.y > viewHeight + leaf.width) resetLeaf(leaf);
+    }
+
+    frameId = window.requestAnimationFrame(tick);
+  }
+
+  function start() {
+    if (frameId || reduceMotion.matches || document.hidden) return;
+    lastFrame = 0;
+    frameId = window.requestAnimationFrame(tick);
+  }
+
+  // A cursor passing nearby behaves like a small gust of wind.
+  // No click/drag interception; buttons, text selection and page scrolling stay intact.
+  document.addEventListener('pointermove', (event) => {
+    if (event.pointerType === 'touch' || !states.length || reduceMotion.matches) return;
+    const now = performance.now();
+    const previous = mouse;
+    mouse = { x: event.clientX, y: event.clientY, time: now };
+    if (!previous || now - previous.time > 160) return;
+
+    const dx = mouse.x - previous.x;
+    const dy = mouse.y - previous.y;
+    if (dx * dx + dy * dy < 4) return;
+
+    // Distance to the path the mouse crossed, not just its final position.
+    const lengthSquared = dx * dx + dy * dy;
+    for (const leaf of states) {
+      const lx = leaf.x + Math.sin(leaf.phase) * leaf.sway + leaf.width / 2;
+      const ly = leaf.y + leaf.width / 2;
+      const t = clamp(((lx - previous.x) * dx + (ly - previous.y) * dy) / lengthSquared, 0, 1);
+      const distance = Math.hypot(lx - (previous.x + t * dx), ly - (previous.y + t * dy));
+      const influence = Math.pow(Math.max(0, 1 - distance / 110), 2);
+      if (influence === 0) continue;
+
+      // Hard limits prevent the old "shoots off the screen" behaviour.
+      leaf.windX = clamp(leaf.windX + clamp(dx, -65, 65) * .28 * influence, -33, 33);
+      leaf.windY = clamp(leaf.windY + clamp(dy, -65, 65) * .09 * influence, -9, 9);
     }
   }, { passive: true });
+
+  window.addEventListener('resize', () => {
+    buildStates();
+    mouse = null;
+    start();
+  }, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) start();
+  });
+
+  if (reduceMotion.addEventListener) {
+    reduceMotion.addEventListener('change', () => {
+      if (reduceMotion.matches) {
+        window.cancelAnimationFrame(frameId);
+        frameId = 0;
+        lastFrame = 0;
+      } else {
+        start();
+      }
+    });
+  }
+
+  buildStates();
+  start();
 })();
