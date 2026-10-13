@@ -60,3 +60,29 @@ footer{border-top:1px solid #e3edf3;padding:28px 0 40px;color:#647987;font-size:
   .game-wash .actions,.game-halloween .actions{gap:9px}
   .game-wash .button.status,.game-halloween .button.status{min-height:46px}
 }
+
+
+/* 2026-10-13 — responsive layout audit: game and preschool landing pages. */
+body:is(.edu-page,.game-wash,.game-halloween) .hero{grid-template-columns:minmax(0,1fr) minmax(0,400px)}
+body:is(.edu-page,.game-wash,.game-halloween) .hero>*{min-width:0;max-width:100%}
+body:is(.edu-page,.game-wash,.game-halloween) .hero .actions{max-width:100%;min-width:0}
+body:is(.edu-page,.game-wash,.game-halloween) .hero .button{box-sizing:border-box;max-width:100%;min-width:0;text-align:center;white-space:normal;overflow-wrap:anywhere}
+body:is(.edu-page,.game-wash,.game-halloween) .hero h1{overflow-wrap:anywhere;hyphens:auto}
+body:is(.edu-page,.game-wash,.game-halloween) .hero .pills{max-width:100%;min-width:0}
+body:is(.edu-page,.game-wash,.game-halloween) .hero .pill{max-width:100%;white-space:normal}
+body:is(.edu-page,.game-wash,.game-halloween) :is(.section h2,.feature strong,.step strong,.notice){overflow-wrap:anywhere}
+@media(max-width:820px){
+ body:is(.edu-page,.game-wash,.game-halloween) .hero{grid-template-columns:minmax(0,1fr) minmax(0,280px)}
+}
+@media(max-width:620px){
+ body:is(.edu-page,.game-wash,.game-halloween) .hero{grid-template-columns:minmax(0,1fr);padding:clamp(18px,5.5vw,28px)}
+ body:is(.edu-page,.game-wash,.game-halloween) .hero h1{font-size:clamp(30px,8.8vw,41px);line-height:1.08;letter-spacing:-.035em}
+ body:is(.edu-page,.game-wash,.game-halloween) .hero .actions{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;width:100%}
+ body:is(.edu-page,.game-wash,.game-halloween) .hero .actions .button{width:100%;max-width:100%;min-height:48px;justify-content:center}
+ body:is(.edu-page,.game-wash,.game-halloween) .hero .lead{font-size:clamp(15px,4vw,17px);line-height:1.65}
+ body:is(.edu-page,.game-wash,.game-halloween) .section h2{font-size:clamp(27px,7.5vw,35px)}
+}
+@media(max-width:360px){
+ body:is(.edu-page,.game-wash,.game-halloween) .hero{padding-inline:17px}
+ body:is(.edu-page,.game-wash,.game-halloween) .hero h1{font-size:clamp(29px,8.8vw,33px)}
+}
