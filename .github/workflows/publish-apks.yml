@@ -1,0 +1,28 @@
+name: Publish Android APKs
+
+on:
+  push:
+    paths:
+      - ".github/workflows/publish-apks.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APKs
+        run: |
+          python -m pip install --quiet gdown
+          gdown "https://drive.google.com/uc?id=1yTT6t1Q4PdJCKtPeQfmVDuXQd3M_ABRz" -O Mazsola_Klub_Szinti_v2.5.apk
+          gdown "https://drive.google.com/uc?id=12BQJwlCbhePwPXzw2OhUHMSQmVdyFa34" -O Mazsola_Klub_Moso_v2.5.apk
+          gdown "https://drive.google.com/uc?id=1iFbmxXWD3cxi7LaMyyKMrUYRDIeFnyCG" -O Mazsola_Klub_Halloween_v2.0.apk
+          ls -lh *.apk
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete android-apps-v2026.10 --repo "${{ github.repository }}" --yes --cleanup-tag || true
+          gh release create android-apps-v2026.10             Mazsola_Klub_Szinti_v2.5.apk             Mazsola_Klub_Moso_v2.5.apk             Mazsola_Klub_Halloween_v2.0.apk             --repo "${{ github.repository }}"             --target "${{ github.sha }}"             --title "Mazsola Klub Android játékok"             --notes "Hivatalos Mazsola Klub Android APK-k. Szinti v2.5, Mosó v2.5 és Halloween v2.0. Android telefonra és tabletre."
