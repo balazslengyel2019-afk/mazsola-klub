@@ -23,3 +23,14 @@
 .game-switcher__card img{filter:drop-shadow(0 10px 14px rgba(18,54,86,.10));transition:transform .18s ease}
 .game-switcher__card:hover img{transform:translateY(-2px) rotate(-1deg)}
 .game-switcher__head h2{text-wrap:balance}
+
+
+/* 2026-10-13 — responsive game cross-links. */
+.game-switcher__grid,.game-switcher__card{min-width:0;max-width:100%}
+.game-switcher__card>*{min-width:0}
+.game-switcher__card :is(strong,p){overflow-wrap:anywhere;hyphens:auto}
+@media(max-width:380px){
+ .game-switcher__card{grid-template-columns:68px minmax(0,1fr);gap:12px;padding:13px}
+ .game-switcher__card img{width:68px;height:68px;max-width:100%}
+ .game-switcher__card strong{font-size:17px}
+}
