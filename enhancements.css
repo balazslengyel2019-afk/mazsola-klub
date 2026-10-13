@@ -303,3 +303,20 @@
 .home-page .autumn-leaf--6{width:34px;height:34px}
 @media(max-width:640px){.home-page .autumn-leaf:nth-child(n+6){display:none}.home-page .autumn-leaf{opacity:.88;filter:drop-shadow(0 2px 2px rgba(79,44,19,.17))}}
 @media(prefers-reduced-motion:reduce){.home-page .autumn-leaves{display:none}}
+
+
+/* 2026-10-13 — homepage grid and card responsive safeguards. */
+.home-page :is(.hero,.games-card,.support-card,.audience-grid,.popular-grid,.preschool-links,.halloween-song-grid){min-width:0}
+.home-page :is(.hero,.games-card,.support-card,.audience-grid,.popular-grid,.preschool-links,.halloween-song-grid)>*{min-width:0}
+.home-page :is(.hero h1,.games-copy h2,.support-copy h2,.audience-card h3,.halloween-song-info h3,.section-heading h2){overflow-wrap:anywhere;hyphens:auto}
+.home-page .hero-actions .button,.home-page .support-button{max-width:100%;box-sizing:border-box;min-width:0;white-space:normal;text-align:center;overflow-wrap:anywhere}
+@media(max-width:850px){.home-page .games-card{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:620px){
+ .home-page .hero{grid-template-columns:minmax(0,1fr)}
+ .home-page .hero h1{font-size:clamp(35px,11vw,46px);line-height:1.09}
+ .home-page .games-card,.home-page .support-card{grid-template-columns:minmax(0,1fr)}
+ .home-page .hero-actions{display:grid;grid-template-columns:minmax(0,1fr)}
+ .home-page .hero-actions .button{width:100%}
+ .home-page .halloween-song-grid{grid-template-columns:minmax(0,1fr)}
+ .home-page .halloween-spotlight h2{font-size:clamp(32px,8.7vw,38px)}
+}
