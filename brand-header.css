@@ -165,3 +165,17 @@ html{scroll-padding-top:125px}
 @media(prefers-reduced-motion:reduce){
   .site-header .mobile-menu-icon span{transition:none}
 }
+
+
+/* 2026-10-13 — fluid-media and responsive navigation safeguards on all site pages. */
+body img,body video,body iframe{max-width:100%}
+.site-header,.site-header .site-brand,.site-header nav{min-width:0}
+@media(max-width:980px){
+ .site-header.mobile-menu-ready .site-brand>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .site-header.mobile-menu-ready .site-brand small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+@media(max-width:620px){
+ body :is(h1,h2,h3){overflow-wrap:anywhere;hyphens:auto}
+ body :is(main,section,article){min-width:0}
+ .site-header.mobile-menu-ready{max-width:100%;min-width:0}
+}
