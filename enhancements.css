@@ -301,5 +301,5 @@
 .home-page .autumn-leaf--3{width:29px;height:29px}
 .home-page .autumn-leaf--5{width:30px;height:30px}
 .home-page .autumn-leaf--6{width:34px;height:34px}
-@media(max-width:640px){.home-page .autumn-leaf:nth-child(n+4){display:none}.home-page .autumn-leaf{opacity:.60}}
+@media(max-width:640px){.home-page .autumn-leaf:nth-child(n+6){display:none}.home-page .autumn-leaf{opacity:.88;filter:drop-shadow(0 2px 2px rgba(79,44,19,.17))}}
 @media(prefers-reduced-motion:reduce){.home-page .autumn-leaves{display:none}}
