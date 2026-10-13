@@ -307,3 +307,7 @@
 @keyframes mazsola-leaf-fall{0%{transform:translate3d(-12px,-50px,0) rotate(-35deg)}50%{transform:translate3d(16px,110px,0) rotate(120deg)}100%{transform:translate3d(-9px,310px,0) rotate(280deg)}}
 @media(max-width:640px){.autumn-leaf:nth-child(n+4){display:none}.autumn-leaf{opacity:.6}}
 @media(prefers-reduced-motion:reduce){.autumn-leaves{display:none}}
+
+/* Leaves can be caught, dragged and flicked without blocking the rest of the cover. */
+.autumn-leaf{pointer-events:auto;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.autumn-leaf.is-grabbed{cursor:grabbing;opacity:.95}
