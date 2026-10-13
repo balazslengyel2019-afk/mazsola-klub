@@ -18,12 +18,16 @@
   let frameId = 0;
   let mouse = null;
 
-  function resetLeaf(state, initial = false, index = 0) {
+  function resetLeaf(state, initial = false, index = 0, total = 1) {
     const width = state.element.offsetWidth || 38;
     state.x = rand(0, Math.max(1, viewWidth - width));
-    // Each leaf always enters from above the screen, but at a different time.
-    state.y = -width - (initial ? rand(0, viewHeight * .65) + index * 30 : rand(0, 160));
-    state.speed = rand(28, 59);          // Different natural falling speeds, in px/sec.
+    // Initially show a natural cross-section of an already-running snowfall of leaves.
+    // Every subsequent leaf is reborn ABOVE the top edge at a new random x position.
+    state.y = initial
+      ? Math.max(8, Math.min(viewHeight - width - 8,
+          ((index + .35) / total) * viewHeight + rand(-22, 22)))
+      : -width - rand(0, 90);
+    state.speed = mobile.matches ? rand(46, 77) : rand(35, 67);
     state.drift = rand(-8, 8);
     state.sway = rand(7, 20);
     state.phase = rand(0, Math.PI * 2);
@@ -36,12 +40,12 @@
   }
 
   function buildStates() {
-    const count = mobile.matches ? Math.min(3, allLeaves.length) : allLeaves.length;
+    const count = mobile.matches ? Math.min(5, allLeaves.length) : allLeaves.length;
     viewWidth = window.innerWidth;
     viewHeight = window.innerHeight;
     states = allLeaves.slice(0, count).map((element, index) => {
       const state = { element };
-      resetLeaf(state, true, index);
+      resetLeaf(state, true, index, count);
       return state;
     });
   }
@@ -113,8 +117,22 @@
     }
   }, { passive: true });
 
+  // On mobile, collapsing/expanding the browser address bar fires resize frequently.
+  // Preserve existing leaves instead of restarting them out of sight each time.
   window.addEventListener('resize', () => {
-    buildStates();
+    const previousWidth = viewWidth;
+    const previousCount = states.length;
+    viewWidth = window.innerWidth;
+    viewHeight = window.innerHeight;
+    const wantedCount = mobile.matches ? Math.min(5, allLeaves.length) : allLeaves.length;
+    if (previousCount !== wantedCount) {
+      buildStates();
+    } else {
+      for (const leaf of states) {
+        leaf.x = clamp(leaf.x * viewWidth / Math.max(1, previousWidth),
+          -8, viewWidth - leaf.width + 8);
+      }
+    }
     mouse = null;
     start();
   }, { passive: true });
