@@ -75,3 +75,32 @@ body.game-halloween .halloween-carousel .halloween-song-card{
 @media(max-width:520px){
  body.game-halloween .halloween-carousel .halloween-song-card{flex-basis:100%}
 }
+
+/* Halloween game page: one-line headline across the full section width. */
+body.game-halloween .halloween-spotlight__head{
+  display:block;
+  margin-bottom:30px;
+}
+body.game-halloween .halloween-spotlight__head h2{
+  font-size:clamp(30px,3.2vw,46px);
+  line-height:1.12;
+  letter-spacing:-1.25px;
+  white-space:nowrap;
+  text-wrap:nowrap;
+}
+body.game-halloween .halloween-spotlight__head>p{
+  margin:14px 0 0;
+  max-width:960px;
+}
+@media(max-width:900px){
+  body.game-halloween .halloween-spotlight__head h2{
+    white-space:normal;
+    text-wrap:balance;
+    font-size:clamp(29px,4.3vw,38px);
+  }
+}
+@media(max-width:520px){
+  body.game-halloween .halloween-spotlight__head h2{
+    font-size:clamp(27px,7.8vw,34px);
+  }
+}
