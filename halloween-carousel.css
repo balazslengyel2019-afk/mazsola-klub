@@ -1,21 +1,77 @@
-.halloween-carousel{display:flex;align-items:center;gap:12px;min-width:0}.halloween-carousel__viewport{overflow:hidden;min-width:0;flex:1}.halloween-carousel .halloween-song-grid{display:flex;gap:20px;transition:transform .55s ease;will-change:transform}.halloween-carousel .halloween-song-card{flex:0 0 calc((100% - 40px)/3);min-width:0}.halloween-carousel__arrow{flex:0 0 40px;width:40px;height:48px;border:1px solid #ffc14b;border-radius:16px;background:#ffbd42;color:#261425;font-size:34px;cursor:pointer;line-height:1}.halloween-carousel__arrow:focus-visible{outline:3px solid white;outline-offset:3px}.halloween-spotlight--game{margin:45px 0 0;padding:55px 0;background:linear-gradient(110deg,#1e1421,#35182e);color:white}.halloween-spotlight--game .halloween-spotlight__inner{max-width:1320px;margin:auto}.halloween-spotlight--game .halloween-spotlight__head{margin-bottom:30px}@media(max-width:800px){.halloween-carousel .halloween-song-card{flex-basis:calc((100% - 16px)/2)}.halloween-carousel .halloween-song-grid{gap:16px}.halloween-carousel{gap:6px}.halloween-carousel__arrow{flex-basis:32px;width:32px}}@media(max-width:520px){.halloween-carousel .halloween-song-card{flex-basis:100%}.halloween-carousel__arrow{flex-basis:30px;width:30px}}@media(prefers-reduced-motion:reduce){.halloween-carousel .halloween-song-grid{transition:none}}
-/* Standalone Halloween landing page styles (the homepage already has these in enhancements.css). */
-.game-halloween .halloween-spotlight--game{position:relative;overflow:hidden;color:#fff8e8;padding:65px 0 75px;margin:40px 0 0;border-top:1px solid rgba(255,198,65,.25);background:radial-gradient(circle at 15% 15%,rgba(255,183,40,.18),transparent 300px),linear-gradient(135deg,#151019,#31172b 72%,#171219)}
-.game-halloween .halloween-spotlight__inner{position:relative;z-index:1;width:min(1280px,calc(100% - 40px));margin-inline:auto}
-.game-halloween .halloween-spotlight__head{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.72fr);gap:40px;align-items:end;margin-bottom:30px}
-.game-halloween .halloween-spotlight .eyebrow{color:#ffc64d;font-weight:900;letter-spacing:.08em;margin:0 0 8px}
-.game-halloween .halloween-spotlight h2{margin:0;color:#fff;font-size:clamp(32px,4.2vw,52px);line-height:1.08;font-weight:1000;letter-spacing:-1px}
-.game-halloween .halloween-spotlight__head>p{margin:0;color:#eadde9;font-size:16px;line-height:1.65;max-width:520px}
-.game-halloween .halloween-song-card{overflow:hidden;border:1px solid rgba(255,199,76,.26);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.055));box-shadow:0 18px 44px rgba(0,0,0,.24);color:#fff;text-decoration:none;transition:border-color .18s,box-shadow .18s}
-.game-halloween .halloween-song-card:hover{border-color:rgba(255,199,76,.68);box-shadow:0 24px 52px rgba(0,0,0,.36)}
-.game-halloween .halloween-song-card .thumb{position:relative;display:block;aspect-ratio:16/9;width:100%;overflow:hidden;background:#211720}
-.game-halloween .halloween-song-card .thumb img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .28s}
-.game-halloween .halloween-song-card:hover .thumb img{transform:scale(1.03)}
-.game-halloween .halloween-play{position:absolute;right:14px;bottom:14px;display:grid;place-items:center;width:44px;height:44px;border:1px solid rgba(255,255,255,.6);border-radius:50%;background:#fff;color:#241222;box-shadow:0 8px 20px rgba(0,0,0,.28);font-size:16px}
-.game-halloween .halloween-song-info{padding:17px 18px 19px}
-.game-halloween .halloween-song-info span{display:inline-flex;padding:5px 9px;margin-bottom:9px;border-radius:999px;background:#ffc64d;color:#241222;font-size:11px;font-weight:1000}
-.game-halloween .halloween-song-info h3{margin:0;color:#fff;font-size:18px;line-height:1.3;font-weight:1000}
-.halloween-carousel .halloween-song-grid{width:100%;max-width:none}
-.halloween-carousel .halloween-song-card{max-width:none}
-@media(max-width:850px){.game-halloween .halloween-spotlight__head{grid-template-columns:1fr;gap:12px}}
-@media(max-width:620px){.game-halloween .halloween-spotlight--game{padding:48px 0 55px}.game-halloween .halloween-spotlight__inner{width:calc(100% - 24px)}.game-halloween .halloween-spotlight h2{font-size:34px}.game-halloween .halloween-spotlight__head>p{font-size:15px}}
+
+/* Halloween songs: shared slider on homepage and game detail page. */
+.halloween-carousel{display:flex;align-items:center;gap:12px;min-width:0}
+.halloween-carousel__viewport{overflow:hidden;min-width:0;flex:1}
+.halloween-carousel .halloween-song-grid{display:flex;gap:20px;transition:transform .55s ease;will-change:transform;width:100%;max-width:none}
+.halloween-carousel .halloween-song-card{flex:0 0 calc((100% - 40px)/3);min-width:0;max-width:none}
+.halloween-carousel__arrow{flex:0 0 40px;width:40px;height:48px;border:1px solid #ffc14b;border-radius:16px;background:#ffbd42;color:#261425;font-size:34px;cursor:pointer;line-height:1}
+.halloween-carousel__arrow:focus-visible{outline:3px solid white;outline-offset:3px}
+@media(max-width:800px){
+ .halloween-carousel .halloween-song-card{flex-basis:calc((100% - 16px)/2)}
+ .halloween-carousel .halloween-song-grid{gap:16px}
+ .halloween-carousel{gap:6px}
+ .halloween-carousel__arrow{flex-basis:32px;width:32px}
+}
+@media(max-width:520px){
+ .halloween-carousel .halloween-song-card{flex-basis:100%}
+ .halloween-carousel__arrow{flex-basis:30px;width:30px}
+}
+@media(prefers-reduced-motion:reduce){.halloween-carousel .halloween-song-grid{transition:none}}
+
+/* Exact Halloween section styling copied from the homepage enhancements.css,
+   scoped to the Halloween game page only. */
+/* 2026-10-04 · seasonal Halloween spotlight */
+body.game-halloween .halloween-spotlight{
+  position:relative;overflow:hidden;padding:72px 0 76px;color:#fff8e8;
+  background:radial-gradient(circle at 14% 18%,rgba(255,183,40,.28),transparent 260px),
+  radial-gradient(circle at 88% 76%,rgba(125,63,190,.34),transparent 300px),
+  linear-gradient(135deg,#151019 0%,#221424 45%,#31172b 72%,#171219 100%);
+  border-block:1px solid rgba(255,198,65,.18)
+}
+body.game-halloween .halloween-spotlight__inner{position:relative;z-index:2}
+body.game-halloween .halloween-spotlight__head{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.72fr);gap:50px;align-items:end;margin-bottom:30px}
+body.game-halloween .halloween-spotlight .eyebrow{color:#ffc64d;margin-bottom:8px}
+body.game-halloween .halloween-spotlight h2{margin:0;color:#fff;font-size:clamp(38px,4.2vw,58px);line-height:1.02;font-weight:1000;letter-spacing:-1.8px}
+body.game-halloween .halloween-spotlight__head>p{margin:0;color:#eadde9;font-size:16px;line-height:1.65;max-width:520px}
+body.game-halloween .halloween-song-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+body.game-halloween .halloween-song-card{overflow:hidden;border:1px solid rgba(255,199,76,.26);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.055));box-shadow:0 18px 44px rgba(0,0,0,.24);color:#fff;text-decoration:none;transition:transform .18s,border-color .18s,box-shadow .18s}
+body.game-halloween .halloween-song-card:hover{transform:translateY(-5px);border-color:rgba(255,199,76,.62);box-shadow:0 24px 52px rgba(0,0,0,.34);text-decoration:none}
+body.game-halloween .halloween-song-card .thumb{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden;background:#211720}
+body.game-halloween .halloween-song-card .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .28s ease}
+body.game-halloween .halloween-song-card:hover .thumb img{transform:scale(1.03)}
+body.game-halloween .halloween-play{position:absolute;right:14px;bottom:14px;display:grid;place-items:center;width:44px;height:44px;border:1px solid rgba(255,255,255,.6);border-radius:50%;background:#fff;color:#241222;box-shadow:0 8px 20px rgba(0,0,0,.28);font-size:16px}
+.halloween-song-info{padding:17px 18px 19px}
+.halloween-song-info span{display:inline-flex;padding:5px 9px;margin-bottom:9px;border-radius:999px;background:#ffc64d;color:#241222;font-size:11px;font-weight:1000}
+.halloween-song-info h3{margin:0;color:#fff;font-size:18px;line-height:1.3;font-weight:1000}
+body.game-halloween .halloween-spotlight__actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:30px}
+body.game-halloween .halloween-game-button{min-height:50px;border:1px solid #ffc64d!important;background:linear-gradient(180deg,#ffd86b,#ffad2f)!important;color:#231522!important;box-shadow:0 5px 0 #7e3b18!important}
+body.game-halloween .halloween-game-button:hover{box-shadow:0 7px 0 #7e3b18!important}
+body.game-halloween .halloween-catalog-link{color:#fff4cf;font-size:14px;font-weight:1000;border-bottom:1px solid rgba(255,244,207,.42)}
+body.game-halloween .halloween-catalog-link:hover{text-decoration:none;border-bottom-color:#fff4cf}
+@media(max-width:1100px){body.game-halloween .halloween-song-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:850px){body.game-halloween .halloween-spotlight{padding:58px 0 62px}body.game-halloween .halloween-spotlight__head{grid-template-columns:1fr;gap:13px}body.game-halloween .halloween-song-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){body.game-halloween .halloween-spotlight{padding:46px 0 50px}body.game-halloween .halloween-spotlight h2{font-size:38px}body.game-halloween .halloween-spotlight__head>p{font-size:15px}body.game-halloween .halloween-song-grid{grid-template-columns:1fr}body.game-halloween .halloween-song-card:last-child{grid-column:auto;max-width:none}body.game-halloween .halloween-spotlight__actions{align-items:stretch;gap:14px}body.game-halloween .halloween-game-button{width:100%}body.game-halloween .halloween-catalog-link{text-align:center;padding:8px 0}}
+
+
+
+/* The home page uses .wrap max-width:1200px / 36px side padding.
+   Match it here without changing the rest of the game page. */
+body.game-halloween .halloween-spotlight__inner.wrap{
+ width:100%;max-width:1200px;padding-inline:36px;margin-inline:auto
+}
+@media(max-width:900px){body.game-halloween .halloween-spotlight__inner.wrap{padding-inline:24px}}
+@media(max-width:620px){body.game-halloween .halloween-spotlight__inner.wrap{padding-inline:16px}}
+/* Preserve the exact 3/2/1-up carousel layout over the homepage's legacy 4-up grid rules. */
+body.game-halloween .halloween-carousel .halloween-song-grid{
+ display:flex;grid-template-columns:none;gap:20px;width:100%;max-width:none
+}
+body.game-halloween .halloween-carousel .halloween-song-card{
+ flex:0 0 calc((100% - 40px)/3);min-width:0;max-width:none
+}
+@media(max-width:800px){
+ body.game-halloween .halloween-carousel .halloween-song-grid{gap:16px}
+ body.game-halloween .halloween-carousel .halloween-song-card{flex-basis:calc((100% - 16px)/2)}
+}
+@media(max-width:520px){
+ body.game-halloween .halloween-carousel .halloween-song-card{flex-basis:100%}
+}
