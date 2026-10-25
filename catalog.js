@@ -40,7 +40,7 @@ if(initialQuery)search.value=initialQuery;
 updateChipState();
 more.addEventListener('click',()=>{limit+=12;render()});document.querySelector('#close-player').addEventListener('click',()=>dialog.close());dialog.addEventListener('close',()=>mount.replaceChildren());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()}});
 catalogEmpty.textContent='Nincs ilyen találat. Próbálj másik szót vagy témát!';
-fetch('songs.json').then(r=>{if(!r.ok)throw Error('catalog');return r.json()}).then(data=>{songs=data;const bannerCount=document.querySelector('#video-count-banner');if(bannerCount)bannerCount.textContent=songs.length;renderPopular();applyFilters(false)}).catch(()=>{count.textContent='';catalogError.innerHTML='A dalok listája most nem tölthető be. <a href="https://www.youtube.com/@mazsola-klub/videos" target="_blank" rel="noopener">Nézzétek meg a csatornán ↗</a>';catalogError.hidden=false;search.disabled=true;for(const chip of chips)chip.disabled=true});
+fetch('songs.json').then(r=>{if(!r.ok)throw Error('catalog');return r.json()}).then(data=>{songs=data;renderPopular();applyFilters(false)}).catch(()=>{count.textContent='';catalogError.innerHTML='A dalok listája most nem tölthető be. <a href="https://www.youtube.com/@mazsola-klub/videos" target="_blank" rel="noopener">Nézzétek meg a csatornán ↗</a>';catalogError.hidden=false;search.disabled=true;for(const chip of chips)chip.disabled=true});
 
 (function insertVideoBanner(){
   if(!document.querySelector('link[href*="video-banner.css"]')){
