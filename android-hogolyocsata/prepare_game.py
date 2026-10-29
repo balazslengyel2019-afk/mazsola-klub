@@ -53,6 +53,51 @@ change(
 "projectiles:projectiles.length});",
 "projectiles:projectiles.length,renderHeartbeatMs:Math.round(performance.now()-lastFrameWall),lastDrawError});",
 "test diagnostics")
+
+# Android v1.3 — clearer enemy emergence behind trees, with no foreground-order changes.
+change(
+" {name:'Bal fenyő',hidden:[136,560],peek:[240,448]},",
+" {name:'Bal fenyő',hidden:[136,560],peek:[260,436]},",
+"left pine emergence")
+change(
+" {name:'Jobb fenyő',hidden:[1140,562],peek:[1072,446]},",
+" {name:'Jobb fenyő',hidden:[1140,562],peek:[1054,436]},",
+"right pine emergence")
+
+# Replace font-dependent hearts with aspect-ratio-safe SVG shapes.
+change(
+"s.textContent='♥';h.appendChild(s)",
+"""s.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 35 C16.5 31.5 6.5 25 3.5 20.5 C-1 13.5 4.5 5 11.5 5 C16 5 18.5 7.5 20 10.2 C21.5 7.5 24 5 28.5 5 C35.5 5 41 13.5 36.5 20.5 C33.5 25 23.5 31.5 20 35Z"/></svg>';h.appendChild(s)""",
+"vector hearts")
+
+# Reward one life for each level cleared, up to the original maximum of three.
+change(
+"const nowLevel=difficulty();if(nowLevel!==level){level=nowLevel;hud();tip('Új szint! Egy kicsit sűrűbb a hócsata!',2.2)}",
+"""const nowLevel=difficulty();if(nowLevel>level){
+ const earned=nowLevel-level,restored=Math.min(3-life,earned);
+ life+=restored;level=nowLevel;hud();showLevelUp(restored);
+ tip(restored>0?'Szintlépés! Visszakaptál egy életet!':'Szintlépés! 3 életből 3 megvan!',2.4)
+}""",
+"life regeneration on level up")
+
+# Dedicated visual feedback for level-up, with no extra gameplay input.
+level_overlay="""let levelUpTimer=null;
+function showLevelUp(restored){
+ let el=document.getElementById('levelUpNotice');
+ if(!el){el=document.createElement('div');el.id='levelUpNotice';el.className='level-up-notice';
+   el.setAttribute('aria-live','polite');$('app').appendChild(el)}
+ el.classList.remove('visible');
+ el.innerHTML='<strong>'+level+'. SZINT!</strong><span>'+(restored>0?'+1 ÉLET ♥':'MÁR 3 ÉLETED VAN ♥')+'</span>';
+ void el.offsetWidth;
+ el.classList.add('visible');
+ if(levelUpTimer)clearTimeout(levelUpTimer);
+ levelUpTimer=setTimeout(()=>el.classList.remove('visible'),2400);
+}
+"""
+change("function hud(){",level_overlay+"function hud(){","level up UI insertion")
+change("tipUntil=0;last=performance.now();",
+       "tipUntil=0;last=performance.now();if(levelUpTimer)clearTimeout(levelUpTimer);const levelUp=document.getElementById('levelUpNotice');if(levelUp)levelUp.classList.remove('visible');",
+       "clear level-up badge on restart")
 j.write_text(js,encoding="utf-8")
 
 css=c.read_text(encoding="utf-8")
@@ -74,6 +119,7 @@ body{display:block!important;background:#061939!important}
 .playlist-pill{top:84.5%!important;left:50%!important}
 .menu-hint{bottom:1.2%!important}
 """
+css+="\n/* Android v1.3: SVG hearts never stretch on ultra-wide mobile screens. */\n.heart-row{align-items:center!important;justify-content:center!important;gap:.52cqw!important;\n margin-top:1.12cqw!important;line-height:0!important}\n.heart-row .live-heart,.heart-row .lost-heart{display:inline-flex!important;align-items:center!important;\n justify-content:center!important;flex:0 0 3.25cqw!important;width:3.25cqw!important;\n height:3.25cqw!important;max-width:100%;font-size:0!important;line-height:0!important;\n filter:none!important}\n.heart-row svg{display:block;width:100%;height:100%;aspect-ratio:1/1;overflow:visible}\n.heart-row .live-heart svg path{fill:#f32a56;stroke:#bc1841;stroke-width:.65}\n.heart-row .lost-heart svg path{fill:#aab6ce;stroke:#7e8da9;stroke-width:.65}\n.level-up-notice{position:absolute;z-index:19;top:40%;left:50%;transform:translate(-50%,-50%);\n text-align:center;pointer-events:none;opacity:0;display:flex;flex-direction:column;align-items:center;\n gap:.5cqw;text-shadow:0 .25cqw .4cqw #0e255e}\n.level-up-notice strong{font-size:5.7cqw;line-height:1.1;font-weight:1000;color:#fff;\n background:linear-gradient(#72b8ff,#1d63c5);padding:.18em .8em;border:.25cqw solid #e2f5ff;\n border-radius:1.5cqw;box-shadow:0 .35cqw 0 #103971}\n.level-up-notice span{font-size:3.2cqw;white-space:nowrap;font-weight:1000;color:white;\n padding:.28em .95em;border:.2cqw solid #fff4b8;border-radius:999px;\n background:linear-gradient(#ff7895,#e82b56)}\n.level-up-notice.visible{opacity:1;animation:mkLevelPop 2.4s both}\n@keyframes mkLevelPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.65)}\n 12%,80%{opacity:1;transform:translate(-50%,-50%) scale(1)}\n 100%{opacity:0;transform:translate(-50%,-54%) scale(1.06)}}\n@media(prefers-reduced-motion:reduce){.level-up-notice.visible{animation:none;opacity:1}}\n"
 c.write_text(css,encoding="utf-8")
 html=h.read_text(encoding="utf-8")
 html=html.replace('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>', '')
@@ -89,4 +135,4 @@ icon=Image.new("RGBA",(512,512),(0,0,0,0))
 ImageDraw.Draw(icon).ellipse((9,9,503,503),fill=(255,255,255,255))
 icon.alpha_composite(src,(84,84))
 icon.save("android-hogolyocsata/app/src/main/res/drawable-nodpi/hogoly_icon.png",optimize=True)
-print("Android 1.1 game layout, animation recovery and launcher badge prepared")
+print("Android 1.3: tree visibility, SVG hearts and life-restoring level-up ready")
