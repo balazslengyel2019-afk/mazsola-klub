@@ -1,0 +1,104 @@
+name: Build Mazsola Klub Hógolyócsata APK
+on:
+  push:
+    branches: [main]
+    paths:
+      - "android-hogolyocsata/**"
+      - ".github/workflows/build-hogolyocsata-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout game and Android shell
+        uses: actions/checkout@v4
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Gradle 8.7
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install build SDK
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Bundle complete original game for offline play
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p android-hogolyocsata/app/src/main/assets/game/assets
+          mkdir -p android-hogolyocsata/app/src/main/res/drawable-nodpi
+          cp -a hogolyocsata/game/. android-hogolyocsata/app/src/main/assets/game/
+          cp assets/logo-animation.mp4 android-hogolyocsata/app/src/main/assets/game/assets/logo-animation.mp4
+          cp hogolyocsata/game/assets/app-icon-512.png android-hogolyocsata/app/src/main/res/drawable-nodpi/hogoly_icon.png
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("android-hogolyocsata/app/src/main/assets/game/index.html")
+          html=p.read_text(encoding="utf-8")
+          remote='https://mazsolaklub.com/assets/logo-animation.mp4'
+          assert remote in html
+          html=html.replace(remote, 'assets/logo-animation.mp4')
+          # Link buttons open an external browser, not inside the game screen.
+          html=html.replace('</body>', """<script>
+          document.addEventListener('click', function (event) {
+            const link = event.target.closest('a[href]');
+            if (!link || !window.AndroidBridge) return;
+            const url = link.href;
+            if (url.startsWith('https://') || url.startsWith('http://')) {
+              event.preventDefault();
+              window.AndroidBridge.open(url);
+            }
+          }, true);
+          </script></body>""")
+          p.write_text(html,encoding="utf-8")
+          assert Path("android-hogolyocsata/app/src/main/assets/game/assets/menu-music.mp3").stat().st_size>100000
+          assert Path("android-hogolyocsata/app/src/main/assets/game/assets/logo-animation.mp4").stat().st_size>100000
+          assert len(list(Path("android-hogolyocsata/app/src/main/assets/game/assets").glob('sfx_*.mp3')))>=7
+          PY
+      - name: Assemble Android APK
+        run: gradle -p android-hogolyocsata :app:assembleDebug --no-daemon --stacktrace
+      - name: Verify signature and bundled assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=android-hogolyocsata/app/build/outputs/apk/debug/app-debug.apk
+          test -s "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
+          python3 - <<'PY'
+          import zipfile
+          p='android-hogolyocsata/app/build/outputs/apk/debug/app-debug.apk'
+          with zipfile.ZipFile(p) as z:
+            names=set(z.namelist())
+            for name in ('assets/game/index.html','assets/game/game.js','assets/game/styles.css','assets/game/assets/menu-music.mp3','assets/game/assets/logo-animation.mp4','assets/game/assets/village_hd.png'):
+              assert name in names,name
+            assert z.testzip() is None
+            print(f"Verified APK, {len(names)} archive members")
+          PY
+          cp "$APK" Mazsola_Klub_Hogolyocsata_v1.0.apk
+      - name: Upload APK for testing
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mazsola_Klub_Hogolyocsata_v1.0
+          path: Mazsola_Klub_Hogolyocsata_v1.0.apk
+          retention-days: 30
+      - name: Publish standalone APK download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG=hogolyocsata-android-v1.0
+          NOTES="Mazsola Klub Hógolyócsata – Android 1.0. Offline playable, fullscreen landscape, touch controls, music, sounds, and bundled intro. Test APK is debug-signed; use a stable private release key for future upgrades."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" Mazsola_Klub_Hogolyocsata_v1.0.apk --clobber
+          else
+            gh release create "$TAG" Mazsola_Klub_Hogolyocsata_v1.0.apk --target "$GITHUB_SHA" --title "Mazsola Klub Hógolyócsata Android v1.0" --notes "$NOTES" --prerelease
+          fi
