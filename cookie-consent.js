@@ -122,6 +122,20 @@
     document.head.append(style);
   }
 
+  // Measure YouTube referrals only after the visitor has opted in to analytics.
+  document.addEventListener('click',event=>{
+    const link=event.target.closest('a[href]');
+    if(!analyticsLoaded||!link||typeof window.gtag!=='function')return;
+    let url;
+    try{url=new URL(link.href,location.href)}catch{return;}
+    if(!['youtube.com','www.youtube.com','youtu.be','m.youtube.com'].includes(url.hostname))return;
+    window.gtag('event','youtube_outbound_click',{
+      destination_url:url.href,
+      link_text:(link.textContent||'').trim().slice(0,100),
+      transport_type:'beacon'
+    });
+  },true);
+
   document.addEventListener('click',event=>{
     if(event.target.closest('[data-cookie-settings]'))openSettings();
   });
