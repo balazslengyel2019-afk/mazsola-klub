@@ -37,13 +37,14 @@ rafId=requestAnimationFrame(tick);
 window.setInterval(keepRendering,1200);
 canvas.addEventListener('contextlost',e=>e.preventDefault());
 ""","render watchdog")
-change(
-"function coords(e){const rect=canvas.getBoundingClientRect();let x,y;\n if(matchMedia('(max-aspect-ratio: 9/12)').matches){const a=(e.clientX-rect.left)/rect.width,b=(e.clientY-rect.top)/rect.height;x=b*W;y=(1-a)*H}\n else{x=(e.clientX-rect.left)/rect.width*W;y=(e.clientY-rect.top)/rect.height*H}return{x:clamp(x,0,W),y:clamp(y,0,H)}}",
-"""function coords(e){const rect=canvas.getBoundingClientRect();
+start=js.index("function coords(e)")
+end=js.index("canvas.addEventListener('pointermove'",start)
+js=js[:start]+"""function coords(e){const rect=canvas.getBoundingClientRect();
  const scale=Math.max(rect.width/W,rect.height/H);
  const cropX=(W-rect.width/scale)/2,cropY=(H-rect.height/scale)/2;
  return{x:clamp(cropX+(e.clientX-rect.left)/scale,0,W),
-        y:clamp(cropY+(e.clientY-rect.top)/scale,0,H)}}""","touch mapping")
+        y:clamp(cropY+(e.clientY-rect.top)/scale,0,H)}}
+"""+js[end:]
 change(
 "document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='game')show('pause');if(document.hidden)music.pause();else syncMusic()});",
 "document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='game')show('pause');if(document.hidden)music.pause();else{last=performance.now();keepRendering();syncMusic()}});window.addEventListener('pageshow',()=>{last=performance.now();keepRendering()});",
