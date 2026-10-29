@@ -179,3 +179,12 @@ body img,body video,body iframe{max-width:100%}
  body :is(main,section,article){min-width:0}
  .site-header.mobile-menu-ready{max-width:100%;min-width:0}
 }
+
+/* Keep the Mazsola Klub tagline visible in even the narrowest mobile header. */
+@media(max-width:420px){
+  .site-brand small,
+  .site-header.mobile-menu-ready .site-brand small{display:block;font-size:10px;letter-spacing:0;line-height:1.1}
+}
+@media(max-width:360px){
+  .site-header.mobile-menu-ready .site-brand>span{font-size:15px}
+}
