@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#102c65"><meta name="description" content="Mazsola Klub Hógolyócsata: havas karácsonyi ügyességi játék gyerekeknek, 3 élettel és vidám hógolyózókkal.">
+<title>Mazsola Klub – Hógolyócsata</title>
+<link rel="icon" type="image/png" href="assets/app-icon-192.png?v=18">
+<link rel="apple-touch-icon" href="assets/app-icon-192.png?v=18">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@700;800;900;1000&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main id="app" aria-label="Mazsola Klub Hógolyócsata">
+<canvas id="stage" width="1280" height="720" aria-label="Hógolyócsata játéktér. Célozz és kattints, vagy érints meg egy ellenfelet!"></canvas>
+<audio id="gameMusic" src="assets/menu-music.mp3" loop preload="auto"></audio>
+<section id="intro" class="screen intro-screen" aria-label="Mazsola Klub animált intró">
+ <video id="introVideo" autoplay muted playsinline preload="auto" poster="assets/village_hd.png"><source src="https://mazsolaklub.com/assets/logo-animation.mp4" type="video/mp4"></video>
+ </section>
+<section id="menu" class="screen menu-screen hidden" aria-label="Főmenü">
+ <div class="menu-shade"></div><div id="menuSnow" class="menu-snow" aria-hidden="true"></div>
+ <div class="menu-title"><h1>HÓGOLYÓCSATA</h1><img class="menu-app-icon" src="assets/hogolyocsata_icon.png?v=18" alt="Hógolyócsata ikon"></div>
+ <img class="menu-child child-left" src="assets/menu_boy.png" alt="Fiú hógolyóval">
+ <img class="menu-child child-right" src="assets/menu_girl.png" alt="Lány hógolyóval">
+ <div class="menu-actions"><button id="newGame" class="game-button primary" type="button">ÚJ JÁTÉK</button><button id="showAbout" class="game-button secondary" type="button">RÓLUNK</button></div>
+ <nav class="menu-links" aria-label="Mazsola Klub közösségi oldalai">
+  <a class="social-icon" href="https://mazsolaklub.com" target="_blank" rel="noopener noreferrer" aria-label="Mazsola Klub weboldal" title="Weboldal">
+   <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4.5 6 4.5 9s-1.5 6-4.5 9M12 3c-3 3-4.5 6-4.5 9s1.5 6 4.5 9"/></svg>
+  </a>
+  <a class="social-icon" href="https://www.youtube.com/@mazsola-klub" target="_blank" rel="noopener noreferrer" aria-label="Mazsola Klub YouTube-csatorna" title="YouTube">
+   <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M21.6 7.2a2.7 2.7 0 0 0-1.9-1.9C18 4.9 12 4.9 12 4.9s-6 0-7.7.4a2.7 2.7 0 0 0-1.9 1.9A28 28 0 0 0 2 12a28 28 0 0 0 .4 4.8 2.7 2.7 0 0 0 1.9 1.9c1.7.4 7.7.4 7.7.4s6 0 7.7-.4a2.7 2.7 0 0 0 1.9-1.9A28 28 0 0 0 22 12a28 28 0 0 0-.4-4.8z"/><path d="m10 8.5 6 3.5-6 3.5z" fill="#2755a6"/></svg>
+  </a>
+  <a class="social-icon" href="https://www.facebook.com/mazsolaklub/" target="_blank" rel="noopener noreferrer" aria-label="Mazsola Klub Facebook-oldal" title="Facebook">
+   <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.7 21V12.9h2.7l.5-3.3h-3.2V7.5c0-1 .3-1.6 1.7-1.6H17V3a24 24 0 0 0-2.5-.1c-2.7 0-4.6 1.6-4.6 4.6v2.1H7v3.3h2.9V21z"/></svg>
+  </a>
+ </nav>
+ <a class="playlist-pill" href="https://mazsolaklub.com/dalok/karacsonyi-dalok/" target="_blank" rel="noopener">Téli és karácsonyi dalaink: hallgasd meg a lejátszási listát!</a>
+ <div class="menu-settings"><button id="menuMusicButton" class="small-button" type="button" aria-pressed="true">ZENE: BE</button><button id="menuSfxButton" class="small-button" type="button" aria-pressed="true">HANGOK: BE</button></div>
+ <div class="menu-hint">Célozz és kattints! Telefonon érintsd meg az ellenfeleket.</div>
+</section>
+<div id="hud" class="hud hidden" aria-live="off">
+ <div class="hud-panel hearts"><span class="hud-label">ÉLETEK</span><div id="hearts" class="heart-row"><span class="live-heart">♥</span><span class="live-heart">♥</span><span class="live-heart">♥</span></div></div>
+ <div class="difficulty-pill" id="difficultyLabel">1. SZINT</div>
+ <div class="hud-panel hits"><span class="hud-label">TALÁLATOK</span><strong id="hitValue">0</strong></div>
+ <div class="hud-panel ammo"><span class="hud-label">HÓGOLYÓK</span><strong id="ammoValue">10</strong></div>
+ <div class="hud-tools"><button id="soundButton" class="hud-button" aria-label="Zene ki- és bekapcsolása" type="button">ZENE: BE</button><button id="hudSfxButton" class="hud-button" type="button" aria-label="Játékhangok ki- és bekapcsolása">HANGOK: BE</button><button id="pauseButton" class="hud-button pause-button" aria-label="Szünet" type="button">SZÜNET</button></div>
+ <button id="reloadButton" class="reload-button" type="button">ÚJRATÖLTÉS <span>R</span></button>
+ <div class="game-tip" id="gameTip" aria-live="polite">Célozz a felbukkanó hógolyózókra!</div>
+</div>
+<section id="gameOver" class="screen overlay hidden" aria-label="Játék vége">
+ <div class="results-card"><div class="results-ribbon">JÁTÉK VÉGE</div><h2 id="resultHeading">Szép játék volt!</h2>
+ <div class="stat-row"><span>ELDOBOTT HÓGOLYÓK</span><b id="totalShots">0</b></div>
+ <div class="stat-row"><span>TALÁLATOK</span><b id="totalHits">0</b></div>
+ <div class="stat-row"><span>PONTOSSÁG</span><b id="accuracy">0%</b></div>
+ <div class="stat-row record"><span>LEGJOBB EREDMÉNY</span><b id="best">0</b></div>
+ <div class="result-actions"><button id="tryAgain" class="game-button primary">ÚJRA JÁTSZOM</button><button id="backHome" class="game-button secondary">FŐMENÜ</button></div>
+ </div>
+</section>
+<section id="pause" class="screen overlay hidden"><div class="dialog-card"><h2>SZÜNET</h2><p>A hócsata megvár!</p><button id="resume" class="game-button primary">FOLYTATÁS</button><button id="pauseSfxButton" class="game-button tertiary">HANGOK: BE</button><button id="pauseHome" class="game-button secondary">FŐMENÜ</button></div></section>
+<section id="about" class="screen overlay hidden"><div class="dialog-card about-card"><h2>Mazsola Klub</h2><p class="tagline">Kalandra hangolva!</p>
+ <p>Üdv a karácsonyi hógolyócsatában! Három élettel indulsz. A különböző figurákat egyszer, kétszer vagy háromszor kell eltalálni. A több életes ellenfelek elbújnak, majd máshol bukkannak fel.</p>
+ <p>Minden hógolyózó visszadobhat. Ha a feléd repülő hógolyót eltalálod, kivéded! Ahogy gyűlnek a találatok, a játék finoman gyorsul.</p>
+ <p class="credits">Mazsola Klub · 2026 · Saját karácsonyi játék</p><button id="closeAbout" class="game-button secondary">VISSZA</button></div></section>
+</main>
+<script src="game.js"></script>
+</body>
+</html>

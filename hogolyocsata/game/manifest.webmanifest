@@ -1,0 +1,21 @@
+{
+  "name": "Mazsola Klub Hógolyócsata",
+  "short_name": "Hógolyócsata",
+  "lang": "hu",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#08295c",
+  "theme_color": "#183a8f",
+  "icons": [
+    {
+      "src": "assets/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
