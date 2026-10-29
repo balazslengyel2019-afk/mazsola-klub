@@ -42,7 +42,8 @@ jobs:
           mkdir -p android-hogolyocsata/app/src/main/res/drawable-nodpi
           cp -a hogolyocsata/game/. android-hogolyocsata/app/src/main/assets/game/
           cp assets/logo-animation.mp4 android-hogolyocsata/app/src/main/assets/game/assets/logo-animation.mp4
-          cp hogolyocsata/game/assets/app-icon-512.png android-hogolyocsata/app/src/main/res/drawable-nodpi/hogoly_icon.png
+          python3 -m pip install --quiet Pillow
+          python3 android-hogolyocsata/prepare_game.py
           python3 - <<'PY'
           from pathlib import Path
           p=Path("android-hogolyocsata/app/src/main/assets/game/index.html")
@@ -86,12 +87,12 @@ jobs:
             assert z.testzip() is None
             print(f"Verified APK, {len(names)} archive members")
           PY
-          cp "$APK" Mazsola_Klub_Hogolyocsata_v1.0.apk
+          cp "$APK" Mazsola_Klub_Hogolyocsata_v1.1.apk
       - name: Upload APK for testing
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola_Klub_Hogolyocsata_v1.0
-          path: Mazsola_Klub_Hogolyocsata_v1.0.apk
+          name: Mazsola_Klub_Hogolyocsata_v1.1
+          path: Mazsola_Klub_Hogolyocsata_v1.1.apk
           retention-days: 30
       - name: Publish standalone APK download
         env:
@@ -99,10 +100,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TAG=hogolyocsata-android-v1.0
-          NOTES="Mazsola Klub Hógolyócsata – Android 1.0. Offline playable, fullscreen landscape, touch controls, music, sounds, and bundled intro. Test APK is debug-signed; use a stable private release key for future upgrades."
+          TAG=hogolyocsata-android-v1.1
+          NOTES="Mazsola Klub Hógolyócsata Android 1.1 fixes: true full screen, proportional playfield, 3 social icons on the left, recovered animation loop, complete new-game reset, matching white-round launcher. Debug-signed: uninstall the previous 1.0 debug APK before installing this update."
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" Mazsola_Klub_Hogolyocsata_v1.0.apk --clobber
+            gh release upload "$TAG" Mazsola_Klub_Hogolyocsata_v1.1.apk --clobber
           else
-            gh release create "$TAG" Mazsola_Klub_Hogolyocsata_v1.0.apk --target "$GITHUB_SHA" --title "Mazsola Klub Hógolyócsata Android v1.0" --notes "$NOTES" --prerelease
+            gh release create "$TAG" Mazsola_Klub_Hogolyocsata_v1.1.apk --target "$GITHUB_SHA" --title "Mazsola Klub Hógolyócsata Android v1.1" --notes "$NOTES" --prerelease
           fi

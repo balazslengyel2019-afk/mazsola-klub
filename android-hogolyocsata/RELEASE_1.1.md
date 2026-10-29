@@ -1,0 +1,2 @@
+# Hógolyócsata Android 1.1
+Fullscreen edge-to-edge in landscape. Canvas is center-cropped without stretching, pointer mapping follows the crop. Social buttons in left vertical column. 3-second? No: reload remains 2 seconds. Animation loop heartbeat and watchdog recover from exceptions, reset and menu clear all volatile game state. White round launcher badge consistent with other Mazsola Klub Android apps. Built as a debug APK, previous debug-signed 1.0 app must be uninstalled before installing 1.1.
