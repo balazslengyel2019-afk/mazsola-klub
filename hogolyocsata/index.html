@@ -14,13 +14,16 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Mazsola Klub Hógolyócsata","url":"https://mazsolaklub.com/hogolyocsata/","image":"https://mazsolaklub.com/assets/hogolyocsata-icon.png","operatingSystem":"Web browser","applicationCategory":"Game","inLanguage":"hu","isFamilyFriendly":true,"isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Mazsola Klub","url":"https://mazsolaklub.com/"}}</script>
 <link rel="stylesheet" href="/cookie-consent.css?v=20260925-4"><script src="/cookie-consent.js?v=20261029-1" defer></script>
 <link rel="stylesheet" href="/jatekok.css?v=20261013-2"><link rel="stylesheet" href="/brand-header.css?v=20261013-7"><script src="/brand-header.js?v=20261013-1" defer></script>
-<link rel="stylesheet" href="/game-switcher.css?v=20261029-1">
+<link rel="stylesheet" href="/game-switcher.css?v=20261029-1"><link rel="stylesheet" href="/game-screenshots.css?v=20261029-2">
 <style>
 body.game-snowball{--accent:#2466c9;--yellow:#ffd76b;--soft:#eef8ff;--notice:#edf7ff;--notice-line:#d0e7f6}
 .snow-callout{background:linear-gradient(130deg,#e8f5ff,#fff);border:1px solid #d2e9fc;border-radius:20px;padding:22px 28px;margin-top:18px}
 .snow-callout p{margin:5px 0 0}
 .game-switcher__card--snowball{background:linear-gradient(135deg,#e6f4ff,#fff 85%)}
-.hogoly-image{display:block;width:min(100%,400px);margin:auto;filter:drop-shadow(0 18px 25px #10346522)}
+.game-snowball .hero-art img{display:block;width:100%;max-width:380px;height:auto!important;aspect-ratio:1/1;object-fit:contain;filter:drop-shadow(0 22px 25px #12365622)}
+.game-snowball .game-shot img{aspect-ratio:1600/897;object-fit:contain}
+.game-snowball .game-screenshots__grid .game-shot:last-child{grid-column:1/-1;width:calc((100% - 18px)/2);justify-self:center}
+@media(max-width:700px){.game-snowball .game-screenshots__grid .game-shot:last-child{grid-column:auto;width:100%}}
 </style>
 </head>
 <body class="game-snowball">
@@ -33,7 +36,7 @@ body.game-snowball{--accent:#2466c9;--yellow:#ffd76b;--soft:#eef8ff;--notice:#ed
 <div class="pills"><span class="pill">Ingyenes webes játék</span><span class="pill">Egér vagy érintés</span><span class="pill">3 élet</span><span class="pill">Fokozatos nehezedés</span><span class="pill">Zene és hangok</span></div>
 <div class="actions"><a class="button primary" href="/hogolyocsata/game/">Játssz most a böngészőben</a><a class="button secondary" href="/#jatekok">További játékaink</a></div>
 <div class="snow-callout"><strong>Telefonon és tableten is játszható</strong><p>Nem szükséges telepítés. Számítógépen az egérrel célozz és kattints, telefonon érintsd meg a felbukkanó ellenfeleket. Az Android APK-verzió még készül.</p></div>
-</div><div class="hero-art"><img class="hogoly-image" src="/assets/hogolyocsata-icon.png" width="512" height="512" alt="Hógolyócsata alkalmazásikon: hógolyózó kisfiú és pingvin"></div></section>
+</div><div class="hero-art"><img src="/assets/hogolyocsata-icon.png" alt="Hógolyócsata alkalmazásikon: hógolyózó kisfiú és pingvin" width="380" height="380"></div></section>
 <section class="section wrap"><p class="eyebrow">HOGYAN JÁTSSZ?</p><h2>Három élet, egy izgalmas hócsata!</h2><p class="section-intro">A hógolyócsata kezdetén három életed és tíz hógolyód van. Dobás után újratölthetsz, és minél több találatot szerzel, annál gyakrabban bukkannak fel az ellenfelek.</p>
 <div class="features">
 <div class="feature"><strong>Könnyű ellenfelek</strong><p>A téli ruhás gyerekeket egy hógolyóval eltalálhatod.</p></div>
@@ -42,6 +45,17 @@ body.game-snowball{--accent:#2466c9;--yellow:#ffd76b;--soft:#eef8ff;--notice:#ed
 <div class="feature"><strong>Visszadobnak!</strong><p>Ha az ellenfelek hógolyója elér, egy életet veszítesz. A repülő hógolyó is kivédhető.</p></div>
 <div class="feature"><strong>Zene és hangeffektek</strong><p>A játék zenéjét, illetve a hanghatásokat bármikor kikapcsolhatod.</p></div>
 <div class="feature"><strong>Saját rekord</strong><p>Gyűjts találatokat, és próbáld túlszárnyalni a legjobb eredményedet!</p></div>
+</div></section>
+<section class="section wrap game-screenshots" aria-labelledby="hogolyocsata-screenshots-title">
+<div class="game-screenshots__head">
+<p class="eyebrow">ILYEN JÁTÉK KÖZBEN</p>
+<h2 id="hogolyocsata-screenshots-title">Nézz bele a Hógolyócsatába!</h2>
+<p>A havas főmenüből indul a csata. Célozz a felbukkanó ellenfelekre, gyűjts találatokat, és ismerd meg a játékszabályokat is.</p>
+</div>
+<div class="game-screenshots__grid">
+<figure class="game-shot"><img src="/assets/screenshots/hogolyocsata-menu.webp" width="1600" height="897" loading="lazy" alt="Mazsola Klub Hógolyócsata főmenü két télies ruhás gyermekkel és hóeséssel"><figcaption>Vidám havas főmenü, zene és választható hangok.</figcaption></figure>
+<figure class="game-shot"><img src="/assets/screenshots/hogolyocsata-jatek.webp" width="1600" height="897" loading="lazy" alt="Hógolyócsata játékmenet pingvinnel, célkereszttel, életekkel és találatszámlálóval"><figcaption>Hógolyózz a felbukkanó ellenfelekkel!</figcaption></figure>
+<figure class="game-shot"><img src="/assets/screenshots/hogolyocsata-rolunk.webp" width="1600" height="896" loading="lazy" alt="Hógolyócsata Rólunk képernyő a játékszabályokkal"><figcaption>Egyszerű szabályok, három élet és egyre izgalmasabb játék.</figcaption></figure>
 </div></section>
 <section class="section wrap"><p class="eyebrow">TÉLI HANGULAT</p><h2>Folytatódjon a kaland dalokkal!</h2><p class="section-intro">A hógolyócsata után hallgassátok meg téli és karácsonyi gyerekdalainkat is!</p><div class="actions"><a class="button secondary" href="/dalok/karacsonyi-dalok/">Téli és karácsonyi dalok →</a></div></section>
 <section class="game-switcher wrap" aria-labelledby="more-games-title"><div class="game-switcher__head"><p class="eyebrow">MÉG TÖBB MAZSOLA KLUB JÁTÉK</p><h2 id="more-games-title">Próbáljátok ki a többi játékunkat is!</h2></div><div class="game-switcher__grid">
