@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
   <url><loc>https://mazsolaklub.com/</loc><lastmod>2026-10-29</lastmod></url>
   <url><loc>https://mazsolaklub.com/ovodaknak/</loc><lastmod>2026-09-19</lastmod></url>
   <url><loc>https://mazsolaklub.com/szinti/</loc><lastmod>2026-09-19</lastmod></url>
@@ -20,8 +20,8 @@
   <url><loc>https://mazsolaklub.com/dalok/karacsonyi-dalok/</loc><lastmod>2026-09-19</lastmod></url>
   <url><loc>https://mazsolaklub.com/dalok/nepdalok/</loc><lastmod>2026-09-19</lastmod></url>
   <url><loc>https://mazsolaklub.com/dalok/mesedalok/</loc><lastmod>2026-09-19</lastmod></url>
-  <url><loc>https://mazsolaklub.com/dalok/szaz-liba-egy-sorba/</loc><lastmod>2026-10-29</lastmod></url>
-  <url><loc>https://mazsolaklub.com/dalok/rendorauto-rendorauto/</loc><lastmod>2026-10-29</lastmod></url>
-  <url><loc>https://mazsolaklub.com/dalok/a-busz-kereke-korbe-jar/</loc><lastmod>2026-10-29</lastmod></url>
-  <url><loc>https://mazsolaklub.com/dalok/tokfarago-dal/</loc><lastmod>2026-10-29</lastmod></url>
+  <url><loc>https://mazsolaklub.com/dalok/szaz-liba-egy-sorba/</loc><lastmod>2026-10-29</lastmod><video:video><video:thumbnail_loc>https://i.ytimg.com/vi/dwIQueh3Vk8/hqdefault.jpg</video:thumbnail_loc><video:title><![CDATA[Száz liba egy sorba]]></video:title><video:description><![CDATA[Gágogós, mozgásos és számolós magyar gyerekdal óvodásoknak. A Mazsola Klub animált videója és játékötletek.]]></video:description><video:player_loc>https://www.youtube-nocookie.com/embed/dwIQueh3Vk8</video:player_loc></video:video></url>
+  <url><loc>https://mazsolaklub.com/dalok/rendorauto-rendorauto/</loc><lastmod>2026-10-29</lastmod><video:video><video:thumbnail_loc>https://i.ytimg.com/vi/xdjoM7fLRZ0/hqdefault.jpg</video:thumbnail_loc><video:title><![CDATA[Rendőrautó, rendőrautó]]></video:title><video:description><![CDATA[Szirénázós, járműves gyerekdal rendőrautókról és rendőrökről a Mazsola Klub saját animációjával.]]></video:description><video:player_loc>https://www.youtube-nocookie.com/embed/xdjoM7fLRZ0</video:player_loc></video:video></url>
+  <url><loc>https://mazsolaklub.com/dalok/a-busz-kereke-korbe-jar/</loc><lastmod>2026-10-29</lastmod><video:video><video:thumbnail_loc>https://i.ytimg.com/vi/yvv498jysSM/hqdefault.jpg</video:thumbnail_loc><video:title><![CDATA[A busz kereke körbe jár]]></video:title><video:description><![CDATA[A hagyományos Wheels on the Bus dal magyar nyelvű, saját zenei és animációs feldolgozása.]]></video:description><video:player_loc>https://www.youtube-nocookie.com/embed/yvv498jysSM</video:player_loc></video:video></url>
+  <url><loc>https://mazsolaklub.com/dalok/tokfarago-dal/</loc><lastmod>2026-10-29</lastmod><video:video><video:thumbnail_loc>https://i.ytimg.com/vi/bKU0Gl9JMyQ/hqdefault.jpg</video:thumbnail_loc><video:title><![CDATA[Tökfaragó dal]]></video:title><video:description><![CDATA[Vidám Halloween-gyerekdal töklámpásról, tökfaragásról és varázslatos őszi estéről a Mazsola Klubtól.]]></video:description><video:player_loc>https://www.youtube-nocookie.com/embed/bKU0Gl9JMyQ</video:player_loc></video:video></url>
 </urlset>
