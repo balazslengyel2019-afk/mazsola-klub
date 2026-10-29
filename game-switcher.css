@@ -34,3 +34,5 @@
  .game-switcher__card img{width:68px;height:68px;max-width:100%}
  .game-switcher__card strong{font-size:17px}
 }
+
+.game-switcher__card--snowball{background:linear-gradient(135deg,#edf8ff 0%,#fff9f1 100%)}

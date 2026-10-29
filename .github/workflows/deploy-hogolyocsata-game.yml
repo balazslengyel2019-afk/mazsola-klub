@@ -1,0 +1,60 @@
+name: Deploy Mazsola Klub Hogolyocsata web game
+on:
+  push:
+    paths:
+      - "hogolyocsata/package/**"
+      - ".github/workflows/deploy-hogolyocsata-game.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Unpack original Hógolyócsata v1.8
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, io, zipfile
+          parts = sorted(Path("hogolyocsata/package").glob("p*.txt"))
+          assert len(parts) == 27, f"Incomplete game package: {len(parts)}/27 parts"
+          content = "".join(p.read_text(encoding="utf-8") for p in parts)
+          raw = base64.b64decode(content, validate=True)
+          assert len(raw) == 14593749, f"Game ZIP size mismatch: {len(raw)}"
+          dest = Path("hogolyocsata/game")
+          dest.mkdir(parents=True, exist_ok=True)
+          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+              for item in z.infolist():
+                  output = (dest / item.filename).resolve()
+                  assert output.is_relative_to(dest.resolve()), "Unexpected archive path"
+              assert z.testzip() is None
+              z.extractall(dest)
+          assert (dest / "index.html").exists()
+          assert (dest / "game.js").exists()
+          assert (dest / "styles.css").exists()
+          assert (dest / "assets/hogolyocsata_icon.png").exists()
+          logo = Path("assets/hogolyocsata-icon.png")
+          logo.parent.mkdir(exist_ok=True)
+          logo.write_bytes((dest / "assets/hogolyocsata_icon.png").read_bytes())
+          PY
+      - name: Verify and commit playable game
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f hogolyocsata/game/assets/menu-music.mp3
+          test -f hogolyocsata/game/assets/village_hd.png
+          test -f assets/hogolyocsata-icon.png
+          git config user.name "Mazsola Klub Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add hogolyocsata/game assets/hogolyocsata-icon.png
+          if git diff --cached --quiet; then
+            echo "Web game already deployed"
+            exit 0
+          fi
+          git commit -m "Deploy playable Hógolyócsata v1.8 assets"
+          git push
