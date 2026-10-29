@@ -220,7 +220,7 @@ function draw(){ctx.save();if(time<shakeUntil&&state==='game')ctx.translate(rand
 function tick(now){const dt=clamp((now-last)/1000,0,.05);last=now;ambientTime+=dt;update(dt);draw();requestAnimationFrame(tick)}requestAnimationFrame(tick);
 function coords(e){const rect=canvas.getBoundingClientRect();let x,y;
  if(matchMedia('(max-aspect-ratio: 9/12)').matches){const a=(e.clientX-rect.left)/rect.width,b=(e.clientY-rect.top)/rect.height;x=b*W;y=(1-a)*H}
- else{x=(e.clientX-rect.left)/rect.width*W;y=(e.clientY-rect.top)/rect.height*H}return{x:clamp(x,0,W),y:clamp(y,0,H)}}
+ else{const scale=Math.max(rect.width/W,rect.height/H);const cropX=(W*scale-rect.width)/2,cropY=(H*scale-rect.height)/2;x=(e.clientX-rect.left+cropX)/scale;y=(e.clientY-rect.top+cropY)/scale}return{x:clamp(x,0,W),y:clamp(y,0,H)}}
 canvas.addEventListener('pointermove',e=>{if(state!=='game')return;const p=coords(e);aim={...p,visible:e.pointerType!=='touch',touch:false}});
 canvas.addEventListener('pointerdown',e=>{if(state!=='game')return;e.preventDefault();const p=coords(e);aim={...p,visible:true,touch:e.pointerType==='touch',lastTouch:time};fire(p.x,p.y)});
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
