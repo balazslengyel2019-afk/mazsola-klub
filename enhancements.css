@@ -320,3 +320,10 @@
  .home-page .halloween-song-grid{grid-template-columns:minmax(0,1fr)}
  .home-page .halloween-spotlight h2{font-size:clamp(32px,8.7vw,38px)}
 }
+
+/* Warm Christmas theme for the fourth homepage game card. */
+.games-card--snowball{border-color:#eccbd0;background:radial-gradient(circle at 93% 9%,rgba(220,74,95,.13),transparent 270px),linear-gradient(130deg,#fff0ef 0%,#fff8f5 55%,#ffe8e5 100%);box-shadow:0 18px 50px rgba(151,49,72,.09)}
+.games-card--snowball::after{background:rgba(223,77,91,.10)}
+.games-card--snowball .eyebrow{color:#b7334a}
+.games-card--snowball .games-features span{border-color:#efccd1;box-shadow:0 3px 0 #f8e1e4}
+.games-card--snowball:hover{border-color:#df9faa}

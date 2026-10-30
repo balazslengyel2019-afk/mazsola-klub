@@ -188,3 +188,22 @@ body img,body video,body iframe{max-width:100%}
 @media(max-width:360px){
   .site-header.mobile-menu-ready .site-brand>span{font-size:15px}
 }
+/* Unified YouTube, TikTok and Facebook social icons, 2026-10-30. */
+.social-links{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:0}
+.social-links--header{margin-left:7px;flex:0 0 auto}
+.social-icon,.site-header nav a.social-icon{box-sizing:border-box;display:inline-grid!important;place-items:center;flex:0 0 auto;width:40px;height:40px;min-width:40px;min-height:40px;padding:0!important;border:2px solid #fff!important;border-radius:50%!important;color:#fff!important;text-decoration:none!important;line-height:1!important;box-shadow:0 3px 9px rgba(18,54,86,.18);transition:transform .18s ease,box-shadow .18s ease}
+.social-icon svg{display:block;width:23px;height:23px;max-width:75%;max-height:75%;fill:currentColor}
+.social-icon--youtube,.site-header nav .social-icon--youtube{background:linear-gradient(145deg,#ff364a,#d90022)!important}
+.social-icon--tiktok,.site-header nav .social-icon--tiktok{background:linear-gradient(145deg,#333a44,#090b0f)!important}
+.social-icon--facebook,.site-header nav .social-icon--facebook{background:linear-gradient(145deg,#3899ff,#1352b9)!important}
+.social-icon--youtube svg{width:24px;height:24px}.social-icon--facebook svg{width:27px;height:27px}
+.social-links .social-icon:hover,.site-header nav .social-links .social-icon:hover{transform:translateY(-3px)!important;box-shadow:0 7px 14px rgba(18,54,86,.22)!important}
+.social-links .social-icon:focus-visible{outline:3px solid #074fbd;outline-offset:3px}
+.social-links--footer{gap:10px;margin-right:8px}.social-links--footer .social-icon{width:42px;height:42px}
+.social-links--legal{display:flex;justify-content:flex-start;gap:15px;margin:17px 0 7px}.social-links--legal .social-icon{width:53px;height:53px}
+.social-links--legal .social-icon svg{width:28px;height:28px}
+@media(max-width:980px){
+.site-header.mobile-menu-ready nav .social-links--header{grid-column:1/-1;display:flex;justify-content:center;gap:18px;margin:3px 0 0;padding:14px 0 3px;border-top:1px solid #e0e9f0}
+.site-header.mobile-menu-ready nav a.social-icon,.site-header.mobile-menu-ready nav a.social-icon:not(.nav-yt){width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;padding:0!important;border:2px solid #fff!important;border-radius:50%!important;color:#fff!important;box-shadow:0 3px 9px rgba(18,54,86,.17)!important;flex:0 0 48px!important}}
+@media(max-width:620px){.social-links--footer{width:100%;justify-content:center;margin:0}}
+@media(prefers-reduced-motion:reduce){.social-icon{transition:none!important}}
