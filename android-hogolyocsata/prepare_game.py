@@ -1,5 +1,25 @@
 from pathlib import Path
-from PIL import Image, ImageDraw
+from PIL import Image,ImageDraw
+root=Path("android-hogolyocsata/app/src/main/assets/game")
+js=(root/"game.js").read_text(encoding="utf-8")
+if "function showChampionCelebration()" in js and "function visibleSpriteHit(" in js:
+    # The web game now already includes all Android v1.5 gameplay patches.
+    # Do not apply them twice to the APK; only produce the Android launcher icon.
+    h=root/"index.html"
+    html=h.read_text(encoding="utf-8")
+    html=html.replace('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>', '')
+    html=html.replace('<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@700;800;900;1000&display=swap" rel="stylesheet">', '')
+    h.write_text(html,encoding="utf-8")
+    src=Image.open(root/"assets/hogolyocsata_icon.png").convert("RGBA")
+    bounds=src.getchannel("A").getbbox()
+    assert bounds
+    src=src.crop(bounds).resize((344,344),Image.Resampling.LANCZOS)
+    icon=Image.new("RGBA",(512,512),(0,0,0,0))
+    ImageDraw.Draw(icon).ellipse((9,9,503,503),fill=(255,255,255,255))
+    icon.alpha_composite(src,(84,84))
+    icon.save("android-hogolyocsata/app/src/main/res/drawable-nodpi/hogoly_icon.png",optimize=True)
+    print("Reusing synced web+Android v1.5 game, no duplicate patching")
+    raise SystemExit(0)
 
 root=Path("android-hogolyocsata/app/src/main/assets/game")
 j=root/"game.js"; c=root/"styles.css"; h=root/"index.html"
