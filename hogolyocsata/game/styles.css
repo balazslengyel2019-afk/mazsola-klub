@@ -43,3 +43,75 @@
  .playlist-pill{top:88%;font-size:1.08cqw;max-width:none;white-space:nowrap}
  .menu-hint{font-size:1.08cqw;left:18%;right:18%}
 }
+
+/* Android 1.1: edge-to-edge WebView with proportional, center-cropped game canvas. */
+html,body{width:100%!important;height:100%!important;margin:0!important;overflow:hidden!important}
+body{display:block!important;background:#061939!important}
+#app{position:fixed!important;inset:0!important;top:0!important;left:0!important;
+ width:100vw!important;height:100vh!important;height:100dvh!important;
+ max-width:none!important;max-height:none!important;aspect-ratio:auto!important;
+ transform:none!important;box-shadow:none!important;border:0!important}
+#stage{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ object-fit:cover!important;object-position:center center!important}
+.menu-links{left:2.3%!important;top:23%!important;right:auto!important;
+ transform:none!important;display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;gap:.9cqw!important;flex-wrap:nowrap!important}
+.social-icon{width:3.8cqw!important;height:3.8cqw!important;min-width:42px!important;min-height:42px!important}
+.menu-actions{top:48%!important;gap:1.4cqw!important}
+.playlist-pill{top:84.5%!important;left:50%!important}
+.menu-hint{bottom:1.2%!important}
+
+/* Android v1.3: SVG hearts never stretch on ultra-wide mobile screens. */
+.heart-row{align-items:center!important;justify-content:center!important;gap:.52cqw!important;
+ margin-top:1.12cqw!important;line-height:0!important}
+.heart-row .live-heart,.heart-row .lost-heart{display:inline-flex!important;align-items:center!important;
+ justify-content:center!important;flex:0 0 3.25cqw!important;width:3.25cqw!important;
+ height:3.25cqw!important;max-width:100%;font-size:0!important;line-height:0!important;
+ filter:none!important}
+.heart-row svg{display:block;width:100%;height:100%;aspect-ratio:1/1;overflow:visible}
+.heart-row .live-heart svg path{fill:#f32a56;stroke:#bc1841;stroke-width:.65}
+.heart-row .lost-heart svg path{fill:#aab6ce;stroke:#7e8da9;stroke-width:.65}
+.level-up-notice{position:absolute;z-index:19;top:40%;left:50%;transform:translate(-50%,-50%);
+ text-align:center;pointer-events:none;opacity:0;display:flex;flex-direction:column;align-items:center;
+ gap:.5cqw;text-shadow:0 .25cqw .4cqw #0e255e}
+.level-up-notice strong{font-size:5.7cqw;line-height:1.1;font-weight:1000;color:#fff;
+ background:linear-gradient(#72b8ff,#1d63c5);padding:.18em .8em;border:.25cqw solid #e2f5ff;
+ border-radius:1.5cqw;box-shadow:0 .35cqw 0 #103971}
+.level-up-notice span{font-size:3.2cqw;white-space:nowrap;font-weight:1000;color:white;
+ padding:.28em .95em;border:.2cqw solid #fff4b8;border-radius:999px;
+ background:linear-gradient(#ff7895,#e82b56)}
+.level-up-notice.visible{opacity:1;animation:mkLevelPop 2.4s both}
+@keyframes mkLevelPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.65)}
+ 12%,80%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 100%{opacity:0;transform:translate(-50%,-54%) scale(1.06)}}
+@media(prefers-reduced-motion:reduce){.level-up-notice.visible{animation:none;opacity:1}}
+
+/* Android v1.4: intro edge-to-edge with proportional crop, no vertical side bars. */
+#intro{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ overflow:hidden!important;background:#061939!important}
+#introVideo,.intro-screen video{position:absolute!important;inset:0!important;top:0!important;left:0!important;
+ width:100%!important;height:100%!important;min-width:100%!important;min-height:100%!important;
+ max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:50% 50%!important}
+
+/* Android v1.5 celebratory confetti and 20th-level message. */
+.champion-overlay{position:absolute;z-index:31;inset:0;overflow:hidden;pointer-events:none;
+ background:radial-gradient(circle at center,rgba(16,40,93,.05),rgba(0,16,47,.28))}
+.champion-banner{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
+ width:min(75%,1000px);display:flex;align-items:center;flex-direction:column;gap:1.3cqw;
+ text-align:center;z-index:2;filter:drop-shadow(0 .6cqw .55cqw rgba(5,22,57,.7));
+ animation:championEnter 4.55s both}
+.champion-banner strong{font-size:5.3cqw;line-height:1;color:#fff;
+ background:linear-gradient(#75c5ff,#265abf);border:.28cqw solid #f9f1c9;border-radius:1.5cqw;padding:.2em .8em}
+.champion-banner span{font-size:4cqw;line-height:1.08;letter-spacing:.015em;
+ color:#fff5cb;text-shadow:.09cqw .1cqw #193c8b,-.09cqw .1cqw #193c8b;
+ font-weight:1000;background:linear-gradient(#ff7595,#d92b52);padding:.32em .75em;
+ border:.32cqw solid white;border-radius:1.8cqw;box-shadow:0 .5cqw 0 #94253a}
+.champion-confetti{position:absolute;top:-12%;left:var(--x);width:1.15cqw;height:2.05cqw;
+ border-radius:.25cqw;opacity:0;animation:championFall var(--fall) var(--delay) linear 1 forwards}
+@keyframes championFall{0%{opacity:0;transform:translate(0,-10vh) rotate(0)}
+ 8%{opacity:1}90%{opacity:1}
+ 100%{opacity:0;transform:translate(var(--drift),118vh) rotate(var(--rot))}}
+@keyframes championEnter{0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}
+ 11%,86%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 100%{opacity:0;transform:translate(-50%,-50%) scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.champion-banner{animation:none}.champion-confetti{animation-duration:5s}}
