@@ -170,7 +170,7 @@ function attackDelay(e,initial=false){
  const strength=Math.max(0,Math.min(2,(e.maxHp||1)-1));
  const base=initial?rand(3.5,4.5):rand(4.8,6.7);
  const difficultyCut=(initial?2.1:3.15)*levelProgress();
- return Math.max(initial?.85:.78,base-strength*.5-difficultyCut)
+ return Math.max(initial?1.80:1.65,base-difficultyCut)-strength*.5
 }
 function enemyFlightDuration(){return 1.12-.60*levelProgress()}
 function damageImmunity(){return 3.5-2.15*levelProgress()}
