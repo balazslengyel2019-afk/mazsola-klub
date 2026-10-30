@@ -153,6 +153,131 @@ function impact(x,y){const candidates=[];
 js=js[:start]+hit_source+original[len(old_header):].replace(" const {e,p}=candidates[0],info=types[e.kind];"," const {e,p}=candidates[0],info=types[e.kind];",1)+js[end:]
 # Note: replaced only the header, retaining effects, sound, multi-hit logic, and the subsequent reload() function.
 
+
+# Android v1.5: 20 progressively harder levels. These changes apply only to the APK copy.
+change("function difficulty(){return Math.min(6,1+Math.floor(hits/8))}",
+       "function difficulty(){return Math.min(20,1+Math.floor(hits/8))}",
+       "twenty levels")
+
+# Level 1 HP1 uses original 3.5–4.5s first shot / 4.8–6.7s repeat.
+# HP2 shoots 0.5s earlier and HP3 shoots 1.0s earlier, at ALL levels.
+# At level 20, intensity rises through spawn rate, simultaneity, shot velocity and attack interval.
+new_difficulty_helpers="""function levelProgress(){return (level-1)/19}
+function activeLimit(){return level===20?7:Math.min(6,2+Math.floor((level-1)/4))}
+function enemyShotLimit(){return Math.min(6,2+Math.floor((level-1)/4))}
+function spawnInterval(){return Math.max(.92,rand(3.5,4.6)-2.55*levelProgress())}
+function attackDelay(e,initial=false){
+ const strength=Math.max(0,Math.min(2,(e.maxHp||1)-1));
+ const base=initial?rand(3.5,4.5):rand(4.8,6.7);
+ const difficultyCut=(initial?2.1:3.15)*levelProgress();
+ return Math.max(initial?.85:.78,base-strength*.5-difficultyCut)
+}
+function enemyFlightDuration(){return 1.12-.60*levelProgress()}
+function damageImmunity(){return 3.5-2.15*levelProgress()}
+function bossCooldown(){return 19-11*levelProgress()}
+"""
+change("function spawn(){",new_difficulty_helpers+"function spawn(){","progression helper functions")
+
+start=js.index("function spawn(){")
+end=js.index("function getPosition(e){",start)
+js=js[:start]+"""function spawn(){
+ const active=enemies.filter(e=>e.status!=='dead'&&e.status!=='gone').length;
+ if(active>=activeLimit())return;
+ const slot=chooseSlot();if(slot===null)return;
+ const chance=rand(0,1),p=levelProgress();
+ const bossChance=level>1&&hits>=8&&time-bossAt>bossCooldown()? .12+.18*p : 0;
+ const mediumChance=.38+.22*p;
+ let kind;
+ if(chance<bossChance){kind='boss';bossAt=time;tip('Hóember-boss! Három találat kell!',2)}
+ else if(chance<bossChance+mediumChance)kind=Math.random()<.5?'penguin':'deer';
+ else kind=['red','girl','green'][Math.floor(rand(0,3))];
+ const info=types[kind];
+ enemies.push({id:++id,kind,hp:info.hp,maxHp:info.hp,slot,oldSlot:slot,
+ status:'active',born:time,hideAt:0,returnAt:0,deadAt:0,
+ timeout:time+(kind==='boss'?14:12)+rand(-1,1),
+ attackAt:time+attackDelay({maxHp:info.hp},true),
+ phase:rand(0,Math.PI*2),hitAt:-9,defeated:false})
+}
+"""+js[end:]
+
+change("if(state!=='game'||time-lastDamage<3.5)return;",
+       "if(state!=='game'||time-lastDamage<damageImmunity())return;",
+       "level-scaled damage immunity")
+change("const enemyFlying=projectiles.filter(p=>p.enemy).length;if(enemyFlying>=2)return;",
+       "const enemyFlying=projectiles.filter(p=>p.enemy).length;if(enemyFlying>=enemyShotLimit())return;",
+       "progressive simultaneous projectiles")
+change("born:time,duration:1.12});playFx('throw',.29,.83)",
+       "born:time,duration:enemyFlightDuration()});playFx('throw',.29,.83)",
+       "progressive snowball flight speed")
+change("if(time>spawnAt){spawn();spawnAt=time+Math.max(1.75,rand(3.5,4.6)-.30*(level-1))}",
+       "if(time>spawnAt){spawn();spawnAt=time+spawnInterval()}",
+       "progressive enemy arrivals")
+change("e.attackAt=time+rand(3.3,4.5)",
+       "e.attackAt=time+attackDelay(e,true)",
+       "respawn attack speed")
+change("e.attackAt=time+rand(4.8,6.7)-.14*(level-1)",
+       "e.attackAt=time+attackDelay(e,false)",
+       "repeat attack speed")
+
+# The celebration is visual, not a victory screen. It briefly pauses attack timers,
+# then level 20 continues at maximum difficulty. Level rewards still work.
+champion_code="""let championCelebrating=0,championShown=false,championTimeout=null;
+function dismissChampion(){
+ championCelebrating=0;
+ if(championTimeout){clearTimeout(championTimeout);championTimeout=null}
+ const panel=document.getElementById('championOverlay');
+ if(panel)panel.remove()
+}
+function showChampionCelebration(){
+ if(championShown)return;
+ championShown=true;championCelebrating=4.5;
+ const panel=document.createElement('div');
+ panel.id='championOverlay';panel.className='champion-overlay';
+ panel.innerHTML='<div class="champion-banner"><strong>20. SZINT!</strong><span>MEGÜBERNAGYON JÓ<br>HÓGOLYÓLÖVŐ VAGY!</span></div>';
+ const colors=['#ffce45','#49c4ff','#f6608f','#77e08f','#b39bff','#fff5d8'];
+ for(let i=0;i<110;i++){
+  const bit=document.createElement('i');bit.className='champion-confetti';
+  bit.style.setProperty('--x',(Math.random()*100).toFixed(1)+'%');
+  bit.style.setProperty('--delay',(Math.random()*1.8).toFixed(2)+'s');
+  bit.style.setProperty('--fall',(2.2+Math.random()*2).toFixed(2)+'s');
+  bit.style.setProperty('--drift',((Math.random()-.5)*32).toFixed(1)+'vw');
+  bit.style.setProperty('--rot',Math.round(350+Math.random()*900)+'deg');
+  bit.style.background=colors[Math.floor(Math.random()*colors.length)];
+  panel.appendChild(bit)
+ }
+ $('app').appendChild(panel);
+ if(levelUpTimer)clearTimeout(levelUpTimer);
+ const levelUp=document.getElementById('levelUpNotice');
+ if(levelUp)levelUp.classList.remove('visible');
+ championTimeout=setTimeout(()=>{
+  const el=document.getElementById('championOverlay');if(el)el.remove();
+  championTimeout=null
+ },4900)
+}
+"""
+change("function hud(){",champion_code+"function hud(){","20th level celebration")
+change("if(levelUpTimer)clearTimeout(levelUpTimer);const levelUp=document.getElementById('levelUpNotice');",
+       "dismissChampion();championShown=false;if(levelUpTimer)clearTimeout(levelUpTimer);const levelUp=document.getElementById('levelUpNotice');",
+       "reset champion state")
+change("function goMenu(){enemies=[];projectiles=[];bursts=[];reloading=false;ammo=MAX_AMMO;hud();show('menu')}",
+       "function goMenu(){dismissChampion();enemies=[];projectiles=[];bursts=[];reloading=false;ammo=MAX_AMMO;hud();show('menu')}",
+       "menu champion teardown")
+change("function fire(x,y){if(state!=='game'||reloading)return;",
+       "function fire(x,y){if(state!=='game'||reloading||championCelebrating>0)return;",
+       "disable shots during celebration")
+change("function update(dt){if(state!=='game')return;time+=dt;",
+       "function update(dt){if(state!=='game')return;if(championCelebrating>0){championCelebrating=Math.max(0,championCelebrating-dt);return}time+=dt;",
+       "safe pause during celebration")
+change(
+"""life+=restored;level=nowLevel;hud();showLevelUp(restored);
+ tip(restored>0?'Szintlépés! Visszakaptál egy életet!':'Szintlépés! 3 életből 3 megvan!',2.4)""",
+"""life+=restored;level=nowLevel;hud();
+ if(level===20){showChampionCelebration();tip('Megübernagyon jó hógolyólövő vagy!',4.5)}
+ else{showLevelUp(restored);
+  tip(restored>0?'Szintlépés! Visszakaptál egy életet!':'Szintlépés! 3 életből 3 megvan!',2.4)}""",
+"final stage special message")
+
+
 j.write_text(js,encoding="utf-8")
 
 css=c.read_text(encoding="utf-8")
@@ -186,6 +311,32 @@ css+="""
  max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:50% 50%!important}
 """
 
+
+css+="""
+/* Android v1.5 celebratory confetti and 20th-level message. */
+.champion-overlay{position:absolute;z-index:31;inset:0;overflow:hidden;pointer-events:none;
+ background:radial-gradient(circle at center,rgba(16,40,93,.05),rgba(0,16,47,.28))}
+.champion-banner{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);
+ width:min(75%,1000px);display:flex;align-items:center;flex-direction:column;gap:1.3cqw;
+ text-align:center;z-index:2;filter:drop-shadow(0 .6cqw .55cqw rgba(5,22,57,.7));
+ animation:championEnter 4.55s both}
+.champion-banner strong{font-size:5.3cqw;line-height:1;color:#fff;
+ background:linear-gradient(#75c5ff,#265abf);border:.28cqw solid #f9f1c9;border-radius:1.5cqw;padding:.2em .8em}
+.champion-banner span{font-size:4cqw;line-height:1.08;letter-spacing:.015em;
+ color:#fff5cb;text-shadow:.09cqw .1cqw #193c8b,-.09cqw .1cqw #193c8b;
+ font-weight:1000;background:linear-gradient(#ff7595,#d92b52);padding:.32em .75em;
+ border:.32cqw solid white;border-radius:1.8cqw;box-shadow:0 .5cqw 0 #94253a}
+.champion-confetti{position:absolute;top:-12%;left:var(--x);width:1.15cqw;height:2.05cqw;
+ border-radius:.25cqw;opacity:0;animation:championFall var(--fall) var(--delay) linear 1 forwards}
+@keyframes championFall{0%{opacity:0;transform:translate(0,-10vh) rotate(0)}
+ 8%{opacity:1}90%{opacity:1}
+ 100%{opacity:0;transform:translate(var(--drift),118vh) rotate(var(--rot))}}
+@keyframes championEnter{0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}
+ 11%,86%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+ 100%{opacity:0;transform:translate(-50%,-50%) scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.champion-banner{animation:none}.champion-confetti{animation-duration:5s}}
+"""
+
 c.write_text(css,encoding="utf-8")
 html=h.read_text(encoding="utf-8")
 html=html.replace('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>', '')
@@ -201,4 +352,4 @@ icon=Image.new("RGBA",(512,512),(0,0,0,0))
 ImageDraw.Draw(icon).ellipse((9,9,503,503),fill=(255,255,255,255))
 icon.alpha_composite(src,(84,84))
 icon.save("android-hogolyocsata/app/src/main/res/drawable-nodpi/hogoly_icon.png",optimize=True)
-print("Android 1.4: full-screen intro, exposed characters and visible sprite hitboxes ready")
+print("Android 1.5: twenty escalating levels and champion confetti ready")

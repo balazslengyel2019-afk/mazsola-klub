@@ -68,7 +68,7 @@ jobs:
           assert Path("android-hogolyocsata/app/src/main/assets/game/assets/logo-animation.mp4").stat().st_size>100000
           assert len(list(Path("android-hogolyocsata/app/src/main/assets/game/assets").glob('sfx_*.mp3')))>=7
           PY
-      - name: Validate Android v1.3 JavaScript and assets
+      - name: Validate Android v1.5 JavaScript and assets
         shell: bash
         run: |
           set -euo pipefail
@@ -81,7 +81,11 @@ jobs:
               assert phrase in js,phrase
           for phrase in (".level-up-notice.visible", ".heart-row svg", "object-fit:cover!important"):
               assert phrase in css,phrase
-          print("Android v1.3 gameplay and HUD checks passed")
+          for phrase in ("Math.min(20,1+Math.floor(hits/8))", "function attackDelay(", "function bossCooldown()", "function activeLimit()", "function enemyShotLimit()", "showChampionCelebration()", "championCelebrating=4.5", "championConfetti"):
+              # confetti CSS checked independently below
+              if phrase != "championConfetti": assert phrase in js,phrase
+          assert ".champion-confetti" in css
+          print("Android v1.5: 20-level progression and champion celebration checks passed")
           PY
       - name: Assemble Android APK
         run: gradle -p android-hogolyocsata :app:assembleDebug --no-daemon --stacktrace
@@ -102,12 +106,12 @@ jobs:
             assert z.testzip() is None
             print(f"Verified APK, {len(names)} archive members")
           PY
-          cp "$APK" Mazsola_Klub_Hogolyocsata_v1.4.apk
+          cp "$APK" Mazsola_Klub_Hogolyocsata_v1.5.apk
       - name: Upload APK for testing
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola_Klub_Hogolyocsata_v1.4
-          path: Mazsola_Klub_Hogolyocsata_v1.4.apk
+          name: Mazsola_Klub_Hogolyocsata_v1.5
+          path: Mazsola_Klub_Hogolyocsata_v1.5.apk
           retention-days: 30
       - name: Publish standalone APK download
         env:
@@ -115,10 +119,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TAG=hogolyocsata-android-v1.4
-          NOTES="Mazsola Klub Hógolyócsata Android 1.4: intro fills screen (cover); characters emerge further from trees, fence and igloo; pixel-alpha sprite hitboxes with small exposed-edge tolerance prevent unwanted fence misses. Preserves life reward, SVG hearts and previous fixes. Debug-signed: uninstall the previous 1.0 debug APK before installing this update."
+          TAG=hogolyocsata-android-v1.5
+          NOTES="Mazsola Klub Hógolyócsata Android 1.5: 20 difficulty levels, more opponents and faster incoming snowballs as you advance. Two-life opponents attack 0.5s faster and three-life bosses 1s faster than one-life opponents. Level 20 grants an animated congratulation and confetti, then continues at maximum difficulty. Retains previous fullscreen, SVG-heart, level-up bonus and hitbox improvements. Debug-signed test APK."
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" Mazsola_Klub_Hogolyocsata_v1.4.apk --clobber
+            gh release upload "$TAG" Mazsola_Klub_Hogolyocsata_v1.5.apk --clobber
           else
-            gh release create "$TAG" Mazsola_Klub_Hogolyocsata_v1.4.apk --target "$GITHUB_SHA" --title "Mazsola Klub Hógolyócsata Android v1.4" --notes "$NOTES" --prerelease
+            gh release create "$TAG" Mazsola_Klub_Hogolyocsata_v1.5.apk --target "$GITHUB_SHA" --title "Mazsola Klub Hógolyócsata Android v1.5" --notes "$NOTES" --prerelease
           fi
