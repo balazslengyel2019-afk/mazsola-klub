@@ -77,9 +77,9 @@ jobs:
           from pathlib import Path
           js=Path("android-hogolyocsata/app/src/main/assets/game/game.js").read_text(encoding="utf-8")
           css=Path("android-hogolyocsata/app/src/main/assets/game/styles.css").read_text(encoding="utf-8")
-          for phrase in ("showLevelUp(restored)", "life+=restored", "peek:[260,436]", "peek:[1054,436]", 'viewBox="0 0 40 40"'):
+          for phrase in ("showLevelUp(restored)", "life+=restored", "peek:[295,417]", "peek:[1022,415]", "visibleSpriteHit(", "spriteAlphaCache", 'viewBox="0 0 40 40"'):
               assert phrase in js,phrase
-          for phrase in (".level-up-notice.visible", ".heart-row svg"):
+          for phrase in (".level-up-notice.visible", ".heart-row svg", "object-fit:cover!important"):
               assert phrase in css,phrase
           print("Android v1.3 gameplay and HUD checks passed")
           PY
@@ -102,12 +102,12 @@ jobs:
             assert z.testzip() is None
             print(f"Verified APK, {len(names)} archive members")
           PY
-          cp "$APK" Mazsola_Klub_Hogolyocsata_v1.3.apk
+          cp "$APK" Mazsola_Klub_Hogolyocsata_v1.4.apk
       - name: Upload APK for testing
         uses: actions/upload-artifact@v4
         with:
-          name: Mazsola_Klub_Hogolyocsata_v1.3
-          path: Mazsola_Klub_Hogolyocsata_v1.3.apk
+          name: Mazsola_Klub_Hogolyocsata_v1.4
+          path: Mazsola_Klub_Hogolyocsata_v1.4.apk
           retention-days: 30
       - name: Publish standalone APK download
         env:
@@ -115,10 +115,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          TAG=hogolyocsata-android-v1.3
-          NOTES="Mazsola Klub Hógolyócsata Android 1.3: characters visible further out from behind trees; fixed-ratio SVG hearts; every new level restores one life up to three; animated level-up announcement. Retains the Android 1.1 fixes. Debug-signed: uninstall the previous 1.0 debug APK before installing this update."
+          TAG=hogolyocsata-android-v1.4
+          NOTES="Mazsola Klub Hógolyócsata Android 1.4: intro fills screen (cover); characters emerge further from trees, fence and igloo; pixel-alpha sprite hitboxes with small exposed-edge tolerance prevent unwanted fence misses. Preserves life reward, SVG hearts and previous fixes. Debug-signed: uninstall the previous 1.0 debug APK before installing this update."
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" Mazsola_Klub_Hogolyocsata_v1.3.apk --clobber
+            gh release upload "$TAG" Mazsola_Klub_Hogolyocsata_v1.4.apk --clobber
           else
-            gh release create "$TAG" Mazsola_Klub_Hogolyocsata_v1.3.apk --target "$GITHUB_SHA" --title "Mazsola Klub Hógolyócsata Android v1.3" --notes "$NOTES" --prerelease
+            gh release create "$TAG" Mazsola_Klub_Hogolyocsata_v1.4.apk --target "$GITHUB_SHA" --title "Mazsola Klub Hógolyócsata Android v1.4" --notes "$NOTES" --prerelease
           fi

@@ -98,6 +98,61 @@ change("function hud(){",level_overlay+"function hud(){","level up UI insertion"
 change("tipUntil=0;last=performance.now();",
        "tipUntil=0;last=performance.now();if(levelUpTimer)clearTimeout(levelUpTimer);const levelUp=document.getElementById('levelUpNotice');if(levelUp)levelUp.classList.remove('visible');",
        "clear level-up badge on restart")
+
+# Android v1.4 — distinct peeking positions so the characters are visible above the fence and beside the trees.
+# These overrides follow the v1.3 tree improvements in this build-only copy.
+for old,new in [
+ ("peek:[260,436]","peek:[295,417]"),
+ ("peek:[1054,436]","peek:[1022,415]"),
+ ("peek:[344,474]","peek:[344,446]"),
+ ("peek:[520,478]","peek:[520,448]"),
+ ("peek:[666,476]","peek:[666,447]"),
+ ("peek:[780,478]","peek:[744,424]"),
+ ("peek:[973,481]","peek:[1030,426]"),
+ ("peek:[854,474]","peek:[854,441]")
+]:
+ change(old,new,"more visible peek "+old)
+
+# Hit testing must use *the visible opaque pixels of the same sprite we draw*, not a displaced box.
+# Only a small 18-pixel tolerance at exposed edges is allowed; thick foreground wood remains protective.
+start=js.index("function impact(x,y){")
+end=js.index("function reload(){",start)
+original=js[start:end]
+old_header=original.split(" const {e,p}=candidates[0],info=types[e.kind];",1)[0]
+assert "covered(x,y)" in old_header and "cy=p.y-h*.54" in old_header
+hit_source="""const spriteAlphaCache=new Map();
+function visibleSpriteHit(e,p,tx,ty){
+ const img=imgs[e.kind],w=types[e.kind].w,h=w*img.naturalHeight/img.naturalWidth;
+ const left=p.x-w/2,top=p.y-h/2;
+ if(tx<left-20||tx>left+w+20||ty<top-20||ty>top+h+20)return false;
+ let entry=spriteAlphaCache.get(e.kind);
+ if(!entry||entry.width!==img.naturalWidth||entry.height!==img.naturalHeight){
+  const layer=document.createElement('canvas');layer.width=img.naturalWidth;layer.height=img.naturalHeight;
+  const layerCtx=layer.getContext('2d',{willReadFrequently:true});layerCtx.drawImage(img,0,0);
+  entry=layerCtx.getImageData(0,0,layer.width,layer.height);
+  spriteAlphaCache.set(e.kind,entry);
+ }
+ const offsets=[[0,0],[12,0],[-12,0],[0,12],[0,-12],[10,10],[-10,10],[10,-10],[-10,-10],[18,0],[-18,0],[0,18],[0,-18]];
+ for(const [dx,dy] of offsets){
+  const xx=tx+dx, yy=ty+dy;
+  if(xx<left||xx>=left+w||yy<top||yy>=top+h||covered(xx,yy))continue;
+  const ix=Math.floor((xx-left)/w*entry.width), iy=Math.floor((yy-top)/h*entry.height);
+  if(entry.data[(iy*entry.width+ix)*4+3]>55)return true;
+ }
+ return false;
+}
+function impact(x,y){const candidates=[];
+ for(const e of enemies){
+  if(e.status!=='active')continue;
+  const p=getPosition(e),im=imgs[e.kind];if(!im||!im.complete||!im.naturalWidth||p.visibility<.70)continue;
+  if(visibleSpriteHit(e,p,x,y))candidates.push({e,p,delta:distance(x,y,p.x,p.y)});
+ }
+ candidates.sort((a,b)=>a.delta-b.delta);
+ if(!candidates.length){addBurst(x,y,'ground');playFx('puff',.28);return}
+"""
+js=js[:start]+hit_source+original[len(old_header):].replace(" const {e,p}=candidates[0],info=types[e.kind];"," const {e,p}=candidates[0],info=types[e.kind];",1)+js[end:]
+# Note: replaced only the header, retaining effects, sound, multi-hit logic, and the subsequent reload() function.
+
 j.write_text(js,encoding="utf-8")
 
 css=c.read_text(encoding="utf-8")
@@ -120,6 +175,17 @@ body{display:block!important;background:#061939!important}
 .menu-hint{bottom:1.2%!important}
 """
 css+="\n/* Android v1.3: SVG hearts never stretch on ultra-wide mobile screens. */\n.heart-row{align-items:center!important;justify-content:center!important;gap:.52cqw!important;\n margin-top:1.12cqw!important;line-height:0!important}\n.heart-row .live-heart,.heart-row .lost-heart{display:inline-flex!important;align-items:center!important;\n justify-content:center!important;flex:0 0 3.25cqw!important;width:3.25cqw!important;\n height:3.25cqw!important;max-width:100%;font-size:0!important;line-height:0!important;\n filter:none!important}\n.heart-row svg{display:block;width:100%;height:100%;aspect-ratio:1/1;overflow:visible}\n.heart-row .live-heart svg path{fill:#f32a56;stroke:#bc1841;stroke-width:.65}\n.heart-row .lost-heart svg path{fill:#aab6ce;stroke:#7e8da9;stroke-width:.65}\n.level-up-notice{position:absolute;z-index:19;top:40%;left:50%;transform:translate(-50%,-50%);\n text-align:center;pointer-events:none;opacity:0;display:flex;flex-direction:column;align-items:center;\n gap:.5cqw;text-shadow:0 .25cqw .4cqw #0e255e}\n.level-up-notice strong{font-size:5.7cqw;line-height:1.1;font-weight:1000;color:#fff;\n background:linear-gradient(#72b8ff,#1d63c5);padding:.18em .8em;border:.25cqw solid #e2f5ff;\n border-radius:1.5cqw;box-shadow:0 .35cqw 0 #103971}\n.level-up-notice span{font-size:3.2cqw;white-space:nowrap;font-weight:1000;color:white;\n padding:.28em .95em;border:.2cqw solid #fff4b8;border-radius:999px;\n background:linear-gradient(#ff7895,#e82b56)}\n.level-up-notice.visible{opacity:1;animation:mkLevelPop 2.4s both}\n@keyframes mkLevelPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.65)}\n 12%,80%{opacity:1;transform:translate(-50%,-50%) scale(1)}\n 100%{opacity:0;transform:translate(-50%,-54%) scale(1.06)}}\n@media(prefers-reduced-motion:reduce){.level-up-notice.visible{animation:none;opacity:1}}\n"
+
+# Intro video must FILL the already full-screen Android app; 'contain' caused vertical side bars.
+css+="""
+/* Android v1.4: intro edge-to-edge with proportional crop, no vertical side bars. */
+#intro{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ overflow:hidden!important;background:#061939!important}
+#introVideo,.intro-screen video{position:absolute!important;inset:0!important;top:0!important;left:0!important;
+ width:100%!important;height:100%!important;min-width:100%!important;min-height:100%!important;
+ max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:50% 50%!important}
+"""
+
 c.write_text(css,encoding="utf-8")
 html=h.read_text(encoding="utf-8")
 html=html.replace('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>', '')
@@ -135,4 +201,4 @@ icon=Image.new("RGBA",(512,512),(0,0,0,0))
 ImageDraw.Draw(icon).ellipse((9,9,503,503),fill=(255,255,255,255))
 icon.alpha_composite(src,(84,84))
 icon.save("android-hogolyocsata/app/src/main/res/drawable-nodpi/hogoly_icon.png",optimize=True)
-print("Android 1.3: tree visibility, SVG hearts and life-restoring level-up ready")
+print("Android 1.4: full-screen intro, exposed characters and visible sprite hitboxes ready")
