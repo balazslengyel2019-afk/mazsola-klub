@@ -18,6 +18,12 @@ jobs:
         with:
           persist-credentials: true
 
+      - name: Install video tools
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
       - name: Download the supplied November animation
         shell: bash
         run: |
