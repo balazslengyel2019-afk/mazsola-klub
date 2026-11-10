@@ -1,52 +1,69 @@
-/* Shared Mazsola Klub footer for individual seasonal song pages.
-   Matches the compact, light footer system used on the main site. */
-footer.mz-footer{
-  display:block;
-  width:100%;
-  max-width:none;
-  box-sizing:border-box;
-  margin:40px 0 0;
+/* Unified Mazsola Klub footer. Shared across all content pages. */
+body > footer.mz-footer{
+  display:block;width:100%;max-width:none;box-sizing:border-box;
+  margin:40px 0 0;padding:0;
+  background:#fffefa;border-top:1px solid #d8e7ef;
+  color:#123656;text-align:left;
+}
+body > footer.mz-footer .mz-footer__inner{
+  width:min(1280px,calc(100% - 48px));margin:0 auto;
+  padding:23px 0 25px;display:flex;align-items:center;
+  justify-content:space-between;gap:20px 28px;box-sizing:border-box;
+}
+body > footer.mz-footer .mz-footer__brand{
+  display:flex;flex-direction:column;gap:5px;flex:0 0 auto;
+}
+body > footer.mz-footer .mz-footer__brand strong{
+  display:block;color:#123656;font-size:16px;font-weight:900;
+  letter-spacing:0;line-height:1.4;
+}
+body > footer.mz-footer .mz-footer__brand small{
+  display:block;font-size:13px;font-weight:500;line-height:1.5;color:#627685;
+}
+body > footer.mz-footer .mz-footer__right{
+  display:flex;align-items:center;justify-content:flex-end;
+  flex-wrap:wrap;gap:16px 23px;min-width:0;
+}
+body > footer.mz-footer .mz-footer__links{
+  display:flex;align-items:center;justify-content:flex-end;
+  flex-wrap:wrap;gap:12px 17px;min-width:0;
+}
+body > footer.mz-footer .mz-footer__links a,
+body > footer.mz-footer .mz-footer__cookie-settings{
+  display:inline-block;padding:0;margin:0;background:none;border:0;
+  font-family:inherit;font-size:13px;font-weight:800;line-height:1.5;
+  color:#175783;text-decoration:none;white-space:nowrap;
+  cursor:pointer;box-shadow:none;transform:none;
+}
+body > footer.mz-footer .mz-footer__links a:hover,
+body > footer.mz-footer .mz-footer__cookie-settings:hover{
+  color:#0866a9;text-decoration:underline;background:none;
+}
+body > footer.mz-footer .mz-footer__links a:focus-visible,
+body > footer.mz-footer .mz-footer__cookie-settings:focus-visible{
+  outline:3px solid #d99d22;outline-offset:4px;border-radius:2px;
+}
+body > footer.mz-footer .social-links--footer{
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:10px;margin:0;width:auto;flex:0 0 auto;
+}
+body > footer.mz-footer .social-links--footer .social-icon{
+  box-sizing:border-box;width:42px;height:42px;min-width:42px;min-height:42px;
   padding:0;
-  background:#fffefa;
-  border-top:1px solid #d8e7ef;
-  color:#123656;
-  text-align:left;
 }
-.mz-footer__inner{
-  width:min(1200px,calc(100% - 48px));
-  margin:0 auto;
-  padding:23px 0 25px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:18px 28px;
-  box-sizing:border-box;
+@media(max-width:1100px){
+  body > footer.mz-footer .mz-footer__inner{align-items:flex-start}
+  body > footer.mz-footer .mz-footer__right{justify-content:flex-end}
 }
-.mz-footer__brand{
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-}
-.mz-footer__brand strong{
-  font-size:16px;
-  color:#123656;
-  font-weight:900;
-  letter-spacing:0;
-}
-.mz-footer__brand small{font-size:13px;color:#627685;line-height:1.5}
-.mz-footer__right{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:14px 24px;min-width:0}
-.mz-footer__links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px 18px}
-.mz-footer__links a{font-size:13px;font-weight:800;color:#175783;text-decoration:none;white-space:nowrap}
-.mz-footer__links a:hover{text-decoration:underline;color:#0866a9}
-.mz-footer__links a:focus-visible{outline:3px solid #d99d22;outline-offset:4px;border-radius:2px}
-.mz-footer__right .social-links--footer{width:auto;justify-content:center;margin:0}
-@media(max-width:800px){
-  .mz-footer__inner{flex-direction:column;align-items:flex-start;padding:23px 0}
-  .mz-footer__right{justify-content:flex-start}
-  .mz-footer__links{justify-content:flex-start}
+@media(max-width:850px){
+  body > footer.mz-footer .mz-footer__inner{
+    flex-direction:column;align-items:flex-start;gap:18px;
+  }
+  body > footer.mz-footer .mz-footer__right{justify-content:flex-start;gap:16px}
+  body > footer.mz-footer .mz-footer__links{justify-content:flex-start}
 }
 @media(max-width:480px){
-  .mz-footer__inner{width:calc(100% - 32px)}
-  .mz-footer__right{gap:14px}
-  .mz-footer__links{gap:10px 16px}
+  body > footer.mz-footer .mz-footer__inner{width:calc(100% - 32px)}
+  body > footer.mz-footer .mz-footer__links{gap:11px 15px}
+  body > footer.mz-footer .mz-footer__right{gap:18px}
 }
