@@ -5,6 +5,8 @@ on:
       - '.github/workflows/sync-youtube-catalog.yml'
       - 'scripts/sync-youtube-catalog.py'
   workflow_dispatch:
+  schedule:
+    - cron: '17 5 * * *'  # Daily check; a failed extraction leaves current content unchanged
 permissions:
   contents: write
 jobs:
@@ -22,7 +24,7 @@ jobs:
       - name: Commit validated catalogue updates
         shell: bash
         run: |
-          git add songs.json song-titles.json index.html catalog.js
+          git add songs.json song-titles.json index.html catalog.js sitemap.xml
           if git diff --cached --quiet; then
             echo 'Catalogue already matches public YouTube channel'
             exit 0
