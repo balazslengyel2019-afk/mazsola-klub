@@ -90,6 +90,8 @@ def main():
     homepage = ROOT / "index.html"
     source = homepage.read_text(encoding="utf-8")
     source = source.replace(old_count + " videó", new_count + " videó")
+    source = source.replace(f">{old_count} dal a katalógusban", f">{new_count} dal a katalógusban")
+    source = source.replace(f"<strong>{old_count}</strong><span>videó a csatornán", f"<strong>{new_count}</strong><span>videó a csatornán")
     homepage.write_text(source, encoding="utf-8")
     catalog = ROOT / "catalog.js"
     source = catalog.read_text(encoding="utf-8")
