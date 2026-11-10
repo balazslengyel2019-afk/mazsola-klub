@@ -1,0 +1,33 @@
+name: Sync Mazsola Klub YouTube video catalogue
+on:
+  push:
+    paths:
+      - '.github/workflows/sync-youtube-catalog.yml'
+      - 'scripts/sync-youtube-catalog.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check yt-dlp
+      - name: Reconcile public YouTube catalogue
+        run: python scripts/sync-youtube-catalog.py
+      - name: Commit validated catalogue updates
+        shell: bash
+        run: |
+          git add songs.json song-titles.json index.html catalog.js
+          if git diff --cached --quiet; then
+            echo 'Catalogue already matches public YouTube channel'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Sync all Mazsola Klub video titles, links and counts from YouTube'
+          git push
