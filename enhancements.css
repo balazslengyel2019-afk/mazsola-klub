@@ -327,3 +327,60 @@
 .games-card--snowball .eyebrow{color:#b7334a}
 .games-card--snowball .games-features span{border-color:#efccd1;box-shadow:0 3px 0 #f8e1e4}
 .games-card--snowball:hover{border-color:#df9faa}
+
+
+/* MARTON_NAPI_SPOTLIGHT_2026: November homepage feature; Halloween game page remains unchanged. */
+.home-page .martin-spotlight{
+  background:
+    radial-gradient(ellipse 340px 260px at 12% 24%,rgba(248,179,76,.23),transparent 75%),
+    radial-gradient(ellipse 420px 320px at 89% 76%,rgba(100,126,190,.29),transparent 78%),
+    radial-gradient(ellipse 530px 280px at 62% 6%,rgba(66,96,137,.23),transparent 75%),
+    linear-gradient(135deg,#152036 0%,#1f2942 42%,#2a2745 77%,#151f35 100%);
+  border-block:1px solid rgba(245,193,105,.27);
+  isolation:isolate;
+}
+.home-page .martin-spotlight::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.45;
+  background-image:
+    radial-gradient(circle,rgba(255,221,149,.7) 1px,transparent 1.8px),
+    radial-gradient(circle,rgba(255,229,178,.45) 1px,transparent 1.7px);
+  background-size:173px 121px,229px 167px;background-position:22px 37px,106px 84px;
+  mask-image:linear-gradient(90deg,transparent 0%,#000 20%,#000 84%,transparent 100%);
+}
+.home-page .martin-spotlight .halloween-spotlight__inner{position:relative;z-index:1}
+.home-page .martin-spotlight .eyebrow{color:#f7c36e}
+.home-page .martin-spotlight h2{color:#fff8ec;text-wrap:balance}
+.home-page .martin-spotlight .halloween-spotlight__head>p{color:#e8e2e2}
+.home-page .martin-spotlight .halloween-song-card{
+  border-color:rgba(244,193,105,.34);
+  background:linear-gradient(180deg,rgba(255,245,215,.12),rgba(25,34,60,.65));
+  box-shadow:0 14px 32px rgba(5,12,28,.26)
+}
+.home-page .martin-spotlight .halloween-song-card:hover{
+  border-color:rgba(255,213,137,.85);
+  box-shadow:0 22px 45px rgba(4,12,31,.39),0 0 25px rgba(246,187,90,.12)
+}
+.home-page .martin-spotlight .halloween-song-card .thumb{background:#18253c}
+.home-page .martin-spotlight .halloween-song-info span{
+  background:#f8c76d;color:#25304b
+}
+.home-page .martin-spotlight .halloween-song-info h3{color:#fff9ec}
+.home-page .martin-spotlight .halloween-play{color:#263453;background:#fff7e7}
+.home-page .martin-spotlight .halloween-carousel__arrow{
+  border-color:#f8cb7c;background:#f6bd62;color:#232c46;
+  box-shadow:0 5px 16px rgba(5,11,28,.18)
+}
+.home-page .martin-spotlight .halloween-carousel__arrow:hover{background:#ffdb8c}
+.home-page .martin-spotlight .halloween-game-button{
+  border-color:#f7ca7b!important;
+  background:linear-gradient(180deg,#ffe0a1,#f6b955)!important;
+  color:#24304a!important;box-shadow:0 5px 0 #98642a!important
+}
+.home-page .martin-spotlight .halloween-game-button:hover{box-shadow:0 7px 0 #98642a!important}
+.home-page .martin-spotlight .halloween-catalog-link{
+  color:#fff0ce;border-bottom-color:rgba(255,230,187,.55)
+}
+@media(max-width:620px){
+  .home-page .martin-spotlight h2{font-size:clamp(30px,8vw,38px)}
+  .home-page .martin-spotlight .halloween-spotlight__head{gap:15px}
+}
