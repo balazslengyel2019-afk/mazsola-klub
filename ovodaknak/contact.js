@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
   const dialog=document.querySelector('#idea-dialog');
-  const open=document.querySelector('#open-idea-form');
+  const open=document.querySelector('#open-idea-form') || document.querySelector('footer.mz-footer [data-contact]');
   const close=document.querySelector('#close-idea-form');
   const form=document.querySelector('#idea-form');
   const status=document.querySelector('#idea-status');
@@ -12,7 +12,7 @@
   const openDialog=()=>{openedAt=Date.now();status.textContent='';status.className='idea-status';dialog.showModal();};
   const closeDialog=()=>{if(dialog.open)dialog.close();};
 
-  open.addEventListener('click',openDialog);
+  open.addEventListener('click',event=>{event.preventDefault();openDialog();});
   close.addEventListener('click',closeDialog);
   dialog.addEventListener('click',e=>{
     if(e.target!==dialog)return;
