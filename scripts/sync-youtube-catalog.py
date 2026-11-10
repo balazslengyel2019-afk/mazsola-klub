@@ -22,7 +22,7 @@ def duration_label(value):
     if isinstance(value, (int, float)) and value > 0:
         seconds = int(value)
         return f"{seconds // 60}:{seconds % 60:02d}"
-    if isinstance(value, str) and re.fullmatch(r"\\d+:\\d{2}", value):
+    if isinstance(value, str) and re.fullmatch(r"\d+:\d{2}", value):
         return value
     return ""
 
@@ -73,8 +73,8 @@ def main():
         print(f"REMOVED {x['id']} {x['title']}")
     for id_, old_title, new_title in changed_titles:
         print(f"RENAMED {id_}: {old_title!r} -> {new_title!r}")
-    SONGS.write_text(json.dumps(rows, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
-    TITLES.write_text(json.dumps([x["title"] for x in rows], ensure_ascii=False) + "\\n", encoding="utf-8")
+    SONGS.write_text(json.dumps(rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    TITLES.write_text(json.dumps([x["title"] for x in rows], ensure_ascii=False) + "\n", encoding="utf-8")
     # Update static counts on homepage and catalogue banner; keep playlist-specific counts untouched.
     old_count = str(len(previous))
     new_count = str(len(rows))
