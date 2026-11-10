@@ -17,6 +17,15 @@ TITLES = ROOT / "song-titles.json"
 CHANNEL = "https://www.youtube.com/@mazsola-klub/videos"
 KNOWN_DURATION = {"3s9KkbnC5sc": "2:34", "C50N4HcMsbw": "6:31"}
 
+# These IDs are served as translated English titles to some unauthenticated clients.
+# The Hungarian originals were verified against the channel owner's 2026-11-10 list.
+HUNGARIAN_TITLES = {
+    "bKq6zXh33OM": "🍇 Lipem, lopom a szőlőt | Magyar vicces mondókadal gyerekeknek",
+    "tr2Xj94C7Pg": "🌷 Már megjöttünk ez helyre 🌸 Anyák napi dal | Megható gyerekdal anyukáknak 💖",
+    "1O8nMmfTJDQ": "🌸 Tavaszi szél vizet áraszt | Magyar népdal gyerekeknek 🌿🐦",
+}
+
+
 
 def duration_label(value):
     if isinstance(value, (int, float)) and value > 0:
@@ -53,7 +62,7 @@ def main():
     changed_titles = []
     for x in extracted:
         id_ = x["id"]
-        title = x["title"]
+        title = HUNGARIAN_TITLES.get(id_, x["title"])
         old = old_by_id.get(id_, {})
         if old and old.get("title") != title:
             changed_titles.append((id_, old["title"], title))
