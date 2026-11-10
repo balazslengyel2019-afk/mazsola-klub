@@ -9,14 +9,14 @@ const categories={
   allatok:['allat','kutya','kutyus','cica','macska','nyuszi','nyul','barany','kecske','tehen','malac','tyuk','kacsa','liba','beka','suni','mokus','medve','macko','roka','bagoly','madar','csiga','pillango','szunyog','tucsok','dino','dinoszaurusz','allatkert','pingvin','oroszlan','elefant','zebra','majom','halacska'],
   nepdalok:['nepdal','nepi','folklor','hopp juliska','nagyabony','baranykam','nyulacska','boszorka','felpenzzel','tucsok','rozsa, rozsa','sej,'],
   evszakok:['osz','tavasz','nyar','tel ','szeptember','oktober','november','december','januar','februar','marcius','aprilis','majus','junius','julius','augusztus','hoember','havazas','balaton','szuret','falevel','csillaghullas'],
-  unnepek:['karacsony','mikulas','telapo','husvet','anyak nap','halloween','farsang','szulinap','szuletesnap','advent','szilveszter','uj ev','valentin'],
+  unnepek:['karacsony','mikulas','telapo','husvet','anyak nap','halloween','farsang','szulinap','szuletesnap','advent','szilveszter','uj ev','valentin','marton','ludas matyi','szaz liba egy sorba','gyertek haza, ludaim'],
   tanulos:['tanul','szamol','abc','abece','szin','forma','nyelvtoro','beszedfejleszto','ismeretterjeszto','biztonsag','ora','napok','honap','fogmos','takaritos','pakolas','kresz','kozlekedes','bolygo','meteor','csillag','termeszet','ovoda','ovis']
 };
 const popularPicks=[
   {id:'YUM_wsp4-Qo',title:'Terepjáró, Terepjáró!',note:'Járműves kaland'},
   {id:'c4FL3mhotPA',title:'Óvodába megyek',note:'Ovis kedvenc'},
   {id:'Tk8-ElfvaoY',title:'Ősz az ajtón bekopogott',note:'Évszakos dal'},
-  {id:'bKU0Gl9JMyQ',title:'Tökfaragó dal',note:'Halloween-különlegesség'},
+  {id:'j_JXtPYhs1U',title:'Márton-napi lámpás dalcsokor',note:'Novemberi különlegesség'},
   {id:'M5NH4aO1K2c',title:'Rózsa, rózsa, bazsarózsa',note:'Népdal ihlette dal'},
   {id:'HoQ5kOMbuq4',title:'Kis Mackó Kalandja',note:'Állatos kaland'}
 ];
