@@ -51,11 +51,14 @@ fetch('songs.json?v=20261110-2').then(r=>{if(!r.ok)throw Error('catalog');return
   const section=document.createElement('section');
   section.className='video-banner';
   section.setAttribute('aria-label','Mazsola Klub gyerekdalok');
-  section.innerHTML='<video muted loop playsinline preload="none" poster="assets/cover.png" aria-hidden="true"><source src="/assets/video%201.mp4" type="video/mp4"></video><div class="video-banner__content"><p class="video-banner__eyebrow">MAZSOLA KLUB</p><h2><strong id="video-count-banner">278</strong> videó egy helyen.</h2><p class="video-banner__lead">Járművek, állatok, népdalok, évszakok és zenés kalandok a Mazsola Klubban.</p></div>';
+  const mobileOrReduced=window.matchMedia('(max-width: 768px)').matches
+    ||window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ||(navigator.connection&&navigator.connection.saveData);
+  const bannerPoster=mobileOrReduced?'assets/hero-november-2026-poster.webp':'assets/cover.png';
+  section.innerHTML='<video muted loop playsinline preload="none" poster="'+bannerPoster+'" aria-hidden="true"><source src="/assets/video%201.mp4" type="video/mp4"></video><div class="video-banner__content"><p class="video-banner__eyebrow">MAZSOLA KLUB</p><h2><strong id="video-count-banner">278</strong> videó egy helyen.</h2><p class="video-banner__lead">Járművek, állatok, népdalok, évszakok és zenés kalandok a Mazsola Klubban.</p></div>';
   about.before(section);
   const video=section.querySelector('video');
-  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduced){video.pause();return;}
+  if(mobileOrReduced){video.pause();return;}
   const start=()=>video.play().catch(()=>{});
   if('IntersectionObserver' in window){
     const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){start();observer.disconnect();}},{rootMargin:'300px 0px'});
@@ -97,18 +100,21 @@ fetch('songs.json?v=20261110-2').then(r=>{if(!r.ok)throw Error('catalog');return
   video.muted=true;
   video.loop=true;
   video.playsInline=true;
-  video.preload='metadata';
+  video.preload='none';
   video.tabIndex=-1;
   layer.append(video);
   hero.prepend(layer);
   welcome.remove();
 
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    video.removeAttribute('autoplay');
-    video.pause();
-  }else{
-    video.play().catch(()=>{});
-  }
+  const source=video.querySelector('source[data-src]');
+  const animate=window.matchMedia('(min-width: 769px)').matches
+    &&!window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    &&!(navigator.connection&&navigator.connection.saveData);
+  if(!animate){video.removeAttribute('autoplay');video.pause();return;}
+  if(source){source.src=source.dataset.src;source.removeAttribute('data-src');}
+  video.preload='metadata';
+  video.load();
+  video.play().catch(()=>{});
 })();
 
 
