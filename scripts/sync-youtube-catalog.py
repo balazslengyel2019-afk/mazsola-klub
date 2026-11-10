@@ -75,6 +75,12 @@ def main():
         })
         rows.append(row)
     added = [x for x in rows if x["id"] not in old_by_id]
+    # Abort on suspiciously broad title changes (e.g. YouTube-translated titles).
+    # Keep the published site untouched on a potentially corrupt extraction.
+    if len(changed_titles) > 5 or len(added) > 10:
+        raise RuntimeError(
+            f"Unexpected sync changes: {len(changed_titles)} renamed, {len(added)} new; review manually"
+        )
     print(f"YouTube: {len(rows)} videos; added {len(added)}; removed {len(removed)}; renamed {len(changed_titles)}")
     for x in added:
         print(f"ADDED {x['id']} {x['title']}")
@@ -92,7 +98,19 @@ def main():
     source = source.replace(old_count + " videó", new_count + " videó")
     source = source.replace(f">{old_count} dal a katalógusban", f">{new_count} dal a katalógusban")
     source = source.replace(f"<strong>{old_count}</strong><span>videó a csatornán", f"<strong>{new_count}</strong><span>videó a csatornán")
+    source = source.replace(f'id="trust-video-count">{old_count}</strong>', f'id="trust-video-count">{new_count}</strong>')
     homepage.write_text(source, encoding="utf-8")
+    if added or removed:
+        from datetime import datetime, timezone
+        sitemap = ROOT / "sitemap.xml"
+        xml = sitemap.read_text(encoding="utf-8")
+        today = datetime.now(timezone.utc).date().isoformat()
+        xml = re.sub(
+            r"(<loc>https://mazsolaklub.com/</loc><lastmod>)[^<]+(</lastmod>)",
+            lambda m: m.group(1) + today + m.group(2),
+            xml
+        )
+        sitemap.write_text(xml, encoding="utf-8")
     catalog = ROOT / "catalog.js"
     source = catalog.read_text(encoding="utf-8")
     source = source.replace('id="video-count-banner">' + old_count, 'id="video-count-banner">' + new_count)
