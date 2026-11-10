@@ -1,0 +1,31 @@
+name: Audit recent Mazsola Klub YouTube IDs
+on:
+  push:
+    paths:
+      - '.github/workflows/audit-youtube-ids.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check yt-dlp
+      - name: Check latest public uploads
+        run: |
+          python - <<'PY'
+          import yt_dlp, json
+          url = 'https://www.youtube.com/@mazsola-klub/videos'
+          with yt_dlp.YoutubeDL({'quiet': True, 'extract_flat': 'in_playlist','playlistend': 5,'ignoreerrors':True,'no_warnings':True}) as ydl:
+              data = ydl.extract_info(url, download=False)
+          entries = (data or {}).get('entries') or []
+          for entry in entries[:5]:
+              if entry:
+                  print(json.dumps({'id': entry.get('id'),'title': entry.get('title'),'url': entry.get('url')}, ensure_ascii=False))
+          if not entries:
+              raise SystemExit('No public YouTube entries retrieved')
+          PY
