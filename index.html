@@ -93,7 +93,7 @@
 <body class="home-page"><a class="skip" href="#dalok">Ugrás a dalokhoz</a>
 <div class="autumn-leaves" aria-hidden="true"><i class="autumn-leaf autumn-leaf--1"></i><i class="autumn-leaf autumn-leaf--2"></i><i class="autumn-leaf autumn-leaf--3"></i><i class="autumn-leaf autumn-leaf--4"></i><i class="autumn-leaf autumn-leaf--5"></i><i class="autumn-leaf autumn-leaf--6"></i></div>
 <header class="site-header"><a class="site-brand" href="/" aria-label="Mazsola Klub kezdőlap"><img src="/assets/logo.png" width="256" height="256" alt="Mazsola Klub logó"><span>Mazsola Klub<small>Kalandra hangolva!</small></span></a><nav aria-label="Főmenü"><a href="#dalok">Dalaink</a><a href="/ovodaknak/">Óvodáknak</a><a href="#jatekok">Játékok</a><a href="#tamogatas">Támogatás</a><a class="nav-about" href="#rolunk">Rólunk</a><a class="nav-yt" href="https://www.youtube.com/@mazsola-klub" target="_blank" rel="noopener">▶ YouTube</a></nav></header>
-<main><div class="cover wrap"><video class="hero-cover-video" autoplay muted loop playsinline preload="metadata" poster="/assets/hero-november-2026-poster.webp" aria-hidden="true" tabindex="-1"><source src="/assets/hero-november-2026.mp4" type="video/mp4"></video></div>
+<main><div class="cover wrap"><video class="hero-cover-video" autoplay muted loop playsinline preload="none" poster="/assets/hero-november-2026-poster.webp" aria-hidden="true" tabindex="-1"><source data-src="/assets/hero-november-2026.mp4" type="video/mp4"></video></div>
 <section class="hero wrap"><div class="hero-copy"><p class="eyebrow">MAGYAR GYEREKDALOK · MONDÓKÁK · JÁTÉKOK</p><h1>Magyar gyerekdalok,<br><span>amiket jó együtt felfedezni.</span></h1><p class="lead">278 videó, klasszikus mondókák és népdalok új köntösben, saját dalok és játékok. Otthonra, óvodába és bölcsődébe, könnyen böngészhető témák szerint.</p><div class="hero-actions"><a class="button primary" href="#dalok">Dalok böngészése <span aria-hidden="true">↓</span></a><a class="button secondary-action" href="/ovodaknak/">Óvodáknak és bölcsődéknek →</a></div><p class="hero-note">Járművek · állatok · évszakok · ünnepek · népdalok · játékos tanulás</p></div><div class="welcome-video"><video controls playsinline preload="metadata" poster="/assets/logo-animation-poster.webp" aria-label="Mazsola Klub animált logó"><source src="assets/logo-animation.mp4" type="video/mp4">A böngésződ nem támogatja a videólejátszást.</video><p>Integetünk nektek! Indítsd el a kis bemutatkozásunkat.</p></div></section>
 <section class="audiences wrap" aria-labelledby="audiences-title">
 <div class="audiences-head"><p class="eyebrow">KINEK SZÓL A MAZSOLA KLUB?</p><h2 id="audiences-title">Egy közös hely dalokhoz, játékhoz és ötletekhez.</h2></div>
@@ -113,7 +113,7 @@
 <a class="halloween-song-card" href="https://www.youtube.com/watch?v=j_JXtPYhs1U" target="_blank" rel="noopener noreferrer" aria-label="Márton-napi dalcsokor megtekintése a YouTube-on"><div class="thumb"><img src="https://i.ytimg.com/vi/j_JXtPYhs1U/hqdefault.jpg" width="480" height="360" loading="lazy" alt="Márton-napi dalcsokor – Mazsola Klub Márton-napi dal"><span class="halloween-play" aria-hidden="true">▶</span></div><div class="halloween-song-info"><span>ÚJ</span><h3>Márton-napi dalcsokor</h3></div></a>
 <a class="halloween-song-card" href="https://www.youtube.com/watch?v=3s9KkbnC5sc" target="_blank" rel="noopener noreferrer" aria-label="Gyertek haza, ludaim! megtekintése a YouTube-on"><div class="thumb"><img src="https://i.ytimg.com/vi/3s9KkbnC5sc/hqdefault.jpg" width="480" height="360" loading="lazy" alt="Gyertek haza, ludaim! – Mazsola Klub Márton-napi dal"><span class="halloween-play" aria-hidden="true">▶</span></div><div class="halloween-song-info"><span>2:34</span><h3>Gyertek haza, ludaim!</h3></div></a>
 </div></div><button class="halloween-carousel__arrow" type="button" data-next aria-label="Következő Márton-napi dal">›</button></div>
-<div class="halloween-spotlight__actions"><a class="button halloween-game-button" href="https://www.youtube.com/watch?v=j_JXtPYhs1U" target="_blank" rel="noopener noreferrer">Új: Márton-napi dalcsokor →</a><a class="halloween-catalog-link" href="/dalok/oszi-gyerekdalok/">Őszi dalok a katalógusban →</a></div>
+<div class="halloween-spotlight__actions"><a class="button halloween-game-button" href="/dalok/marton-napi-dalok/">Mind a 4 Márton-napi dal →</a><a class="halloween-catalog-link" href="/dalok/oszi-gyerekdalok/">Őszi dalok a katalógusban →</a></div>
 </div>
 </section>
 <section class="wrap songs" id="dalok"><div class="section-heading"><div><p class="eyebrow">MELYIK KALAND JÖJJÖN MA?</p><h2>Minden kedvhez egy dal.</h2></div><div style="display:flex;gap:18px;flex-wrap:wrap"><a class="text-link" href="/dalok/">Tematikus válogatások →</a><a class="text-link" href="https://www.youtube.com/@mazsola-klub/videos" target="_blank" rel="noopener">Összes videó ↗</a></div></div>
@@ -206,7 +206,21 @@
 <div class="idea-form__actions"><button class="button primary" type="submit" id="idea-submit">Üzenet küldése →</button><p class="idea-status" id="idea-status" role="status" aria-live="polite"></p></div>
 </form>
 </dialog>
-<dialog id="player-dialog" aria-labelledby="player-title"><div class="player-header"><h2 id="player-title"></h2><button id="close-player" aria-label="Lejátszó bezárása">✕</button></div><div id="player-mount"></div><p>Ha a videó itt nem indul, <a id="youtube-fallback" target="_blank" rel="noopener">nyisd meg a YouTube-on ↗</a></p></dialog><script src="catalog.js?v=20261110-2" defer></script><script src="/ovodaknak/contact.js?v=20260925-1" defer></script><script src="/radio.js?v=20260912-1" defer></script>
+<dialog id="player-dialog" aria-labelledby="player-title"><div class="player-header"><h2 id="player-title"></h2><button id="close-player" aria-label="Lejátszó bezárása">✕</button></div><div id="player-mount"></div><p>Ha a videó itt nem indul, <a id="youtube-fallback" target="_blank" rel="noopener">nyisd meg a YouTube-on ↗</a></p></dialog><script src="catalog.js?v=20261110-3" defer></script><script src="/ovodaknak/contact.js?v=20260925-1" defer></script><script src="/radio.js?v=20260912-1" defer></script>
 <script src="/autumn-leaves.js?v=20261013-4" defer></script>
 <script src="/halloween-carousel.js?v=20261017-1" defer></script>
+<script id="optimized-seasonal-cover-loader">
+(function(){
+  const video=document.querySelector('.hero-cover-video');
+  const source=video?.querySelector('source[data-src]');
+  if(!video||!source)return;
+  const canAnimate=window.matchMedia('(min-width: 769px)').matches
+    &&!window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    &&!(navigator.connection&&navigator.connection.saveData);
+  if(!canAnimate){video.removeAttribute('autoplay');video.pause();return;}
+  source.src=source.dataset.src;
+  video.load();
+  video.play().catch(()=>{});
+})();
+</script>
 </body></html>
