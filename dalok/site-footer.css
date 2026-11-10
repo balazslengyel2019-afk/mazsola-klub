@@ -1,0 +1,52 @@
+/* Shared Mazsola Klub footer for individual seasonal song pages.
+   Matches the compact, light footer system used on the main site. */
+footer.mz-footer{
+  display:block;
+  width:100%;
+  max-width:none;
+  box-sizing:border-box;
+  margin:40px 0 0;
+  padding:0;
+  background:#fffefa;
+  border-top:1px solid #d8e7ef;
+  color:#123656;
+  text-align:left;
+}
+.mz-footer__inner{
+  width:min(1200px,calc(100% - 48px));
+  margin:0 auto;
+  padding:23px 0 25px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px 28px;
+  box-sizing:border-box;
+}
+.mz-footer__brand{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.mz-footer__brand strong{
+  font-size:16px;
+  color:#123656;
+  font-weight:900;
+  letter-spacing:0;
+}
+.mz-footer__brand small{font-size:13px;color:#627685;line-height:1.5}
+.mz-footer__right{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:14px 24px;min-width:0}
+.mz-footer__links{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px 18px}
+.mz-footer__links a{font-size:13px;font-weight:800;color:#175783;text-decoration:none;white-space:nowrap}
+.mz-footer__links a:hover{text-decoration:underline;color:#0866a9}
+.mz-footer__links a:focus-visible{outline:3px solid #d99d22;outline-offset:4px;border-radius:2px}
+.mz-footer__right .social-links--footer{width:auto;justify-content:center;margin:0}
+@media(max-width:800px){
+  .mz-footer__inner{flex-direction:column;align-items:flex-start;padding:23px 0}
+  .mz-footer__right{justify-content:flex-start}
+  .mz-footer__links{justify-content:flex-start}
+}
+@media(max-width:480px){
+  .mz-footer__inner{width:calc(100% - 32px)}
+  .mz-footer__right{gap:14px}
+  .mz-footer__links{gap:10px 16px}
+}
