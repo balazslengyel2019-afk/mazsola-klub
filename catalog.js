@@ -55,7 +55,7 @@ fetch('songs.json?v=20261110-3').then(r=>{if(!r.ok)throw Error('catalog');return
     ||window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ||(navigator.connection&&navigator.connection.saveData);
   const bannerPoster=mobileOrReduced?'assets/hero-november-2026-poster.webp':'assets/cover.png';
-  section.innerHTML='<video muted loop playsinline preload="none" poster="'+bannerPoster+'" aria-hidden="true"><source src="/assets/video%201.mp4" type="video/mp4"></video><div class="video-banner__content"><p class="video-banner__eyebrow">MAZSOLA KLUB</p><h2><strong id="video-count-banner">276</strong> videó egy helyen.</h2><p class="video-banner__lead">Járművek, állatok, népdalok, évszakok és zenés kalandok a Mazsola Klubban.</p></div>';
+  section.innerHTML='<video muted loop playsinline preload="none" poster="'+bannerPoster+'" aria-hidden="true"><source src="/assets/video%201.mp4" type="video/mp4"></video><div class="video-banner__content"><p class="video-banner__eyebrow">MAZSOLA KLUB</p><h2><strong id="video-count-banner">277</strong> videó egy helyen.</h2><p class="video-banner__lead">Járművek, állatok, népdalok, évszakok és zenés kalandok a Mazsola Klubban.</p></div>';
   about.before(section);
   const video=section.querySelector('video');
   if(mobileOrReduced){video.pause();return;}
